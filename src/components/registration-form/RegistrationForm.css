@@ -1,0 +1,29 @@
+.registration-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 200px 16px 20px;
+    max-width: 480px;
+    gap: 24px;
+    margin: auto;
+    color: white;
+}
+
+.registration-form-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+}
+
+.registration-form-label {
+    font-weight: 700;
+}
+
+.registration-form-name-input {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+}
