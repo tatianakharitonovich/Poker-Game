@@ -1,0 +1,52 @@
+.playing-card {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	background-color: white;
+	font-size: 1em;
+
+	height: 52px;
+	width: 34px;
+	margin: 0 1px;
+	border: 1px solid #2c0303;
+	border-radius: 4px;
+
+	opacity: 0;
+	animation: fade-in-up 0.5s;
+	animation-fill-mode: both;
+}
+
+.isFakecard {
+	background-image: repeating-linear-gradient(60deg,
+	#c30606 0px, #9f6823 15px, #4e403d 15px, #6e504a 25px, #7a4233 25px, #60453e 35px, #ad877f 35px, #78544c 45px, #741818 45px, #c37f19 55px), repeating-linear-gradient(-60deg, #f44336 0px, #ffc107 15px, #997d78 15px, #a57c74 25px, #d1afa6 25px, #ffffff 35px, #f1b6a8 35px, #ffffff 45px, #8f7145 45px, #e58900 55px);
+	background-blend-mode: multiply;
+	background-cover: cover;
+}
+.folded {
+	animation: fade-in-out 0.5s;
+	animation-fill-mode: both;
+}
+
+@keyframes fade-in-up {
+	0% {
+		opacity: 0;
+		transform: translateY(100%)
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0%);
+	}
+}
+
+@keyframes fade-in-out {
+	0% {
+		opacity: 1;
+		transform: translateY(0%);
+	}
+	100% {
+		opacity: 0;
+		transform: translateY(-100%)
+	}
+}
