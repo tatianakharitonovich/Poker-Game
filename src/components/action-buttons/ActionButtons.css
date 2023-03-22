@@ -1,0 +1,20 @@
+.action-button {
+    height: 45px;
+    width: 125px;
+    margin: 0 12px;
+    border-radius: 16px;
+    background-image: linear-gradient(#5e0909, #40000e 17%, #000000);
+    font-size: 28px;
+    color: white;
+    border: none;
+    transition: all 0.4s ease-out, color 0.4s ease-out;
+}
+.action-button:hover {   
+    cursor: pointer; 
+    background-image: linear-gradient(#000000, #40000e, #5e0909);
+}
+
+.action-button:disabled {
+    cursor: auto;
+    filter: brightness(0.3);
+}
