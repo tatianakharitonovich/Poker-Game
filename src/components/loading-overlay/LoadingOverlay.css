@@ -1,0 +1,24 @@
+.loading {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+	width: 100%
+}
+
+.loading-wrap {
+	display: flex;
+	align-items: center;
+	gap: 24px;
+	height: 120px;
+	width: 408px;	
+}
+
+.loading-wrap-img {
+	animation: App-logo-spin infinite 5s linear;
+}
+
+@keyframes App-logo-spin {
+    from { transform: rotate(0deg) scale(0.3)}
+    to { transform: rotate(360deg) scale(1)}
+}
