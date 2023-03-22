@@ -1,0 +1,14 @@
+.message-rank {
+	color: #e59037;
+    font-weight: 600;
+}
+
+.message-player {
+	color: rgb(127 255 124);
+    font-weight: 600;
+}
+
+.message-earnings {
+	color: #10ff00;
+    font-weight: 600;
+}

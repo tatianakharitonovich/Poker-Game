@@ -1,0 +1,43 @@
+.rank-winner {
+	display: flex;
+	align-items: center;
+	margin-bottom: 8px;
+	height: 112px;
+}
+
+.rank-winner .player-wrap-avatar {
+	margin-right: 12px;
+}
+
+.rank-winner-besthand {
+	margin-left: 24px;
+}
+
+.rank-winner-besthand-cards {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: auto;
+	height: auto;
+}
+
+.rank-winner-handrank {
+	width: 115px;
+	text-align: center;
+	color: #e59037;
+	font-size: 14px;
+    font-weight: 600;
+}
+
+.rank-winner-earnings {
+	text-align: center;
+    font-weight: 600;
+}
+
+.rank-winner-earnings.positive {
+	color: #10ff00;
+}
+
+.rank-winner-earnings.negative {
+	color: #ff2210;
+}

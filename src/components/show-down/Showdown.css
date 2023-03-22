@@ -1,0 +1,48 @@
+.showdown {
+	display: flex;
+   	flex-direction: column;
+	align-items: center;
+	position: absolute;
+	overflow: auto;
+	left: 0;
+	right: 0;
+	top: 0;
+	background-color: rgb(12 10 10 / 95%);
+	color: white;
+	height: auto;
+	min-height: 100%;
+	width: 100%;
+    padding: 16px 0;
+	z-index: 100;
+}
+
+.showdown-messages {
+	text-align: left;
+}
+
+.showdown-cards-label {
+	text-transform: uppercase;
+	margin: 12px 0;
+}
+
+.showdown-cards {
+	display: flex;
+	height: 52px;
+	margin-bottom: 1rem;
+}
+
+.showdown-button {
+	background-image: linear-gradient(#5e0909, #40000e 17%, #000000);
+	border: none;
+    border-radius: 16px;
+	color: white;
+	padding: 10px 16px;
+	line-height: 1;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.showdown-button:hover {
+    background-image: linear-gradient(#000000, #40000e, #5e0909);
+}
