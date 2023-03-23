@@ -81,19 +81,10 @@ export class GameLayout extends React.Component<GameLayoutProps, GameStateInit> 
         const blindIndicies = determineBlindIndices(dealerIndex, players.length);
         const { minBet } = this.state;
         const playersBoughtIn = anteUpBlinds(players, blindIndicies, minBet);
-        const imageLoaderRequest = new XMLHttpRequest();
-
-        imageLoaderRequest.addEventListener("load", () => {
-            this.setState({
-                loading: false,
-            });
-        });
-
-        imageLoaderRequest.open("GET", "./assets/table.svg");
-        imageLoaderRequest.send();
         flushSync(() => {
             this.setState((prevState: GameStateInit) => ({
                 players: playersBoughtIn,
+                loading: false,
                 numberPlayersActive: players.length,
                 numberPlayersFolded: 0,
                 numberPlayersAllIn: 0,
