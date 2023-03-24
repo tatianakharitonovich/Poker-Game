@@ -235,6 +235,7 @@ export class GameLayout extends React.Component<GameLayoutProps, GameStateInit> 
                             (players !== null && activePlayerIndex !== null && highBet !== null &&
                             pot !== null && dealerIndex !== null && betInputValue !== null) ? (
                                 <Game
+                                    data-test="game"
                                     highBet={highBet}
                                     players={players}
                                     activePlayerIndex={activePlayerIndex}

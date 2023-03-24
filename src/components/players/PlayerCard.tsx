@@ -90,7 +90,10 @@ export const PlayerCard: React.FC<PlayerCardProps> = (props) => {
     };
 
     return (
-        <div className={`player-entity--wrapper player${arrayIndex}`}>
+        <div
+            data-test="player"
+            className={`player-entity--wrapper player${arrayIndex}`}
+        >
             <PlayerStatus
                 index={arrayIndex}
                 isActive={isAnimating(arrayIndex)}
