@@ -129,15 +129,12 @@ export const dealPrivateCards: (state: GameState) => GameState | undefined =
         const { mutableDeckCopy, chosenCards } = popCards(state.deck, 1);
         (chosenCards as CardType).animationDelay = animationDelay;
         animationDelay += 250;
-
         const newDeck = [...mutableDeckCopy];
         state.players[state.activePlayerIndex].cards.push(chosenCards as CardType);
-
         state.deck = newDeck;
         state.activePlayerIndex = handleOverflowIndex(state.activePlayerIndex, 1, state.players.length);
     }
     if (state.players[state.activePlayerIndex].cards.length === 2) {
-        state.activePlayerIndex = handleOverflowIndex(state.blindIndex.big, 1, state.players.length);
         state.phase = "betting1";
         return state;
     }
@@ -152,7 +149,6 @@ export const dealFlop: (state: GameStateBase<PlayerWithSidePotStack>) => GameSta
         animationDelay += 250;
         state.communityCards.push(card);
     }
-
     state.deck = mutableDeckCopy;
     const newState = determinePhaseStartActivePlayer(state);
     newState.phase = "betting2";

@@ -34,8 +34,14 @@ export const handleBet: (
     state: GameStateBase<Player>,
     bet: number,
     min: number,
-    max: number) => void | GameStateBase<Player> | GameStateBase<PlayerWithSidePotStack> =
-(state: GameStateBase<Player>, bet: number, min: number, max: number) => {
+    max: number,
+) => void | GameStateBase<Player> | GameStateBase<PlayerWithSidePotStack> =
+(
+    state: GameStateBase<Player>,
+    bet: number,
+    min: number,
+    max: number,
+) => {
     if (bet < min) {
         state.betInputValue = min;
         // eslint-disable-next-line no-console
@@ -81,7 +87,9 @@ export const handleFold: (state: GameStateBase<Player>) => GameStateBase<Player>
     return nextState;
 };
 
-export const handlePhaseShift: (state: GameStateBase<Player>) => GameStateBase<PlayerWithSidePotStack> =
+export const handlePhaseShift: (
+    state: GameStateBase<Player>,
+) => GameStateBase<PlayerWithSidePotStack> =
 (state: GameStateBase<Player>) => {
     switch (state.phase) {
         case ("betting1"): {

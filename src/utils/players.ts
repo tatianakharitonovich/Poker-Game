@@ -1,11 +1,11 @@
 /* eslint-disable import/no-cycle */
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
-import { GameState, GameStateBase, Gender, Player, PlayerDataRes, PlayerWithSidePotStack } from "../types";
+import { GameState, GameStateBase, Gender, Player, PlayerDataRes, PlayerWithSidePotStack, playerAnimationSwitchboardInit } from "../types";
 import { handlePhaseShift, reconcilePot, anteUpBlinds, determineBlindIndices } from "./bet";
 import { dealMissingCommunityCards, showDown, generateCardsDeck, shuffle, dealPrivateCards } from "./cards";
 
-export const generateTable: (userName: string, gender: Gender | undefined) => Promise<Player[]> =
+export const createPlayers: (userName: string, gender: Gender | undefined) => Promise<Player[]> =
 async (userName, gender) => {
     const users = [{
         id: uuidv4(),
@@ -29,36 +29,40 @@ async (userName, gender) => {
         isFake: false,
     }] as Player[];
 
-    const response = await axios.get<PlayerDataRes>(`https://randomuser.me/api/?results=4`);
-    response.data.results
-        .map((user) => {
-            const randomizedChips = Math.floor(Math.random() * (20000 - 18000)) + 18000;
-            return ({
-                id: uuidv4(),
-                name: `${user.name.first.charAt(0).toUpperCase()}${user.name.first.slice(1)}
-                    ${user.name.last.charAt(0).toUpperCase()}${user.name.last.slice(1)}`,
-                avatarURL: user.picture.large,
-                cards: [],
-                chips: randomizedChips,
-                roundStartChips: randomizedChips,
-                roundEndChips: randomizedChips,
-                currentRoundChipsInvested: 0,
-                showDownHand: {
-                    hand: [],
-                    descendingSortHand: [],
-                },
-                bet: 0,
-                betReconciled: false,
-                folded: false,
-                allIn: false,
-                isFake: true,
-                canRaise: true,
-                stackInvestment: 0,
-            } as Player);
-        })
-        .forEach((user: Player) => users.push(user));
+    try {
+        const response = await axios.get<PlayerDataRes>(`https://randomuser.me/api/?results=4`);
+        response.data.results
+            .map((user) => {
+                const randomizedChips = Math.floor(Math.random() * (20000 - 18000)) + 18000;
+                return ({
+                    id: uuidv4(),
+                    name: `${user.name.first.charAt(0).toUpperCase()}${user.name.first.slice(1)}
+                        ${user.name.last.charAt(0).toUpperCase()}${user.name.last.slice(1)}`,
+                    avatarURL: user.picture.large,
+                    cards: [],
+                    chips: randomizedChips,
+                    roundStartChips: randomizedChips,
+                    roundEndChips: randomizedChips,
+                    currentRoundChipsInvested: 0,
+                    showDownHand: {
+                        hand: [],
+                        descendingSortHand: [],
+                    },
+                    bet: 0,
+                    betReconciled: false,
+                    folded: false,
+                    allIn: false,
+                    isFake: true,
+                    canRaise: true,
+                    stackInvestment: 0,
+                } as Player);
+            })
+            .forEach((user: Player) => users.push(user));
 
-    return users;
+        return users;
+    } catch (e) {
+        throw new Error(`${e}`);
+    }
 };
 export const handleOverflowIndex: (currentIndex: number, incrementBy: number, arrayLength: number) => number =
 (currentIndex, incrementBy, arrayLength) => {
@@ -70,7 +74,7 @@ export const determinePhaseStartActivePlayer: (
     recursion?: boolean) => GameStateBase<PlayerWithSidePotStack> =
 (state: GameStateBase<PlayerWithSidePotStack>, recursion = false) => {
     if (!recursion) {
-        state.activePlayerIndex = handleOverflowIndex(state.blindIndex.big, 1, state.players.length);
+        state.activePlayerIndex = state.dealerIndex;
     } else if (recursion) {
         state.activePlayerIndex = handleOverflowIndex(state.activePlayerIndex, 1, state.players.length);
     }
@@ -83,9 +87,7 @@ export const determinePhaseStartActivePlayer: (
     return state;
 };
 
-export const determineNextActivePlayer: (
-    state: GameStateBase<Player>
-) => GameStateBase<PlayerWithSidePotStack> | GameStateBase<Player> =
+export const determineNextActivePlayer: (state: GameStateBase<Player>) => GameStateBase<PlayerWithSidePotStack> | GameStateBase<Player> =
 (state: GameStateBase<Player>) => {
     state.activePlayerIndex = handleOverflowIndex(state.activePlayerIndex, 1, state.players.length);
     const activePlayer = state.players[state.activePlayerIndex];
@@ -195,6 +197,7 @@ export const beginNextRound: (state: GameState) => GameState | undefined = (stat
     state.highBet = 20;
     state.betInputValue = 20;
     state.minBet = 20;
+    state.playerAnimationSwitchboard = playerAnimationSwitchboardInit;
     const { players } = state;
     const clearPlayerCards = players.map(player => ({ ...player, cards: [] }));
     state.players = clearPlayerCards;
