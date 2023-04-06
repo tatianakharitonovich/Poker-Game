@@ -6,6 +6,8 @@ import { Handle } from "../slider/Handle";
 import { railStyle, sliderStyle } from "../slider/styles";
 import { Track } from "../slider/Track";
 
+import "./ActionMenu.css";
+
 interface ActionMenuProps {
     players: Player[];
     activePlayerIndex: number;
@@ -23,67 +25,68 @@ export const ActionMenu: React.FC<ActionMenuProps> = (props) => {
         handleBetInputChange,
     } = props;
 
+    const isShow: () => boolean = () => {
+        return (phase === "betting1" || phase === "betting2" || phase === "betting3" || phase === "betting4") &&
+        (!players[activePlayerIndex].isFake) &&
+        players[activePlayerIndex].chips >= highBet;
+    };
+
     const min = determineMinBet(highBet, players[activePlayerIndex].chips, players[activePlayerIndex].bet);
     const max = players[activePlayerIndex].chips + players[activePlayerIndex].bet;
 
     return (
-        (phase === "betting1" || phase === "betting2" || phase === "betting3" || phase === "betting4") ?
-            (players[activePlayerIndex].isFake) ? (<h4> {`Move: ${players[activePlayerIndex].name}`}</h4>) :
-                players[activePlayerIndex].chips >= highBet ? (
-                    <Slider
-                        rootStyle={sliderStyle}
-                        domain={[min, max]}
-                        values={[min]}
-                        step={1}
-                        onChange={(val) => handleBetInputChange(val, max)}
-                        mode={2}
-                    >
-                        <Rail>
+        <Slider
+            rootStyle={sliderStyle(isShow())}
+            domain={[min, max]}
+            values={[min]}
+            step={1}
+            onChange={(val) => handleBetInputChange(val, max)}
+            mode={2}
+        >
+            <Rail>
+                {
+                    ({ getRailProps }) => (
+                        <div className="action-rail" style={railStyle} {...getRailProps()} />
+                    )
+                }
+            </Rail>
+            <Handles>
+                {
+                    ({ handles, getHandleProps }) => (
+                        <div className="slider-handles">
                             {
-                                ({ getRailProps }) => (
-                                    <div style={railStyle} {...getRailProps()} />
+                                handles.map(handle => (
+                                    <Handle
+                                        key={handle.id}
+                                        handle={handle}
+                                        getHandleProps={getHandleProps}
+                                    />
+                                ))
+                            }
+                        </div>
+                    )
+                }
+            </Handles>
+            <Tracks right={false}>
+                {
+                    ({ tracks, getTrackProps }) => (
+                        <div className="slider-tracks">
+                            {
+                                tracks.map(
+                                    ({ id, source, target }) => (
+                                        <Track
+                                            key={id}
+                                            source={source}
+                                            target={target}
+                                            getTrackProps={getTrackProps}
+                                        />
+                                    ),
                                 )
                             }
-                        </Rail>
-                        <Handles>
-                            {
-                                ({ handles, getHandleProps }) => (
-                                    <div className="slider-handles">
-                                        {
-                                            handles.map(handle => (
-                                                <Handle
-                                                    key={handle.id}
-                                                    handle={handle}
-                                                    getHandleProps={getHandleProps}
-                                                />
-                                            ))
-                                        }
-                                    </div>
-                                )
-                            }
-                        </Handles>
-                        <Tracks right={false}>
-                            {
-                                ({ tracks, getTrackProps }) => (
-                                    <div className="slider-tracks">
-                                        {
-                                            tracks.map(
-                                                ({ id, source, target }) => (
-                                                    <Track
-                                                        key={id}
-                                                        source={source}
-                                                        target={target}
-                                                        getTrackProps={getTrackProps}
-                                                    />
-                                                ),
-                                            )
-                                        }
-                                    </div>
-                                )
-                            }
-                        </Tracks>
-                    </Slider>
-                ) : null
-            : null
+                        </div>
+                    )
+                }
+            </Tracks>
+        </Slider>
     );
 };

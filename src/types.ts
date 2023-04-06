@@ -66,6 +66,15 @@ export type CardType = {
     animationDelay?: number;
 };
 
+export const playerAnimationSwitchboardInit = {
+    0: { isAnimating: false, content: null },
+    1: { isAnimating: false, content: null },
+    2: { isAnimating: false, content: null },
+    3: { isAnimating: false, content: null },
+    4: { isAnimating: false, content: null },
+    5: { isAnimating: false, content: null },
+};
+
 export type PlayerRank = {
     name: Rank;
     match: boolean | undefined;

@@ -35,7 +35,7 @@ export const RankWinner: React.FC<RankWinnerProps> = ({ player, players }) => {
                     {
                     bestHand.map((card) => {
                         const cardData = { ...card, animationDelay: 0 };
-                        return <Card key={`${card.cardRank}${card.suit}`} cardData={cardData} isRobot={false} />;
+                        return <Card key={`${card.cardRank}${card.suit}`} cardData={cardData} isRobot={false} addClass="showdown-card" />;
                     })
                     }
                 </div>

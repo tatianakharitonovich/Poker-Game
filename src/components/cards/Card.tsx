@@ -7,6 +7,7 @@ interface CardProps {
     cardData: CardType;
     applyFoldedClassname?: boolean;
     isRobot: boolean;
+    addClass?: string;
 }
 
 export const Card: React.FC<CardProps> = (props) => {
@@ -18,6 +19,7 @@ export const Card: React.FC<CardProps> = (props) => {
         },
         applyFoldedClassname,
         isRobot,
+        addClass,
     } = props;
 
     const renderUnicodeSuitSymbol = (suitCard: Suits[keyof Suits]) => {
@@ -33,7 +35,7 @@ export const Card: React.FC<CardProps> = (props) => {
     return (
         <div
             key={`${suit} ${cardRank}`}
-            className={`playing-card${isRobot ? " isFakecard" : ""}${applyFoldedClassname ? " folded" : ""}`}
+            className={`playing-card${isRobot ? " isFakecard" : ""}${applyFoldedClassname ? " folded" : ""} ${addClass}`}
             style={{ animationDelay: `${(applyFoldedClassname) ? 0 : animationDelay}ms` }}
         >
             {!isRobot && (

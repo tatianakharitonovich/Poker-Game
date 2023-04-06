@@ -19,16 +19,16 @@ export const PlayerStatus: React.FC<PlayerStatusProps> = (props) => {
             timeout={{
                 appear: 0,
                 enter: 0,
-                exit: 1250,
+                exit: 250,
             }}
             classNames="transitionable-player-status"
             onEntered={() => {
                 setTimeout(() => {
                     endTransition(index);
-                }, 15);
+                }, 1000);
             }}
         >
-            <div className="player-status">
+            <div className={`player-status ${!isActive && "reset"}`}>
                 {content}
             </div>
         </CSSTransition>

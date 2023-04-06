@@ -1,17 +1,20 @@
 .action-button {
     height: 45px;
-    width: 125px;
+    min-width: 125px;
     margin: 0 12px;
+    padding: 8px;
     border-radius: 16px;
-    background-image: linear-gradient(#5e0909, #40000e 17%, #000000);
+    background-image: linear-gradient(#09525e, #002440 17%, #000000);
     font-size: 28px;
     color: white;
     border: none;
-    transition: all 0.4s ease-out, color 0.4s ease-out;
+    box-shadow: 0 0px 8px 0px #000000c9;
+    transition: all 0.4s ease-out;
 }
 .action-button:hover {   
     cursor: pointer; 
-    background-image: linear-gradient(#000000, #40000e, #5e0909);
+    background-image: linear-gradient(#000000, #002440, #09525e);
+    transform: scale(1.02);
 }
 
 .action-button:disabled {

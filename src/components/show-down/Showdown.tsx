@@ -8,7 +8,7 @@ import "./Showdown.css";
 
 interface ShowdownProps {
     showDownMessages: ShowDownMessage[];
-    renderCommunityCards: (clearAnimation: boolean) => JSX.Element[];
+    renderCommunityCards: (clearAnimation: boolean, addClass: string) => JSX.Element[];
     playerHierarchy: HierarchyPlayer[];
     players: Player[];
     handleNextRound: () => void;
@@ -25,6 +25,7 @@ export const Showdown: React.FC<ShowdownProps> = (props) => {
 
     return (
         <div className="showdown">
+            <img className="showdown-background" src="assets/showdown.svg" alt="LasVegas" />
             <div className="showdown-messages">
                 {showDownMessages.map((message) => (
                     <ShowdownMessage
@@ -33,11 +34,13 @@ export const Showdown: React.FC<ShowdownProps> = (props) => {
                     />
                 ))}
             </div>
-            <h5 className="showdown-cards-label">
-                Community Cards
-            </h5>
-            <div className="showdown-cards">
-                {renderCommunityCards(true)}
+            <div>
+                <h5 className="showdown-cards-label">
+                    Community Cards
+                </h5>
+                <div className="showdown-cards">
+                    {renderCommunityCards(true, "showdown-card")}
+                </div>
             </div>
             {
                 playerHierarchy.map(itemHierarchy => {
@@ -49,7 +52,7 @@ export const Showdown: React.FC<ShowdownProps> = (props) => {
                         : <RankWinner key={uuidv4()} player={itemHierarchy} players={players} />;
                 })
             }
-            <button className="showdown-button" onClick={() => handleNextRound()}> Next Round </button>
+            <button className="action-button" onClick={() => handleNextRound()}> Next Round </button>
         </div>
     );
 };

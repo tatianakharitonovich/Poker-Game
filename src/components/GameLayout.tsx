@@ -13,7 +13,7 @@ import {
 } from "../utils/cards";
 
 import {
-    generateTable,
+    createPlayers,
     beginNextRound,
     checkWin,
 } from "../utils/players";
@@ -32,7 +32,15 @@ import {
 import {
     renderActionButtonText,
 } from "../utils/ui";
-import { GameState, GameStateBase, GameStateInit, Gender, Player, PlayerWithSidePotStack } from "../types";
+import {
+    GameState,
+    GameStateBase,
+    GameStateInit,
+    Gender,
+    Player,
+    PlayerWithSidePotStack,
+    playerAnimationSwitchboardInit,
+} from "../types";
 
 type GameLayoutProps = {
     userName: string;
@@ -63,20 +71,13 @@ export class GameLayout extends React.Component<GameLayoutProps, GameStateInit> 
             phase: "loading",
             playerHierarchy: [],
             showDownMessages: [],
-            playerAnimationSwitchboard: {
-                0: { isAnimating: false, content: null },
-                1: { isAnimating: false, content: null },
-                2: { isAnimating: false, content: null },
-                3: { isAnimating: false, content: null },
-                4: { isAnimating: false, content: null },
-                5: { isAnimating: false, content: null },
-            },
+            playerAnimationSwitchboard: playerAnimationSwitchboardInit,
         };
     }
 
     public async componentDidMount() {
         const { userName, gender } = this.props;
-        const players = await generateTable(userName, gender);
+        const players = await createPlayers(userName, gender);
         const dealerIndex = Math.floor(Math.random() * Math.floor(players.length));
         const blindIndicies = determineBlindIndices(dealerIndex, players.length);
         const { minBet } = this.state;
@@ -227,38 +228,36 @@ export class GameLayout extends React.Component<GameLayoutProps, GameStateInit> 
             playerAnimationSwitchboard,
         } = this.state;
         return (
-            <div className="App">
-                <div className="App-wrap">
-                    {(loading) ? <LoadingOverlay /> :
-                        (winnerFound) ?
-                            <WinScreen winners={players?.filter((player: { chips: number; }) => player.chips > 0)} /> :
-                            (players !== null && activePlayerIndex !== null && highBet !== null &&
-                            pot !== null && dealerIndex !== null && betInputValue !== null) ? (
-                                <Game
-                                    data-test="game"
-                                    highBet={highBet}
-                                    players={players}
-                                    activePlayerIndex={activePlayerIndex}
-                                    phase={phase}
-                                    pot={pot}
-                                    loading={loading}
-                                    dealerIndex={dealerIndex}
-                                    playerHierarchy={playerHierarchy}
-                                    clearCards={clearCards}
-                                    handleNextRound={this.handleNextRound}
-                                    popAnimationState={this.popAnimationState}
-                                    handleBetInputChange={this.handleBetInputChange}
-                                    betInputValue={betInputValue}
-                                    showDownMessages={showDownMessages}
-                                    communityCards={communityCards}
-                                    handleFold={this.handleFold}
-                                    handleBetInputSubmit={this.handleBetInputSubmit}
-                                    playerAnimationSwitchboard={playerAnimationSwitchboard}
-                                />
-                                ) : null
-                    }
-                </div>
-            </div>
+            <>
+                {(loading) ? <LoadingOverlay /> :
+                    (winnerFound) ?
+                        <WinScreen winners={players?.filter((player: { chips: number; }) => player.chips > 0)} /> :
+                        (players !== null && activePlayerIndex !== null && highBet !== null &&
+                        pot !== null && dealerIndex !== null && betInputValue !== null) ? (
+                            <Game
+                                data-test="game"
+                                highBet={highBet}
+                                players={players}
+                                activePlayerIndex={activePlayerIndex}
+                                phase={phase}
+                                pot={pot}
+                                loading={loading}
+                                dealerIndex={dealerIndex}
+                                playerHierarchy={playerHierarchy}
+                                clearCards={clearCards}
+                                handleNextRound={this.handleNextRound}
+                                popAnimationState={this.popAnimationState}
+                                handleBetInputChange={this.handleBetInputChange}
+                                betInputValue={betInputValue}
+                                showDownMessages={showDownMessages}
+                                communityCards={communityCards}
+                                handleFold={this.handleFold}
+                                handleBetInputSubmit={this.handleBetInputSubmit}
+                                playerAnimationSwitchboard={playerAnimationSwitchboard}
+                            />
+                            ) : null
+                }
+            </>
         );
     }
 }

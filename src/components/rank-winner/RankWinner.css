@@ -1,8 +1,6 @@
 .rank-winner {
 	display: flex;
 	align-items: center;
-	margin-bottom: 8px;
-	height: 112px;
 }
 
 .rank-winner .player-wrap-avatar {
@@ -24,18 +22,21 @@
 .rank-winner-handrank {
 	width: 115px;
 	text-align: center;
-	color: #e59037;
-	font-size: 14px;
+	color: #00ffd0;
+	font-size: 24px;
     font-weight: 600;
+	filter: drop-shadow(0 8px 4px rgb(0 0 0 / 85%));
 }
 
 .rank-winner-earnings {
 	text-align: center;
     font-weight: 600;
+	font-size: 24px;
+	filter: drop-shadow(0 8px 4px rgb(0 0 0 / 85%));
 }
 
 .rank-winner-earnings.positive {
-	color: #10ff00;
+	color: #f2f531;
 }
 
 .rank-winner-earnings.negative {

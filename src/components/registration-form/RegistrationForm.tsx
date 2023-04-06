@@ -15,59 +15,56 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = (props) => {
     const { userName, gender, submitHandler, userNameHandler, genderHandler } = props;
 
     return (
-        <div className="App">
-            <div className="App-wrap">
-                <div className="registration-form" data-testid="registration-form">
-                    <h1>
-                        Welcome to our online casino!
-                    </h1>
-                    <div className="registration-form-item">
-                        <label className="registration-form-label">Please enter your name</label>
+        <div className="registration-form" data-testid="registration-form">
+            <h1>
+                Welcome to our online casino!
+            </h1>
+            <div className="registration-form-item">
+                <label className="registration-form-label">Please enter your name</label>
+                <input
+                    className="registration-form-name-input"
+                    type="text"
+                    data-test="name-input"
+                    value={userName}
+                    onChange={(e) => userNameHandler(e.target.value)}
+                />
+            </div>
+            <div className="registration-form-item">
+                <legend className="registration-form-label">Choose your gender</legend>
+                <div>
+                    <label>
                         <input
-                            className="registration-form-name-input"
-                            type="text"
-                            data-test="name-input"
-                            value={userName}
-                            onChange={(e) => userNameHandler(e.target.value)}
+                            type="radio"
+                            value="male"
+                            data-testid="male-input"
+                            checked={gender === "male"}
+                            onChange={(e) => genderHandler(e.target.value as Gender)}
                         />
-                    </div>
-                    <div className="registration-form-item">
-                        <legend className="registration-form-label">Choose your gender</legend>
-                        <div>
-                            <label>
-                                <input
-                                    type="radio"
-                                    value="male"
-                                    data-testid="male-input"
-                                    checked={gender === "male"}
-                                    onChange={(e) => genderHandler(e.target.value as Gender)}
-                                />
-                                Male
-                            </label>
-                        </div>
-                        <div>
-                            <label>
-                                <input
-                                    type="radio"
-                                    value="female"
-                                    data-test="female-input"
-                                    checked={gender === "female"}
-                                    onChange={(e) => genderHandler(e.target.value as Gender)}
-                                />
-                                Female
-                            </label>
-                        </div>
-                    </div>
-                    <button
-                        className="action-button"
-                        data-testid="form-save-button"
-                        disabled={userName === "" || !gender}
-                        onClick={() => submitHandler(true)}
-                    >
-                        Submit
-                    </button>
+                        Male
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        <input
+                            type="radio"
+                            value="female"
+                            data-test="female-input"
+                            checked={gender === "female"}
+                            onChange={(e) => genderHandler(e.target.value as Gender)}
+                        />
+                        Female
+                    </label>
                 </div>
             </div>
+            <button
+                className="action-button"
+                data-testid="form-save-button"
+                disabled={userName === "" || !gender}
+                onClick={() => submitHandler(true)}
+            >
+                Submit
+            </button>
+            <img className="registration-form-background" src="assets/cards.svg" alt="cards" />
         </div>
     );
 };

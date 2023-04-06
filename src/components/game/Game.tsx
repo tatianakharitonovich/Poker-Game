@@ -51,20 +51,23 @@ export const Game: React.FC<GameProps> = (props) => {
         handleBetInputChange,
     } = props;
 
-    const renderCommunityCards = (clearAnimation: boolean) => {
+    const renderCommunityCards: (clearAnimation: boolean, addClass: string) => JSX.Element[] =
+    (clearAnimation: boolean, addClass: string) => {
         return communityCards.map((card) => {
             const cardData = { ...card };
             if (clearAnimation) {
                 cardData.animationDelay = 0;
             }
             return (
-                <Card key={`${card.cardRank}${card.suit}`} cardData={cardData} isRobot={false} />
+                <Card key={`${card.cardRank}${card.suit}`} cardData={cardData} isRobot={false} addClass={addClass} />
             );
         });
     };
 
     return (
         <div className="game">
+            <img className="game-logo" src="assets/lasvegas.svg" alt="LasVegas" />
+            <img className="game-background" src="assets/city.svg" alt="LasVegas" />
             <div className="game-container">
                 <img className="game-container-image" src="assets/table.svg" alt="Poker Table" />
                 <Board
@@ -77,12 +80,12 @@ export const Game: React.FC<GameProps> = (props) => {
                     playerAnimationSwitchboard={playerAnimationSwitchboard}
                 />
                 <div className="game-community">
-                    {renderCommunityCards(false)}
+                    {renderCommunityCards(false, "isHover")}
                 </div>
                 <div className="game-pot">
                     <img
                         className="game-pot-img"
-                        style={{ height: 54, width: 54 }}
+                        style={{ height: 54, width: 76 }}
                         src="./assets/pot.svg"
                         alt="Pot Value"
                     />

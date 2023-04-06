@@ -17,15 +17,16 @@ export const Handle: React.FC<HandleProps> = (props) => {
                 left: `${percent}%`,
                 position: "absolute",
                 marginLeft: -4,
-                marginTop: 31,
+                marginTop: 27,
                 zIndex: 2,
-                width: 16,
-                height: 16,
+                width: 20,
+                height: 20,
                 border: "1px solid black",
                 textAlign: "center",
                 cursor: "pointer",
                 borderRadius: "50%",
                 backgroundImage: "radial-gradient(rgb(239, 239, 239), rgb(80, 71, 71))",
+                boxShadow: "0 0px 8px 0px #141212c9",
                 color: "#aaa",
             }}
             {...getHandleProps(id)}
@@ -33,10 +34,14 @@ export const Handle: React.FC<HandleProps> = (props) => {
             <div
                 style={{
                     display: "flex",
-                    textShadow: "2px 2px 8px rgba(0,0,0,0.95)",
+                    background: "rgba(0,0,0,0.70)",
                     justifyContent: "center",
-                    fontSize: 16,
-                    marginTop: 18,
+                    borderRadius: 8,
+                    padding: 4,
+                    fontSize: 24,
+                    marginTop: 21,
+                    width: "min-content",
+                    boxShadow: "0 0px 8px 0px #141212c9",
                 }}
             >
                 {value}

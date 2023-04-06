@@ -12,9 +12,10 @@ export const Track: React.FC<TrackProps> = ({ source, target, getTrackProps }) =
         <div
             style={{
                 position: "absolute",
-                height: 10,
+                height: 7,
                 zIndex: 1,
                 marginTop: 35,
+                boxShadow: "0 0px 8px 0px #141212c9",
                 backgroundImage: "linear-gradient(white, black)",
                 borderRadius: 5,
                 cursor: "pointer",

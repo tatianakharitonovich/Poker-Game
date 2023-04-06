@@ -4,27 +4,54 @@
 	justify-content: center;
 	align-items: center;
 
+	box-sizing: border-box;
+    padding: 8px;
+    font-size: 4em;
+    line-height: 0.7em;
 	background-color: white;
-	font-size: 1em;
 
-	height: 52px;
-	width: 34px;
+	height: 116px;
+	width: 80px;
 	margin: 0 1px;
 	border: 1px solid #2c0303;
-	border-radius: 4px;
+	border-radius: 8px;
 
 	opacity: 0;
 	animation: fade-in-up 0.5s;
 	animation-fill-mode: both;
 }
 
-.isFakecard {
-	background-image: repeating-linear-gradient(60deg,
-	#c30606 0px, #9f6823 15px, #4e403d 15px, #6e504a 25px, #7a4233 25px, #60453e 35px, #ad877f 35px, #78544c 45px, #741818 45px, #c37f19 55px), repeating-linear-gradient(-60deg, #f44336 0px, #ffc107 15px, #997d78 15px, #a57c74 25px, #d1afa6 25px, #ffffff 35px, #f1b6a8 35px, #ffffff 45px, #8f7145 45px, #e58900 55px);
-	background-blend-mode: multiply;
-	background-cover: cover;
+.isHover {
+	filter: drop-shadow(0 3px 2px rgb(0 0 0 / 85%));
+	transition: background-color 0.2s ease-out;
 }
+
+.isHover:hover {
+	background-color: #59efe8;
+}
+
+.isFakecard {
+	height: 56px;
+    border: 2px solid #2354ff;
+    width: 36px;
+    background-image: repeating-linear-gradient(60deg, #7782b7 0px, #23499f 15px, #3e3d4e 15px, #4a4c6e 25px, #33487a 25px, #3e605e 35px, #8f7fad 35px, #4c4d78 45px, #186074 45px, #19a2c3 55px), repeating-linear-gradient(-60deg, #36d3f4 0px, #07bdff 15px, #789995 15px, #748aa5 25px, #cea6d1 25px, #ffffff 35px, #a8ecf1 35px, #ffffff 45px, #42859f 45px, #00e5a6 55px);
+	background-blend-mode: multiply;
+	background-size: 150%;
+	animation: fake-in-up 0.5s;
+	animation-fill-mode: both;
+}
+
+.isFakecard:nth-child(2) {
+	animation: fakeSecond-in-up 0.5s;
+	animation-fill-mode: both;
+}
+
 .folded {
+	animation: fade-in-out 0.5s;
+	animation-fill-mode: both;
+}
+
+.folded.isFakecard:nth-child(2) {
 	animation: fade-in-out 0.5s;
 	animation-fill-mode: both;
 }
@@ -32,7 +59,7 @@
 @keyframes fade-in-up {
 	0% {
 		opacity: 0;
-		transform: translateY(100%)
+		transform: translateY(100%);
 	}
 	100% {
 		opacity: 1;
@@ -47,6 +74,28 @@
 	}
 	100% {
 		opacity: 0;
-		transform: translateY(-100%)
+		transform: translateY(-100%);
+	}
+}
+
+@keyframes fake-in-up {
+	0% {
+		opacity: 0;
+		transform: translateY(100%);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0%) rotate(-16deg);
+	}
+}
+
+@keyframes fakeSecond-in-up {
+	0% {
+		opacity: 0;
+		transform: translateY(100%);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0%) translateX(-40%) rotate(16deg);
 	}
 }
