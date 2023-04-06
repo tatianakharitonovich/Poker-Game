@@ -11,7 +11,7 @@ export const App: React.FC = () => {
 
     return (
         <div className="App">
-            <div className="App-wrap">
+            <div className="App-wrap" style={{ height: isSubmit ? "100%" : "auto" }}>
                 {!isSubmit ?
                     (
                         <RegistrationForm
