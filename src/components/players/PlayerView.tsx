@@ -4,12 +4,12 @@ import { Card } from "../cards/Card";
 import { PlayerAvatar } from "./PlayerAvatar";
 import { PlayerStatus } from "./PlayerStatus";
 
-import "./PlayerCard.css";
+import "./PlayerView.css";
 
 const dealerChipImageURL = "/assets/chip.svg";
 const playerBetImageURL = "./assets/bet.svg";
 
-interface PlayerCardProps {
+interface PlayerViewProps {
     arrayIndex: number;
     isActive: boolean;
     hasDealerChip: boolean;
@@ -20,7 +20,7 @@ interface PlayerCardProps {
     endTransition: (index: number) => void;
 }
 
-export const PlayerCard: React.FC<PlayerCardProps> = (props) => {
+export const PlayerView: React.FC<PlayerViewProps> = (props) => {
     const {
         arrayIndex,
         playerAnimationSwitchboard,
@@ -46,7 +46,6 @@ export const PlayerCard: React.FC<PlayerCardProps> = (props) => {
         if (folded || clearCards) {
             applyFoldedClassname = true;
         }
-
         if (isFake) {
             return cards.map((card) => {
                 if (phase !== "showdown") {
@@ -92,7 +91,7 @@ export const PlayerCard: React.FC<PlayerCardProps> = (props) => {
     return (
         <div
             data-test="player"
-            className={`player-entity--wrapper player${arrayIndex}`}
+            className={`player player${arrayIndex}${(folded || clearCards) ? " skipping" : ""}`}
         >
             <PlayerStatus
                 index={arrayIndex}

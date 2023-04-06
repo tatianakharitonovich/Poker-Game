@@ -1,6 +1,6 @@
 import React from "react";
 import { Phase, Player, PlayerAnimationSwitchboard } from "../types";
-import { PlayerCard } from "./players/PlayerCard";
+import { PlayerView } from "./players/PlayerView";
 
 interface BoardProps {
     players: Player[];
@@ -27,7 +27,7 @@ export const Board: React.FC<BoardProps> = (props) => {
         const isActive = (index === activePlayerIndex);
         const hasDealerChip = (index === dealerIndex);
         result.unshift(
-            <PlayerCard
+            <PlayerView
                 key={player.id}
                 arrayIndex={index}
                 isActive={isActive}

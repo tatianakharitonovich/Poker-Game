@@ -1,0 +1,231 @@
+.player {
+    position: absolute;    
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.player0 {
+    bottom: 8%;
+    left: 45%;
+    transform: translateX(-50%);
+}
+
+.player0 .player-avatar-image {
+	transform: scale(1.3);
+}
+
+.player0 .player-avatar-image:hover {
+	transform: translateY(-10%) scale(1.3);
+}
+
+.player0 .player-cards {
+	right: -180px;
+}
+
+.player0 .player-avatar-bet {
+	top: -56px;
+}
+
+.player0 .player-avatar-name {
+	bottom: -26px;
+}
+
+.player0 .player-avatar-chips {
+	margin-top: 28px;
+}
+
+.player1 {
+    bottom: 8%;
+    left: 6%;
+}
+.player2 {
+    top: 3%;
+    left: 17%;
+}
+
+.player4 {
+    bottom: 8%;
+    right: 6%;
+}
+.player3 {
+    top: 3%;
+    right: 17%;
+}
+
+.player2 .player-avatar-bet,
+.player3 .player-avatar-bet {
+	top: auto;
+	bottom: -74px;
+}
+
+.player2 .player-avatar-dealer,
+.player3 .player-avatar-dealer {
+	top: auto;
+	bottom: -78px;
+}
+
+.player-cards {
+    position: absolute;
+	top: 36px;
+    right: -60px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1;
+	filter: drop-shadow(0 16px 8px rgb(0 0 0 / 85%));
+}
+
+.skipping {
+	opacity: 0.5;
+}
+
+.player-wrap {
+	display: flex;
+	height: auto;
+	width: auto;
+}
+
+.player-wrap-avatar {
+	display: flex;
+    flex-direction: column;
+    align-items: center;
+	position: relative;
+	height: 100px;
+	width: 100px;
+	border-radius: 100%;
+	padding: 6px;
+	filter: drop-shadow(0 16px 8px rgb(0 0 0 / 85%));
+}
+
+.player-avatar-image {
+	box-sizing: border-box;
+	border-radius: 100%;
+	border: 4px solid white;
+	background-color: rgb(255 255 255);
+	transition: transform 0.4s ease-out;
+}
+
+.player-avatar-image:hover {
+	transform: translateY(-10%);
+}
+
+.activePlayer {
+	box-shadow: 0 -16px 32px 8px #b6ede3;
+	animation: pulse 0.8s infinite ease-in alternate;
+}
+
+@keyframes pulse {
+	0% {
+		box-shadow: 0 -16px 16px 0px #b6ede3;
+	}
+	100% {
+		box-shadow: 0 -16px 32px 8px #b6ede3;
+	}
+}
+
+.player-avatar-name {
+	display: flex;
+	justify-content: center;
+	border-radius: 25px;
+	position: absolute;
+	bottom: -12px;
+	padding: 4px 0;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 100%;
+	color: white;
+	background-image: linear-gradient(#092e5e, #003040 17%, #000000);
+	border-bottom: 1px solid white;
+    border-top: 1px solid white;
+	font-size: 12px;
+	transition: transform 0.4s ease-out;
+}
+
+.player-avatar-name:hover {
+	transform: translateX(-50%) scale(1.2);
+}
+
+.player-avatar-chips,
+.player-avatar-bet {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: white;
+	margin-top: 14px;
+	border-radius: 24px;
+	background-color: rgb(0 0 0 / 60%);;
+	font-size: 24px;
+	transition: transform 0.4s ease-out;
+}
+
+.player-avatar-chips:hover {
+	transform: scale(1.2);
+}
+
+.player-avatar-bet {
+	position: absolute;
+	padding: 0 4px;	
+	top: -38px;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.player-avatar-bet:hover {
+	transform: translateX(-50%) scale(1.2);
+}
+
+.player-avatar-chips {
+	position: relative;
+	border-radius: 25px;
+	padding: 4px 0;
+	width: 100%;
+	background-image: linear-gradient(#e14444, #870606, #260202);
+	border-left: none;
+    border-right: none;
+	z-index: 0;
+}
+
+.player-avatar-bet-img {
+	height: 24px;
+	width: 24px;
+}
+
+.player-avatar-dealer {
+	position: absolute;
+	top: -30px;
+    left: 0px;
+    height: 32px;
+    width: 32px;
+	z-index: 100;
+	transition: transform 0.4s ease-out;
+}
+
+.player-avatar-dealer:hover {
+	transform: rotate(180deg);
+}
+
+.player-wrap-cards  {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.player-wrap-cards-title {
+	text-transform: uppercase;
+}
+
+.player-wrap-cards-content {
+	display: flex;
+}
+
+@media (max-width: 736px) {
+	.player-wrap-avatar {
+		height: 75px;
+		width: 75px;
+	}	
+	.player-avatar-name {
+		width: 100px;
+	}
+}
