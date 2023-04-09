@@ -80,6 +80,27 @@
 	opacity: 0.5;
 }
 
+.player-cards-hand {
+	position: absolute;
+    top: -30px;
+    font-size: 24px;
+    font-weight: 700;
+	width: 130%;
+    color: white;
+    filter: drop-shadow(0 8px 4px rgb(0 0 0 / 85%));
+	opacity: 0;
+	animation: appearanceHand 0.4s 1 ease-in 1.2s both;
+}
+
+@keyframes appearanceHand {
+	0% {
+		opacity: none;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
 .player-wrap {
 	display: flex;
 	height: auto;

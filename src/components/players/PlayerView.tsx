@@ -1,10 +1,11 @@
 import React from "react";
-import { Phase, Player, PlayerAnimationSwitchboard } from "../../types";
+import { CardType, Phase, Player, PlayerAnimationSwitchboard } from "../../types";
 import { Card } from "../cards/Card";
 import { PlayerAvatar } from "./PlayerAvatar";
 import { PlayerStatus } from "./PlayerStatus";
 
 import "./PlayerView.css";
+import { determineBestHand } from "../../utils/bestHand";
 
 const dealerChipImageURL = "/assets/chip.svg";
 const playerBetImageURL = "./assets/bet.svg";
@@ -17,6 +18,7 @@ interface PlayerViewProps {
     clearCards: boolean;
     phase: Phase;
     playerAnimationSwitchboard: PlayerAnimationSwitchboard;
+    communityCards: CardType[];
     endTransition: (index: number) => void;
 }
 
@@ -29,6 +31,7 @@ export const PlayerView: React.FC<PlayerViewProps> = (props) => {
         isActive,
         phase,
         clearCards,
+        communityCards,
         player: {
             isFake,
             folded,
@@ -39,6 +42,8 @@ export const PlayerView: React.FC<PlayerViewProps> = (props) => {
             bet,
         },
     } = props;
+
+    const allCards = [...cards, ...communityCards];
 
     const playerCards = () => {
         let applyFoldedClassname: boolean;
@@ -100,6 +105,7 @@ export const PlayerView: React.FC<PlayerViewProps> = (props) => {
                 endTransition={endTransition}
             />
             <div className="player-cards">
+                {!isFake && phase !== "showdown" && !folded && <div className="player-cards-hand">{determineBestHand(allCards)}</div>}
                 {playerCards()}
             </div>
             <div className="player-wrap">

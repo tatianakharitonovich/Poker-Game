@@ -76,6 +76,7 @@ export const Game: React.FC<GameProps> = (props) => {
                     dealerIndex={dealerIndex}
                     clearCards={clearCards}
                     phase={phase}
+                    communityCards={communityCards}
                     popAnimationState={popAnimationState}
                     playerAnimationSwitchboard={playerAnimationSwitchboard}
                 />

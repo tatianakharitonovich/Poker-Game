@@ -1,5 +1,5 @@
 import React from "react";
-import { Phase, Player, PlayerAnimationSwitchboard } from "../types";
+import { CardType, Phase, Player, PlayerAnimationSwitchboard } from "../types";
 import { PlayerView } from "./players/PlayerView";
 
 interface BoardProps {
@@ -8,6 +8,7 @@ interface BoardProps {
     phase: Phase;
     dealerIndex: number;
     clearCards: boolean;
+    communityCards: CardType[];
     playerAnimationSwitchboard: PlayerAnimationSwitchboard;
     popAnimationState: (index: number) => void;
 }
@@ -19,6 +20,7 @@ export const Board: React.FC<BoardProps> = (props) => {
         dealerIndex,
         clearCards,
         phase,
+        communityCards,
         playerAnimationSwitchboard,
         popAnimationState,
     } = props;
@@ -33,6 +35,7 @@ export const Board: React.FC<BoardProps> = (props) => {
                 isActive={isActive}
                 hasDealerChip={hasDealerChip}
                 player={player}
+                communityCards={communityCards}
                 clearCards={clearCards}
                 phase={phase}
                 playerAnimationSwitchboard={playerAnimationSwitchboard}
