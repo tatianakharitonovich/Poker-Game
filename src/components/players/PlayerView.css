@@ -215,7 +215,7 @@
 .player-avatar-dealer {
 	position: absolute;
 	top: -30px;
-    left: 0px;
+    left: -24px;
     height: 32px;
     width: 32px;
 	z-index: 100;
