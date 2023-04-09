@@ -149,7 +149,7 @@ export class GameLayout extends React.Component<GameLayoutProps, GameStateInit> 
                 if ((newState.players[newState.activePlayerIndex].isFake) && (newState.phase !== "showdown")) {
                     setTimeout(() => {
                         this.handleAI();
-                    }, 1200);
+                    }, 2000);
                 }
             });
         };
@@ -161,7 +161,7 @@ export class GameLayout extends React.Component<GameLayoutProps, GameStateInit> 
             if ((newState.players[newState.activePlayerIndex].isFake) && (newState.phase !== "showdown")) {
                 setTimeout(() => {
                     this.handleAI();
-                }, 1200);
+                }, 2000);
             }
         });
     };
@@ -180,7 +180,7 @@ export class GameLayout extends React.Component<GameLayoutProps, GameStateInit> 
             if ((newState.players[newState.activePlayerIndex].isFake) && (newState.phase !== "showdown")) {
                 setTimeout(() => {
                     this.handleAI();
-                }, 1200);
+                }, 2000);
             }
         });
     };
@@ -191,7 +191,7 @@ export class GameLayout extends React.Component<GameLayoutProps, GameStateInit> 
             if ((newState.players[newState.activePlayerIndex].isFake) && (newState.phase !== "showdown")) {
                 setTimeout(() => {
                     this.handleAI();
-                }, 1200);
+                }, 2000);
             }
         });
     };
@@ -205,7 +205,7 @@ export class GameLayout extends React.Component<GameLayoutProps, GameStateInit> 
         }
         this.setState(newState, () => {
             if ((newState.players[newState.activePlayerIndex].isFake) && (newState.phase !== "showdown")) {
-                setTimeout(() => this.handleAI(), 1200);
+                setTimeout(() => this.handleAI(), 2000);
             }
         });
     };
