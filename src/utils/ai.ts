@@ -4,11 +4,12 @@ import {
     GameStateBase,
     Histogram,
     Player,
-    PlayerRank,
     PlayerWithSidePotStack,
-    Rank,
+    PokerHand,
 } from "../types";
+import { determineBestHand } from "./bestHand";
 
+// eslint-disable-next-line import/no-cycle
 import {
     handleBet,
     handleFold,
@@ -16,17 +17,20 @@ import {
 } from "./bet";
 
 import {
-    analyzeHistogram,
-    checkFlush,
-    checkRoyalFlush,
-    checkStraightFlush,
-    checkStraight,
-    buildValueSet,
-} from "./cards";
-
-import {
     renderActionButtonText,
 } from "./ui";
+
+const BET_HIERARCHY: BetHierarchy = {
+    blind: 0,
+    insignificant: 1,
+    lowdraw: 2,
+    meddraw: 3,
+    hidraw: 4,
+    strong: 5,
+    major: 6,
+    aggro: 7,
+    beware: 8,
+};
 
 export const handleAI: (
     state: GameStateBase<Player>,
@@ -40,7 +44,7 @@ export const handleAI: (
     const totalInvestment = activePlayer.chips + activePlayer.bet + activePlayer.stackInvestment; // NOTE: StackInvestment must be incremented at each level of BETTING
     const investmentRequiredToRemain = (highBet / totalInvestment) * 100;
     const descendingSortHand = activePlayer.cards.concat(state.communityCards).sort((a, b) => b.value - a.value);
-    const { frequencyHistogram, suitHistogram } = generateHistogram(descendingSortHand);
+    const { suitHistogram } = generateHistogram(descendingSortHand);
     const stakes = classifyStakes(investmentRequiredToRemain);
     const preFlopValues = activePlayer.cards.map(el => el.value);
     const highCard = Math.max(...preFlopValues);
@@ -48,7 +52,7 @@ export const handleAI: (
     switch (state.phase) {
         // @ts-expect-error FALLS THROUGH to 2
         case ("betting1"): {
-            const suited = Object.entries(suitHistogram).find(keyValuePair => keyValuePair[1] === 2);
+            const suited = Object.entries(suitHistogram).find(keyValuePair => keyValuePair[1] === 2); // checking for the presence of 2 identical suits
             const straightGap = (highCard - lowCard <= 4);
             const { callLimit, raiseChance, raiseRange } = buildPreFlopDeterminant(highCard, lowCard, suited, straightGap);
             const willCall = (BET_HIERARCHY[stakes] <= BET_HIERARCHY[callLimit]);
@@ -59,7 +63,7 @@ export const handleAI: (
                         (raiseRange as (keyof BetHierarchy)[])[Math.floor(Math.random() * ((raiseRange as string[]).length - 0)) + 0];
                     const wantRaise = (BET_HIERARCHY[stakes] <= BET_HIERARCHY[determinedRaiseRange]);
                     if (wantRaise) {
-                        let betValue = Math.floor((decideBetProportion(determinedRaiseRange) as number) * activePlayer.chips);
+                        let betValue = roundToNearest((decideBetProportion(determinedRaiseRange) as number) * activePlayer.chips, 5);
                         if (betValue < highBet) {
                             if (highBet < max) {
                                 betValue = highBet;
@@ -98,66 +102,7 @@ export const handleAI: (
         case ("betting2"):
         case ("betting3"):
         case ("betting4"):
-            const {
-                isPair,
-                isTwoPair,
-                isThreeOfAKind,
-                isFourOfAKind,
-                isFullHouse,
-            } = analyzeHistogram(frequencyHistogram);
-            const valueSet = buildValueSet(descendingSortHand);
-            const { isStraight } = checkStraight(valueSet);
-            const {
-                isFlush,
-                flushedSuit,
-            } = checkFlush(suitHistogram);
-
-            const flushCards = (isFlush) && descendingSortHand.filter(card => card.suit === flushedSuit);
-            const isStraightFlush = (isFlush) && checkStraightFlush(flushCards).isStraightFlush;
-            const isRoyalFlush = (isFlush) &&
-                checkRoyalFlush(flushCards);
-            const isNoPair = (
-                (!isRoyalFlush) &&
-                (!isStraightFlush) &&
-                (!isFourOfAKind) &&
-                (!isFullHouse) &&
-                (!isFlush) &&
-                (!isStraight) &&
-                (!isThreeOfAKind) &&
-                (!isTwoPair) &&
-                (!isPair));
-            const handHierarchy = [{
-                name: "Royal Flush",
-                match: isRoyalFlush,
-            }, {
-                name: "Straight Flush",
-                match: isStraightFlush,
-            }, {
-                name: "Four Of A Kind",
-                match: isFourOfAKind,
-            }, {
-                name: "Full House",
-                match: isFullHouse,
-            }, {
-                name: "Flush",
-                match: isFlush,
-            }, {
-                name: "Straight",
-                match: isStraight,
-            }, {
-                name: "Three Of A Kind",
-                match: isThreeOfAKind,
-            }, {
-                name: "Two Pair",
-                match: isTwoPair,
-            }, {
-                name: "Pair",
-                match: isPair,
-            }, {
-                name: "No Pair",
-                match: isNoPair,
-            }] as PlayerRank[];
-            const highRank = handHierarchy[handHierarchy.findIndex(el => el.match === true)].name;
+            const highRank = determineBestHand(descendingSortHand);
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const { callLimit, raiseChance, raiseRange } = buildGeneralizedDeterminant(highRank)!;
             const willCall = (BET_HIERARCHY[stakes] <= BET_HIERARCHY[callLimit]);
@@ -167,7 +112,7 @@ export const handleAI: (
                     const determinedRaiseRange = raiseRange[Math.floor(Math.random() * (raiseRange.length - 0)) + 0];
                     const wantRaise = (BET_HIERARCHY[stakes] <= BET_HIERARCHY[determinedRaiseRange]);
                     if (wantRaise) {
-                        let betValue = Math.floor((decideBetProportion(determinedRaiseRange) as number) * activePlayer.chips);
+                        let betValue = roundToNearest((decideBetProportion(determinedRaiseRange) as number) * activePlayer.chips, 5);
                         if (betValue < highBet) {
                             betValue = highBet;
                         }
@@ -196,66 +141,66 @@ export const handleAI: (
     }
 };
 
-const buildGeneralizedDeterminant: (highRank: Rank) => {
+const buildGeneralizedDeterminant: (highRank: PokerHand) => {
     callLimit: keyof BetHierarchy;
     raiseChance: number;
     raiseRange: (keyof BetHierarchy)[];
-} | undefined = (highRank: Rank) => {
-    if (highRank === "Royal Flush") {
+} | undefined = (highRank: PokerHand) => {
+    if (highRank === PokerHand.RoyalFlush) {
         return {
             callLimit: "beware",
             raiseChance: 1,
             raiseRange: ["beware"],
         };
-    } if (highRank === "Straight Flush") {
+    } if (highRank === PokerHand.StraightFlush) {
         return {
             callLimit: "beware",
             raiseChance: 1,
             raiseRange: ["strong", "aggro", "beware"],
         };
-    } if (highRank === "Four Of A Kind") {
+    } if (highRank === PokerHand.FourOfAKind) {
         return {
             callLimit: "beware",
             raiseChance: 1,
             raiseRange: ["strong", "aggro", "beware"],
         };
-    } if (highRank === "Full House") {
+    } if (highRank === PokerHand.FullHouse) {
         return {
             callLimit: "beware",
             raiseChance: 1,
             raiseRange: ["hidraw", "strong", "aggro", "beware"],
         };
-    } if (highRank === "Flush") {
+    } if (highRank === PokerHand.Flush) {
         return {
             callLimit: "beware",
             raiseChance: 1,
             raiseRange: ["strong", "aggro", "beware"],
         };
-    } if (highRank === "Straight") {
+    } if (highRank === PokerHand.Straight) {
         return {
             callLimit: "beware",
             raiseChance: 1,
             raiseRange: ["lowdraw", "meddraw", "hidraw", "strong"],
         };
-    } if (highRank === "Three Of A Kind") {
+    } if (highRank === PokerHand.ThreeOfAKind) {
         return {
             callLimit: "beware",
             raiseChance: 1,
             raiseRange: ["lowdraw", "meddraw", "hidraw", "strong"],
         };
-    } if (highRank === "Two Pair") {
+    } if (highRank === PokerHand.TwoPair) {
         return {
             callLimit: "beware",
             raiseChance: 0.7,
             raiseRange: ["lowdraw", "meddraw", "hidraw", "strong"],
         };
-    } if (highRank === "Pair") {
+    } if (highRank === PokerHand.Pair) {
         return {
             callLimit: "hidraw",
             raiseChance: 0.5,
             raiseRange: ["lowdraw", "meddraw", "hidraw", "strong"],
         };
-    } if (highRank === "No Pair") {
+    } if (highRank === PokerHand.HighCard) {
         return {
             callLimit: "meddraw",
             raiseChance: 0.2,
@@ -272,11 +217,7 @@ const buildPreFlopDeterminant: (
 ) => {
     callLimit: keyof BetHierarchy;
     raiseChance: number;
-    raiseRange: (keyof BetHierarchy)[];
-} | {
-    callLimit: keyof BetHierarchy;
-    raiseChance: number;
-    raiseRange?: undefined;
+    raiseRange?: (keyof BetHierarchy)[];
 } = (highCard: number, lowCard: number, suited: [string, number] | undefined, straightGap: boolean) => {
     if (highCard === lowCard) {
         if (highCard > 8) {
@@ -421,18 +362,6 @@ const decideBetProportion: (stakes: keyof BetHierarchy) => number | undefined =
     }
 };
 
-const BET_HIERARCHY: BetHierarchy = {
-    blind: 0,
-    insignificant: 1,
-    lowdraw: 2,
-    meddraw: 3,
-    hidraw: 4,
-    strong: 5,
-    major: 6,
-    aggro: 7,
-    beware: 8,
-};
-
 const willRaise: (chance: number) => boolean =
 (chance: number) => {
     return Math.random() < chance;
@@ -447,3 +376,7 @@ const generateHistogram: (hand: CardType[]) => Histogram =
     }, { frequencyHistogram: {}, suitHistogram: {} } as Histogram);
     return histogram;
 };
+
+export function roundToNearest(num: number, nearest: number): number {
+    return Math.round(num / nearest) * nearest;
+}

@@ -10,13 +10,9 @@ import {
     GameStateBase,
     PlayerWithSidePotStack,
     Suit,
-    FlushRes,
     LowStraightRes,
     StraightRes,
-    StraightFlushRes,
     Quad,
-    AnalyzeHistogramRes,
-    Rank,
     FrequencyHistogramMetaData,
     HierarchyPlayer,
     RankMap,
@@ -25,9 +21,10 @@ import {
     SnapshotFrame,
     Phase,
     Player,
-    PopShowdownCards,
+    PokerHand,
 } from "../types";
 import { handleOverflowIndex, determinePhaseStartActivePlayer } from "./players";
+import { determineBestHand } from "./bestHand";
 
 const totalNumCards = 52;
 const suits: Suits = ["Heart", "Spade", "Club", "Diamond"];
@@ -94,26 +91,11 @@ export const shuffle: (deck: CardType[]) => CardType[] = (deck: CardType[]) => {
 const popCards: (deck: CardType[], numToPop: number) => PopCards =
 (deck: CardType[], numToPop: number) => {
     const mutableDeckCopy = [...deck];
-    let chosenCards: CardType[] | CardType;
-    if (numToPop === 1) {
-        chosenCards = mutableDeckCopy.pop() as CardType;
-    } else {
-        chosenCards = [] as CardType[];
-        for (let i = 0; i < numToPop; i++) {
-            chosenCards.push(mutableDeckCopy.pop() as CardType);
-        }
-    }
-    return { mutableDeckCopy, chosenCards };
-};
-
-const popShowdownCards: (deck: CardType[], numToPop: number) => PopShowdownCards =
-(deck: CardType[], numToPop: number) => {
-    const mutableDeckCopy = [...deck];
-    let chosenCards;
+    let chosenCards: CardType[];
     if (numToPop === 1) {
         chosenCards = [mutableDeckCopy.pop() as CardType];
     } else {
-        chosenCards = [];
+        chosenCards = [] as CardType[];
         for (let i = 0; i < numToPop; i++) {
             chosenCards.push(mutableDeckCopy.pop() as CardType);
         }
@@ -127,10 +109,10 @@ export const dealPrivateCards: (state: GameState) => GameState | undefined =
     let animationDelay = 0;
     while (state.players[state.activePlayerIndex].cards.length < 2) {
         const { mutableDeckCopy, chosenCards } = popCards(state.deck, 1);
-        (chosenCards as CardType).animationDelay = animationDelay;
+        chosenCards[0].animationDelay = animationDelay;
         animationDelay += 250;
         const newDeck = [...mutableDeckCopy];
-        state.players[state.activePlayerIndex].cards.push(chosenCards as CardType);
+        state.players[state.activePlayerIndex].cards.push(chosenCards[0]);
         state.deck = newDeck;
         state.activePlayerIndex = handleOverflowIndex(state.activePlayerIndex, 1, state.players.length);
     }
@@ -144,7 +126,7 @@ export const dealFlop: (state: GameStateBase<PlayerWithSidePotStack>) => GameSta
 (state: GameStateBase<PlayerWithSidePotStack>) => {
     let animationDelay = 0;
     const { mutableDeckCopy, chosenCards } = popCards(state.deck, 3);
-    for (const card of chosenCards as CardType[]) {
+    for (const card of chosenCards) {
         card.animationDelay = animationDelay;
         animationDelay += 250;
         state.communityCards.push(card);
@@ -160,8 +142,8 @@ export const dealBetting: (
     phase: Phase) => GameStateBase<PlayerWithSidePotStack> =
 (state: GameStateBase<PlayerWithSidePotStack>, phase) => {
     const { mutableDeckCopy, chosenCards } = popCards(state.deck, 1);
-    (chosenCards as CardType).animationDelay = 0;
-    state.communityCards.push(chosenCards as CardType);
+    chosenCards[0].animationDelay = 0;
+    state.communityCards.push(chosenCards[0]);
     state.deck = mutableDeckCopy;
     const newState = determinePhaseStartActivePlayer(state);
     newState.phase = phase;
@@ -181,77 +163,24 @@ export const showDown: (state: GameStateBase<PlayerWithSidePotStack>) => GameSta
             frequencyHistogram[card.cardRank] = frequencyHistogram[card.cardRank] + 1 || 1;
             suitHistogram[card.suit] = (suitHistogram[card.suit] + 1 || 1);
         });
-        const valueSet = buildValueSet(player.showDownHand.descendingSortHand);
 
-        const { isFlush, flushedSuit } = checkFlush(suitHistogram);
-        const flushCards = (isFlush) && player.showDownHand.descendingSortHand.filter(card => card.suit === flushedSuit);
-        const isRoyalFlush = (isFlush) && checkRoyalFlush(flushCards);
-        const {
-            isStraightFlush,
-            isLowStraightFlush,
-            concurrentSFCardValues,
-            concurrentSFCardValuesLow,
-        } = checkStraightFlush(flushCards);
-        const { isStraight, isLowStraight, concurrentCardValues, concurrentCardValuesLow } = checkStraight(valueSet);
-        const { isFourOfAKind, isFullHouse, isThreeOfAKind, isTwoPair, isPair, frequencyHistogramMetaData } =
-            analyzeHistogram(frequencyHistogram);
-        const isNoPair = (
-            (!isRoyalFlush) &&
-            (!isStraightFlush) &&
-            (!isFourOfAKind) &&
-            (!isFullHouse) &&
-            (!isFlush) &&
-            (!isStraight) &&
-            (!isThreeOfAKind) &&
-            (!isTwoPair) &&
-            (!isPair)
-        );
+        let flushedSuit: Suit | undefined;
+        for (const suit in suitHistogram) {
+            if (suitHistogram[suit as Suit] >= 5) {
+                flushedSuit = suit as Suit;
+            }
+        }
 
-        player.showDownHand.heldRankHierarchy = [{
-            name: "Royal Flush",
-            match: isRoyalFlush,
-        }, {
-            name: "Straight Flush",
-            match: isStraightFlush,
-        }, {
-            name: "Four Of A Kind",
-            match: isFourOfAKind,
-        }, {
-            name: "Full House",
-            match: isFullHouse,
-        }, {
-            name: "Flush",
-            match: isFlush,
-        }, {
-            name: "Straight",
-            match: isStraight,
-        }, {
-            name: "Three Of A Kind",
-            match: isThreeOfAKind,
-        }, {
-            name: "Two Pair",
-            match: isTwoPair,
-        }, {
-            name: "Pair",
-            match: isPair,
-        }, {
-            name: "No Pair",
-            match: isNoPair,
-        }];
+        const flushCards = player.showDownHand.descendingSortHand.filter(card => card.suit === flushedSuit);
 
-        const highRankPosition = player.showDownHand.heldRankHierarchy.findIndex(el => el.match === true);
-        player.showDownHand.bestHandRank = player.showDownHand.heldRankHierarchy[highRankPosition].name;
+        const frequencyHistogramMetaData = analyzeHistogram(frequencyHistogram);
+
+        player.showDownHand.bestHandRank = determineBestHand(player.showDownHand.descendingSortHand);
         player.showDownHand.bestHand =
             buildBestHand(
                 player.showDownHand.descendingSortHand,
                 player.showDownHand.bestHandRank,
-                flushCards as CardType[],
-                concurrentCardValues,
-                concurrentCardValuesLow as number[],
-                isLowStraight,
-                isLowStraightFlush,
-                concurrentSFCardValues as number[],
-                concurrentSFCardValuesLow as number[],
+                flushCards,
                 frequencyHistogramMetaData,
             );
     }
@@ -260,48 +189,39 @@ export const showDown: (state: GameStateBase<PlayerWithSidePotStack>) => GameSta
 
 const buildBestHand: (
     hand: CardType[],
-    bestRank: Rank,
+    bestRank: PokerHand,
     flushCards: CardType[],
-    concurrentCardValues: number[],
-    concurrentCardValuesLow: number[],
-    isLowStraight: boolean, isLowStraightFlush: boolean | undefined,
-    concurrentSFCardValues: number[],
-    concurrentSFCardValuesLow: number[],
     frequencyHistogramMetaData: FrequencyHistogramMetaData
 ) => CardType[] = (
     hand: CardType[],
-    bestRank: Rank,
+    bestRank: PokerHand,
     flushCards: CardType[],
-    concurrentCardValues: number[],
-    concurrentCardValuesLow: number[],
-    isLowStraight: boolean,
-    isLowStraightFlush: boolean | undefined,
-    concurrentSFCardValues: number[],
-    concurrentSFCardValuesLow: number[],
     frequencyHistogramMetaData: FrequencyHistogramMetaData,
 ) => {
     switch (bestRank) {
-        case ("Royal Flush"): {
+        case (PokerHand.RoyalFlush): {
             return flushCards.slice(0, 5);
         }
-        case ("Straight Flush"): {
-            if (isLowStraightFlush && concurrentSFCardValues.length < 5) {
-                concurrentSFCardValuesLow[0] = 13;
-                return concurrentSFCardValuesLow.reduce((acc, cur, index) => {
+        case (PokerHand.StraightFlush): {
+            const valueSet = buildValueSet(hand);
+            const { isLowStraight, concurrentCardValues, concurrentCardValuesLow } = checkStraight(valueSet);
+            if (isLowStraight && concurrentCardValues.length < 5) {
+                concurrentCardValuesLow[0] = 13;
+                return (concurrentCardValuesLow as number[]).reduce((acc, cur, index) => {
                     if (index < 5) {
                         acc.push(flushCards[flushCards.findIndex(match => match.value === cur)]);
                     }
                     return acc;
                 }, [] as CardType[]).reverse();
             }
-            return concurrentSFCardValues.reduce((acc, cur, index) => {
+            return concurrentCardValues.reduce((acc, cur, index) => {
                 if (index < 5) {
                     acc.push(flushCards[flushCards.findIndex(match => match.value === cur)]);
                 }
                 return acc;
             }, [] as CardType[]);
         }
-        case ("Four Of A Kind"): {
+        case (PokerHand.FourOfAKind): {
             const bestHand = [];
             let mutableHand = cloneDeep(hand);
 
@@ -313,7 +233,7 @@ const buildBestHand: (
 
             return bestHand.concat(mutableHand.slice(0, 1));
         }
-        case ("Full House"): {
+        case (PokerHand.FullHouse): {
             const bestHand = [];
             let mutableHand = cloneDeep(hand);
             if (frequencyHistogramMetaData.tripples.length > 1) {
@@ -341,13 +261,15 @@ const buildBestHand: (
             }
             return bestHand;
         }
-        case ("Flush"): {
+        case (PokerHand.Flush): {
             return flushCards.slice(0, 5);
         }
-        case ("Straight"): {
+        case (PokerHand.Straight): {
+            const valueSet = buildValueSet(hand);
+            const { isLowStraight, concurrentCardValues, concurrentCardValuesLow } = checkStraight(valueSet);
             if (isLowStraight && concurrentCardValues.length < 5) {
                 concurrentCardValuesLow[0] = 13;
-                return concurrentCardValuesLow.reduce((acc, cur, index) => {
+                return (concurrentCardValuesLow as number[]).reduce((acc, cur, index) => {
                     if (index < 5) {
                         acc.push(hand[hand.findIndex(match => match.value === cur)]);
                     }
@@ -361,7 +283,7 @@ const buildBestHand: (
                 return acc;
             }, [] as CardType[]);
         }
-        case ("Three Of A Kind"): {
+        case (PokerHand.ThreeOfAKind): {
             const bestHand = [];
             let mutableHand = cloneDeep(hand);
 
@@ -373,7 +295,7 @@ const buildBestHand: (
 
             return bestHand.concat(mutableHand.slice(0, 2));
         }
-        case ("Two Pair"): {
+        case (PokerHand.TwoPair): {
             const bestHand = [];
             let mutableHand = cloneDeep(hand);
             for (let i = 0; i < 2; i++) {
@@ -388,7 +310,7 @@ const buildBestHand: (
             }
             return bestHand.concat(mutableHand.slice(0, 1));
         }
-        case ("Pair"): {
+        case (PokerHand.Pair): {
             const bestHand = [];
             let mutableHand = cloneDeep(hand);
             for (let i = 0; i < 2; i++) {
@@ -398,7 +320,7 @@ const buildBestHand: (
             }
             return bestHand.concat(mutableHand.slice(0, 3));
         }
-        case ("No Pair"): {
+        case (PokerHand.HighCard): {
             return hand.slice(0, 5);
         }
         default: throw Error("Recieved unfamiliar rank argument in buildBestHand()");
@@ -426,17 +348,17 @@ const buildAbsolutePlayerRankings: (state: GameStateBase<PlayerWithSidePotStack>
     const activePlayers = state.players.filter(player => !player.folded);
     let hierarchy = [] as HierarchyPlayer[];
 
-    const rankMap = new Map<Rank, RankMap[]>([
-        ["Royal Flush", []],
-        ["Straight Flush", []],
-        ["Four Of A Kind", []],
-        ["Full House", []],
-        ["Flush", []],
-        ["Straight", []],
-        ["Three Of A Kind", []],
-        ["Two Pair", []],
-        ["Pair", []],
-        ["No Pair", []],
+    const rankMap = new Map<PokerHand, RankMap[]>([
+        [PokerHand.RoyalFlush, []],
+        [PokerHand.StraightFlush, []],
+        [PokerHand.FourOfAKind, []],
+        [PokerHand.FullHouse, []],
+        [PokerHand.Flush, []],
+        [PokerHand.Straight, []],
+        [PokerHand.ThreeOfAKind, []],
+        [PokerHand.TwoPair, []],
+        [PokerHand.Pair, []],
+        [PokerHand.HighCard, []],
     ]);
 
     activePlayers.forEach((player, playerIndex) => {
@@ -444,7 +366,7 @@ const buildAbsolutePlayerRankings: (state: GameStateBase<PlayerWithSidePotStack>
             name,
             showDownHand: { bestHandRank, bestHand },
         } = player;
-        rankMap.get(bestHandRank as Rank)?.push({
+        rankMap.get(bestHandRank as PokerHand)?.push({
             name,
             bestHand: bestHand as CardType[],
             playerIndex,
@@ -453,7 +375,7 @@ const buildAbsolutePlayerRankings: (state: GameStateBase<PlayerWithSidePotStack>
 
     for (const [handRank, playersWhoHoldThisRank] of rankMap) {
         if (playersWhoHoldThisRank.length > 0) {
-            if (handRank === "Royal Flush") {
+            if (handRank === PokerHand.RoyalFlush) {
                 const formattedPlayersWhoHoldThisRank = playersWhoHoldThisRank.map((player) => ({
                     name: player.name,
                     bestHand: player.bestHand,
@@ -482,8 +404,8 @@ const buildAbsolutePlayerRankings: (state: GameStateBase<PlayerWithSidePotStack>
     return hierarchy;
 };
 
-const determineContestedHierarchy: (sortedComparator: ComparatorItem[][], handRank: Rank) => HierarchyPlayer[] =
-(sortedComparator: ComparatorItem[][], handRank: Rank) => {
+const determineContestedHierarchy: (sortedComparator: ComparatorItem[][], handRank: PokerHand) => HierarchyPlayer[] =
+(sortedComparator: ComparatorItem[][], handRank: PokerHand) => {
     let winnerHierarchy = [] as HierarchyPlayer[];
     let loserHierarchy = [] as ComparatorItem[][][];
     const processComparator: (comparator: ComparatorItem[][], round?: number) => void =
@@ -554,26 +476,29 @@ const processSnapshotFrame: (frame: ComparatorItem[]) => SnapshotFrame =
     return { winningFrame, losingFrame };
 };
 
-const rankPlayerHands: (state: GameStateBase<PlayerWithSidePotStack>, participants: string[]) => Map<Rank, RankMap[]> =
+const rankPlayerHands: (
+    state: GameStateBase<PlayerWithSidePotStack>,
+    participants: string[]
+) => Map<PokerHand, RankMap[]> =
 (state: GameStateBase<PlayerWithSidePotStack>, participants: string[]) => {
-    const rankMap = new Map<Rank, RankMap[]>([
-        ["Royal Flush", []],
-        ["Straight Flush", []],
-        ["Four Of A Kind", []],
-        ["Full House", []],
-        ["Flush", []],
-        ["Straight", []],
-        ["Three Of A Kind", []],
-        ["Two Pair", []],
-        ["Pair", []],
-        ["No Pair", []],
+    const rankMap = new Map<PokerHand, RankMap[]>([
+        [PokerHand.RoyalFlush, []],
+        [PokerHand.StraightFlush, []],
+        [PokerHand.FourOfAKind, []],
+        [PokerHand.FullHouse, []],
+        [PokerHand.Flush, []],
+        [PokerHand.Straight, []],
+        [PokerHand.ThreeOfAKind, []],
+        [PokerHand.TwoPair, []],
+        [PokerHand.Pair, []],
+        [PokerHand.HighCard, []],
     ]);
 
     for (const contestant of participants) {
         const playerIndex = state.players.findIndex(player => player.name === contestant);
         const player = state.players[playerIndex];
         if (!player.folded) {
-            rankMap.get(player.showDownHand.bestHandRank as Rank)?.push({
+            rankMap.get(player.showDownHand.bestHandRank as PokerHand)?.push({
                 name: player.name,
                 playerIndex,
                 bestHand: player.showDownHand.bestHand as CardType[],
@@ -583,7 +508,7 @@ const rankPlayerHands: (state: GameStateBase<PlayerWithSidePotStack>, participan
     return rankMap;
 };
 
-const battleRoyale = (state: GameStateBase<PlayerWithSidePotStack>, rankMap: Map<Rank, RankMap[]>, prize: number) => {
+const battleRoyale = (state: GameStateBase<PlayerWithSidePotStack>, rankMap: Map<PokerHand, RankMap[]>, prize: number) => {
     let winnerFound = false;
     let newState: GameStateBase<PlayerWithSidePotStack> = state;
     rankMap.forEach((participants, rank) => {
@@ -608,8 +533,11 @@ const battleRoyale = (state: GameStateBase<PlayerWithSidePotStack>, rankMap: Map
 const payWinners: (
     state: GameStateBase<PlayerWithSidePotStack>,
     winners: Omit<RankMap, "bestHand">[], prize: number,
-    rank: Rank) => GameStateBase<PlayerWithSidePotStack> =
-(state: GameStateBase<PlayerWithSidePotStack>, winners: Omit<RankMap, "bestHand">[], prize: number, rank: Rank) => {
+    rank: PokerHand
+) => GameStateBase<PlayerWithSidePotStack> = (
+    state: GameStateBase<PlayerWithSidePotStack>,
+    winners: Omit<RankMap, "bestHand">[], prize: number, rank: PokerHand,
+) => {
     if (winners.length === 1) {
         state.showDownMessages = state.showDownMessages.concat([{
             users: [winners[0].name],
@@ -633,11 +561,11 @@ const payWinners: (
     return state;
 };
 
-const buildComparator: (rank: Rank, playerData: RankMap[]) => Comparator =
-(rank: Rank, playerData: RankMap[]) => {
+const buildComparator: (rank: PokerHand, playerData: RankMap[]) => Comparator =
+(rank: PokerHand, playerData: RankMap[]) => {
     let comparator = [] as Comparator;
     switch (rank) {
-        case ("Royal Flush"): {
+        case (PokerHand.RoyalFlush): {
             comparator = Array.from({ length: 1 }, () => Array.from({ length: 0 }));
             playerData.forEach((playerShowdownData, index) => {
                 comparator[0].push({
@@ -649,7 +577,7 @@ const buildComparator: (rank: Rank, playerData: RankMap[]) => Comparator =
             });
             break;
         }
-        case ("Four Of A Kind"): {
+        case (PokerHand.FourOfAKind): {
             comparator = Array.from({ length: 2 }, () => Array.from({ length: 0 }));
             playerData.forEach((playerShowdownData, index) => {
                 comparator[0].push({
@@ -667,7 +595,7 @@ const buildComparator: (rank: Rank, playerData: RankMap[]) => Comparator =
             });
             break;
         }
-        case ("Full House"): {
+        case (PokerHand.FullHouse): {
             comparator = Array.from({ length: 2 }, () => Array.from({ length: 0 }));
             playerData.forEach((playerShowdownData, index) => {
                 comparator[0].push({
@@ -685,8 +613,8 @@ const buildComparator: (rank: Rank, playerData: RankMap[]) => Comparator =
             });
             break;
         }
-        case ("Flush"):
-        case ("No Pair"): {
+        case (PokerHand.Flush):
+        case (PokerHand.HighCard): {
             comparator = Array.from({ length: 5 }, () => Array.from({ length: 0 }));
             playerData.forEach((playerShowdownData, index) => {
                 for (let i = 0; i < 5; i++) {
@@ -700,7 +628,7 @@ const buildComparator: (rank: Rank, playerData: RankMap[]) => Comparator =
             });
             break;
         }
-        case ("Three Of A Kind"): {
+        case (PokerHand.ThreeOfAKind): {
             comparator = Array.from({ length: 3 }, () => Array.from({ length: 0 }));
             playerData.forEach((playerShowdownData, index) => {
                 comparator[0].push({
@@ -724,8 +652,8 @@ const buildComparator: (rank: Rank, playerData: RankMap[]) => Comparator =
             });
             break;
         }
-        case ("Straight"):
-        case ("Straight Flush"): {
+        case (PokerHand.Straight):
+        case (PokerHand.StraightFlush): {
             comparator = Array.from({ length: 1 }, () => Array.from({ length: 0 }));
             playerData.forEach((playerShowdownData, index) => {
                 comparator[0].push({
@@ -737,7 +665,7 @@ const buildComparator: (rank: Rank, playerData: RankMap[]) => Comparator =
             });
             break;
         }
-        case ("Two Pair"): {
+        case (PokerHand.TwoPair): {
             comparator = Array.from({ length: 3 }, () => Array.from({ length: 0 }));
             playerData.forEach((playerShowdownData, index) => {
                 comparator[0].push({
@@ -761,7 +689,7 @@ const buildComparator: (rank: Rank, playerData: RankMap[]) => Comparator =
             });
             break;
         }
-        case ("Pair"): {
+        case (PokerHand.Pair): {
             comparator = Array.from({ length: 4 }, () => Array.from({ length: 0 }));
             playerData.forEach((playerShowdownData, index) => {
                 comparator[0].push({
@@ -838,66 +766,8 @@ const determineWinner: (comparator: Comparator) => Omit<RankMap, "bestHand">[] =
     return winners;
 };
 
-export const checkFlush: (suitHistogram: Record<Suit, number>) => FlushRes =
-(suitHistogram: Record<Suit, number>) => {
-    for (const suit in suitHistogram) {
-        if (suitHistogram[suit as Suit] >= 5) {
-            return {
-                isFlush: true,
-                flushedSuit: suit,
-            };
-        }
-    }
-    return {
-        isFlush: false,
-        flushedSuit: null,
-    };
-};
-
-export const checkRoyalFlush: (flushMatchCards: boolean | CardType[]) => boolean =
-(flushMatchCards: boolean | CardType[]) => {
-    if (typeof flushMatchCards === "boolean") {
-        return flushMatchCards;
-    }
-    if ((flushMatchCards[0].value === 13) &&
-        (flushMatchCards[1].value === 12) &&
-        (flushMatchCards[2].value === 11) &&
-        (flushMatchCards[3].value === 10) &&
-        (flushMatchCards[4].value === 10)) {
-        return true;
-    }
-    return false;
-};
-
-export const checkStraightFlush: (flushMatchCards: false | CardType[]) => StraightFlushRes =
-(flushMatchCards: false | CardType[]) => {
-    if (typeof flushMatchCards === "boolean") {
-        return {
-            isStraightFlush: undefined,
-            isLowStraightFlush: undefined,
-            concurrentSFCardValues: undefined,
-            concurrentSFCardValuesLow: undefined,
-        };
-    }
-    const valueSet = buildValueSet(flushMatchCards);
-    const { isStraight, isLowStraight, concurrentCardValues, concurrentCardValuesLow } = checkStraight(valueSet);
-    return {
-        isStraightFlush: isStraight,
-        isLowStraightFlush: isLowStraight,
-        concurrentSFCardValues: concurrentCardValues,
-        concurrentSFCardValuesLow: concurrentCardValuesLow,
-    };
-};
-
-export const analyzeHistogram: (frequencyHistogram: Record<keyof ValueMap, number>) => AnalyzeHistogramRes =
+export const analyzeHistogram: (frequencyHistogram: Record<keyof ValueMap, number>) => FrequencyHistogramMetaData =
 (frequencyHistogram: Record<keyof ValueMap, number>) => {
-    let isFourOfAKind = false;
-    let isFullHouse = false;
-    let isThreeOfAKind = false;
-    let isTwoPair = false;
-    let isPair = false;
-    let numTripples = 0;
-    let numPairs = 0;
     const frequencyHistogramMetaData = {
         pairs: [] as Quad[],
         tripples: [] as Quad[],
@@ -906,23 +776,18 @@ export const analyzeHistogram: (frequencyHistogram: Record<keyof ValueMap, numbe
     // eslint-disable-next-line guard-for-in
     for (const cardRank in frequencyHistogram) {
         if (frequencyHistogram[cardRank as keyof ValueMap] === 4) {
-            isFourOfAKind = true;
             frequencyHistogramMetaData.quads.push({
                 face: cardRank as keyof ValueMap,
                 value: VALUE_MAP[cardRank as keyof ValueMap],
             });
         }
         if (frequencyHistogram[cardRank as keyof ValueMap] === 3) {
-            isThreeOfAKind = true;
-            numTripples++;
             frequencyHistogramMetaData.tripples.push({
                 face: cardRank as keyof ValueMap,
                 value: VALUE_MAP[cardRank as keyof ValueMap],
             });
         }
         if (frequencyHistogram[cardRank as keyof ValueMap] === 2) {
-            isPair = true;
-            numPairs++;
             frequencyHistogramMetaData.pairs.push({
                 face: cardRank as keyof ValueMap,
                 value: VALUE_MAP[cardRank as keyof ValueMap],
@@ -932,20 +797,7 @@ export const analyzeHistogram: (frequencyHistogram: Record<keyof ValueMap, numbe
     frequencyHistogramMetaData.pairs = frequencyHistogramMetaData.pairs.map(el => el).sort((a, b) => b.value - a.value);
     frequencyHistogramMetaData.tripples = frequencyHistogramMetaData.tripples.map(el => el).sort((a, b) => b.value - a.value);
     frequencyHistogramMetaData.quads = frequencyHistogramMetaData.quads.map(el => el).sort((a, b) => b.value - a.value);
-    if ((numTripples >= 2) || (numPairs >= 1 && numTripples >= 1)) {
-        isFullHouse = true;
-    }
-    if (numPairs >= 2) {
-        isTwoPair = true;
-    }
-    return {
-        isFourOfAKind,
-        isFullHouse,
-        isThreeOfAKind,
-        isTwoPair,
-        isPair,
-        frequencyHistogramMetaData,
-    };
+    return frequencyHistogramMetaData;
 };
 
 export const checkStraight: (valueSet: (ValueMap[keyof ValueMap])[]) => StraightRes =
@@ -1059,13 +911,12 @@ export const dealMissingCommunityCards: (state: GameStateBase<Player>) => GameSt
     const cardsToPop = 5 - state.communityCards.length;
     if (cardsToPop >= 1) {
         let animationDelay = 0;
-        const { mutableDeckCopy, chosenCards } = popShowdownCards(state.deck, cardsToPop);
+        const { mutableDeckCopy, chosenCards } = popCards(state.deck, cardsToPop);
         for (const card of chosenCards) {
             card.animationDelay = animationDelay;
             animationDelay += 250;
             state.communityCards.push(card);
         }
-
         state.deck = mutableDeckCopy;
     }
     state.phase = "showdown";

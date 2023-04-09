@@ -1,9 +1,10 @@
 /* eslint-disable import/no-cycle */
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
-import { GameState, GameStateBase, Gender, Player, PlayerDataRes, PlayerWithSidePotStack, playerAnimationSwitchboardInit } from "../types";
+import { GameState, GameStateBase, Gender, Player, PlayerDataRes, PlayerWithSidePotStack } from "../types";
 import { handlePhaseShift, reconcilePot, anteUpBlinds, determineBlindIndices } from "./bet";
 import { dealMissingCommunityCards, showDown, generateCardsDeck, shuffle, dealPrivateCards } from "./cards";
+import { roundToNearest } from "./ai";
 
 export const createPlayers: (userName: string, gender: Gender | undefined) => Promise<Player[]> =
 async (userName, gender) => {
@@ -33,7 +34,7 @@ async (userName, gender) => {
         const response = await axios.get<PlayerDataRes>(`https://randomuser.me/api/?results=4`);
         response.data.results
             .map((user) => {
-                const randomizedChips = Math.floor(Math.random() * (20000 - 18000)) + 18000;
+                const randomizedChips = roundToNearest(Math.random() * (20000 - 18000), 5) + 18000;
                 return ({
                     id: uuidv4(),
                     name: `${user.name.first.charAt(0).toUpperCase()}${user.name.first.slice(1)}
@@ -197,7 +198,6 @@ export const beginNextRound: (state: GameState) => GameState | undefined = (stat
     state.highBet = 20;
     state.betInputValue = 20;
     state.minBet = 20;
-    state.playerAnimationSwitchboard = playerAnimationSwitchboardInit;
     const { players } = state;
     const clearPlayerCards = players.map(player => ({ ...player, cards: [] }));
     state.players = clearPlayerCards;
