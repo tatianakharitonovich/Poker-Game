@@ -37,9 +37,9 @@ export const ActionMenu: React.FC<ActionMenuProps> = (props) => {
     return (
         <Slider
             rootStyle={sliderStyle(isShow())}
-            domain={[min, max]}
+            domain={[min, max === min ? min + 5 : max]}
             values={[min]}
-            step={1}
+            step={5}
             onChange={(val) => handleBetInputChange(val, max)}
             mode={2}
         >
