@@ -2,17 +2,18 @@ export type Gender = "male" | "female";
 
 export type PlayerBet = "Check" | "Call" | "Bet" | "All-In!" | "Raise";
 
-export type Rank =
-    "Royal Flush" |
-    "Straight Flush" |
-    "Four Of A Kind" |
-    "Full House" |
-    "Flush" |
-    "Straight" |
-    "Three Of A Kind" |
-    "Two Pair" |
-    "Pair" |
-    "No Pair";
+export enum PokerHand {
+    HighCard = "High Card",
+    Pair = "Pair",
+    TwoPair = "Two Pair",
+    ThreeOfAKind = "Three Of A Kind",
+    Straight = "Straight",
+    Flush = "Flush",
+    FullHouse = "Full House",
+    FourOfAKind = "Four Of A Kind",
+    StraightFlush = "Straight Flush",
+    RoyalFlush = "Royal Flush",
+}
 
 export type Suits = ["Heart", "Spade", "Club", "Diamond"];
 
@@ -76,7 +77,7 @@ export const playerAnimationSwitchboardInit = {
 };
 
 export type PlayerRank = {
-    name: Rank;
+    name: PokerHand;
     match: boolean | undefined;
 };
 
@@ -89,7 +90,7 @@ export interface Player {
         hand: CardType[];
         descendingSortHand: CardType[];
         heldRankHierarchy?: PlayerRank[];
-        bestHandRank?: Rank;
+        bestHandRank?: PokerHand;
         bestHand?: CardType[];
     };
     chips: number;
@@ -132,7 +133,7 @@ export type PlayerAnimationSwitchboard = Record<number, {
 export type ShowDownMessage = {
     users: string[];
     prize: number;
-    rank: Rank;
+    rank: PokerHand;
 };
 
 export type BlindIndicies = {
@@ -153,7 +154,7 @@ export type SidePots = {
 export type HierarchyPlayer = {
     name: string;
     bestHand: CardType[];
-    handRank: Rank;
+    handRank: PokerHand;
 };
 
 export type SnapshotFrame = {
@@ -230,20 +231,8 @@ export interface GameStateBase<T extends Player | PlayerWithSidePotStack> extend
 
 export interface PopCards {
     mutableDeckCopy: CardType[];
-    chosenCards: CardType | CardType[];
-}
-
-export interface PopShowdownCards extends PopCards {
     chosenCards: CardType[];
 }
-
-export type FlushRes = {
-    isFlush: true;
-    flushedSuit: string;
-} | {
-    isFlush: false;
-    flushedSuit: null;
-};
 
 export type LowStraightRes = {
     isLowStraight: boolean;
@@ -272,15 +261,6 @@ export type StraightFlushRes = {
     isLowStraightFlush: boolean;
     concurrentSFCardValues: number[];
     concurrentSFCardValuesLow: number[] | never[];
-};
-
-export type AnalyzeHistogramRes = {
-    isFourOfAKind: boolean;
-    isFullHouse: boolean;
-    isThreeOfAKind: boolean;
-    isTwoPair: boolean;
-    isPair: boolean;
-    frequencyHistogramMetaData: FrequencyHistogramMetaData;
 };
 
 export type Quad = {
