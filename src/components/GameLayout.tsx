@@ -45,6 +45,7 @@ import {
 type GameLayoutProps = {
     userName: string;
     gender: Gender | undefined;
+    submitHandler: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export class GameLayout extends React.Component<GameLayoutProps, GameStateInit> {
@@ -227,6 +228,8 @@ export class GameLayout extends React.Component<GameLayoutProps, GameStateInit> 
             communityCards,
             playerAnimationSwitchboard,
         } = this.state;
+
+        const { submitHandler } = this.props;
         return (
             <>
                 {(loading) ? <LoadingOverlay /> :
@@ -254,6 +257,7 @@ export class GameLayout extends React.Component<GameLayoutProps, GameStateInit> 
                                 handleFold={this.handleFold}
                                 handleBetInputSubmit={this.handleBetInputSubmit}
                                 playerAnimationSwitchboard={playerAnimationSwitchboard}
+                                submitHandler={submitHandler}
                             />
                             ) : null
                 }

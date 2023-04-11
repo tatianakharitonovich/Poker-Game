@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import { GameLayout } from "./components/GameLayout";
 import { RegistrationForm } from "./components/registration-form/RegistrationForm";
@@ -8,6 +8,11 @@ export const App: React.FC = () => {
     const [userName, setUserName] = useState("");
     const [gender, setGender] = useState<Gender>();
     const [isSubmit, setIsSubmit] = useState(false);
+
+    useEffect(() => {
+        setUserName("");
+        setGender(undefined);
+    }, [isSubmit]);
 
     return (
         <div className="App">
@@ -23,7 +28,11 @@ export const App: React.FC = () => {
                         />
                     )
                     : (
-                        <GameLayout userName={userName} gender={gender} />
+                        <GameLayout
+                            userName={userName}
+                            gender={gender}
+                            submitHandler={setIsSubmit}
+                        />
                     )
                }
             </div>

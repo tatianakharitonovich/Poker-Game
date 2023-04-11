@@ -24,6 +24,15 @@
     bottom: 0;
 }
 
+.game-return-button {
+    position: absolute;
+    top: 32px;
+    left: 24px;
+    border: 2px solid white;
+    z-index: 1;
+
+}
+
 .game-container {
     position: absolute;
     width: 100%;
@@ -122,6 +131,7 @@
         top: 40%;
         transform: translate(-50%, -50%);
         height: 590px;
+        max-width: 1294px;
     }	
 }
 

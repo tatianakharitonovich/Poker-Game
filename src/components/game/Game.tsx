@@ -27,6 +27,7 @@ interface GameProps {
     handleBetInputSubmit: (bet: string, min: string, max: string) => void;
     handleFold: () => void;
     handleBetInputChange: (val: readonly number[], max: number) => void;
+    submitHandler: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const Game: React.FC<GameProps> = (props) => {
@@ -49,6 +50,7 @@ export const Game: React.FC<GameProps> = (props) => {
         betInputValue,
         handleFold,
         handleBetInputChange,
+        submitHandler,
     } = props;
 
     const renderCommunityCards: (clearAnimation: boolean, addClass: string) => JSX.Element[] =
@@ -68,6 +70,12 @@ export const Game: React.FC<GameProps> = (props) => {
         <div className="game">
             <img className="game-logo" src="assets/lasvegas.svg" alt="LasVegas" />
             <img className="game-background" src="assets/city.svg" alt="LasVegas" />
+            <button
+                className="game-return-button action-button"
+                onClick={() => submitHandler(false)}
+            >
+                Exit the game
+            </button>
             <div className="game-container">
                 <img className="game-container-image" src="assets/table.svg" alt="Poker Table" />
                 <Board
