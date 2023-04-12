@@ -18,3 +18,18 @@ export const renderActionButtonText: (highBet: number, betInputValue: number, ac
             return "Raise";
         }
     };
+
+export function getSound(content: string | null): string | undefined {
+    if (content?.includes("Check")) {
+        return "assets/sounds/check.mp3";
+    }
+    if (content?.includes("Call") || content?.includes("Bet") || content?.includes("Raise")) {
+        return "assets/sounds/rise.mp3";
+    }
+    if (content?.includes("FOLD")) {
+        return "assets/sounds/fold.mp3";
+    }
+    if (content?.includes("All-In!")) {
+        return "assets/sounds/allin.mp3";
+    }
+}
