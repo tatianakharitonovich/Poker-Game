@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { HierarchyPlayer, Player, ShowDownMessage } from "../../types";
 import { ShowdownMessage } from "../show-down-message/ShowdownMessage";
@@ -22,6 +22,14 @@ export const Showdown: React.FC<ShowdownProps> = (props) => {
         players,
         handleNextRound,
     } = props;
+
+    const [audio] = useState(new Audio("assets/sounds/finish.mp3"));
+    document.body.appendChild(audio);
+
+    useEffect(() => {
+        audio.play().catch((e) => { throw new Error(`${e}`); });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <div className="showdown">

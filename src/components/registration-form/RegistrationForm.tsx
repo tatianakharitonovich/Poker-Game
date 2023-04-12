@@ -2,6 +2,7 @@ import React from "react";
 import { Gender } from "../../types";
 
 import "./RegistrationForm.css";
+import { Button } from "../button/Button";
 
 interface RegistrationFormProps {
     userName: string;
@@ -56,14 +57,15 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = (props) => {
                     </label>
                 </div>
             </div>
-            <button
+            <Button
                 className="action-button"
                 data-testid="form-save-button"
                 disabled={userName === "" || !gender}
                 onClick={() => submitHandler(true)}
+                sound="assets/sounds/positive-tone.wav"
             >
                 Submit
-            </button>
+            </Button>
             <img className="registration-form-background" src="assets/cards.svg" alt="cards" />
         </div>
     );

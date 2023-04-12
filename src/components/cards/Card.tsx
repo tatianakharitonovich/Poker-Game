@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { CardType, Suits } from "../../types";
 
 import "./Card.css";
@@ -21,6 +21,14 @@ export const Card: React.FC<CardProps> = (props) => {
         isRobot,
         addClass,
     } = props;
+
+    const [audio] = useState(new Audio("assets/sounds/card.mp3"));
+    document.body.appendChild(audio);
+
+    useEffect(() => {
+        // audio.play().catch((e) => { throw new Error(`${e}`); });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const renderUnicodeSuitSymbol = (suitCard: Suits[keyof Suits]) => {
         switch (suitCard) {

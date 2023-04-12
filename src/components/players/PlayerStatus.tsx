@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 
 import "./PlayerStatus.css";
+import { getSound } from "../../utils/ui";
 
 interface PlayerStatusProps {
     index: number;
@@ -12,6 +13,12 @@ interface PlayerStatusProps {
 
 export const PlayerStatus: React.FC<PlayerStatusProps> = (props) => {
     const { index, isActive, content, endTransition } = props;
+    const [audio] = useState(new Audio(getSound(content)));
+    document.body.appendChild(audio);
+
+    useEffect(() => {
+        // audio.play().catch((e) => { throw new Error(`${e}`); });
+    }, [audio, content]);
 
     return (
         <CSSTransition

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import { CardType, HierarchyPlayer, Phase, Player, PlayerAnimationSwitchboard, ShowDownMessage } from "../../types";
 import { ActionButtons } from "../action-buttons/ActionButtons";
 import { ActionMenu } from "../action-menu/ActionMenu";
@@ -7,6 +7,7 @@ import { Card } from "../cards/Card";
 import { Showdown } from "../show-down/Showdown";
 
 import "./Game.css";
+import { Button } from "../button/Button";
 
 interface GameProps {
     highBet: number;
@@ -53,6 +54,38 @@ export const Game: React.FC<GameProps> = (props) => {
         submitHandler,
     } = props;
 
+    const [isSounds, setIsSounds] = useState(true);
+    const [isMusic, setIsMusic] = useState(true);
+    const [audio] = useState(new Audio("assets/sounds/main.mp3"));
+    audio.loop = true;
+    useEffect(() => {
+        audio.currentTime = 0;
+        audio.play().catch((e) => { throw new Error(`${e}`); });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const toggleMusic = () => {
+        setIsMusic(!isMusic);
+        audio.muted = !audio.muted;
+    };
+
+    const toggleSounds = () => {
+        setIsSounds(!isSounds);
+        const audios = document.getElementsByTagName("audio");
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
+        for (let i = 0; i < audios.length; i++) {
+            audios[i].muted = !audios[i].muted;
+        }
+    };
+
+    const exitHandler = () => {
+        submitHandler(false);
+
+        if (isMusic) {
+            toggleMusic();
+        }
+    };
+
     const renderCommunityCards: (clearAnimation: boolean, addClass: string) => JSX.Element[] =
     (clearAnimation: boolean, addClass: string) => {
         return communityCards.map((card) => {
@@ -70,12 +103,29 @@ export const Game: React.FC<GameProps> = (props) => {
         <div className="game">
             <img className="game-logo" src="assets/lasvegas.svg" alt="LasVegas" />
             <img className="game-background" src="assets/city.svg" alt="LasVegas" />
-            <button
-                className="game-return-button action-button"
-                onClick={() => submitHandler(false)}
+            <Button
+                className="game-return-button secondary action-button"
+                onClick={() => exitHandler()}
+                sound="assets/sounds/negative-tone.wav"
             >
-                Exit the game
-            </button>
+                <img src="assets/exit.svg" alt="Exit" />
+            </Button>
+            <div className="game-soundwrap">
+                <Button
+                    className={`action-button secondary ${!isMusic && "crossed"}`}
+                    onClick={() => toggleMusic()}
+                    sound="assets/sounds/positive-tone.wav"
+                >
+                    <img src="assets/music.svg" alt="Sound" />
+                </Button>
+                <Button
+                    className={`action-button secondary ${!isSounds && "crossed"}`}
+                    onClick={() => toggleSounds()}
+                    sound="assets/sounds/positive-tone.wav"
+                >
+                    <img src="assets/sound.svg" alt="Sound" />
+                </Button>
+            </div>
             <div className="game-container">
                 <img className="game-container-image" src="assets/table.svg" alt="Poker Table" />
                 <Board
