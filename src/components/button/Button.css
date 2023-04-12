@@ -1,0 +1,26 @@
+.secondary {
+    border: 2px solid white;
+    background-image: linear-gradient(#508bc9, #0d4b7a, #1d2470);
+    min-width: 46px;
+}
+
+.secondary:hover {
+    background-image: linear-gradient(#1d2470, #0d4b7a, #508bc9);
+}
+
+.crossed {
+    position: relative;
+    opacity: 0.5;
+}
+
+.crossed::before {
+    position: absolute;
+    content: "";
+    top: 18px;
+    left: 0;
+    height: 3px;
+    width: 100%;
+    background: white;
+    border-radius: 4px;
+    transform: rotate(-45deg);
+}
