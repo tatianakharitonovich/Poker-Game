@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import "./Button.css";
 
@@ -6,21 +6,20 @@ interface ButtonProps {
     children: React.ReactNode;
     className: string;
     onClick: () => void;
-    sound: string | undefined;
+    sound: HTMLAudioElement | undefined;
     disabled?: boolean;
 }
 
 export const Button: React.FC<ButtonProps> = (props) => {
     const { children, className, onClick, sound, disabled } = props;
 
-    const [audio] = useState(new Audio(sound));
-
-    document.body.appendChild(audio);
+    if (sound) {
+        document.body.appendChild(sound);
+    }
 
     function onClickHandler() {
         onClick();
-        audio.currentTime = 0;
-        audio.play().catch((e) => { throw new Error(`${e}`); });
+        sound?.play().catch((e) => { throw new Error(`${e}`); });
     }
 
     return (

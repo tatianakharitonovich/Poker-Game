@@ -39,12 +39,15 @@ import {
     Gender,
     Player,
     PlayerWithSidePotStack,
+    Sound,
     playerAnimationSwitchboardInit,
 } from "../types";
 
 type GameLayoutProps = {
     userName: string;
     gender: Gender | undefined;
+    sounds: Sound[];
+    playersNumber: string;
     submitHandler: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
@@ -77,8 +80,8 @@ export class GameLayout extends React.Component<GameLayoutProps, GameStateInit> 
     }
 
     public async componentDidMount() {
-        const { userName, gender } = this.props;
-        const players = await createPlayers(userName, gender);
+        const { userName, gender, playersNumber } = this.props;
+        const players = await createPlayers(userName, gender, playersNumber);
         const dealerIndex = Math.floor(Math.random() * Math.floor(players.length));
         const blindIndicies = determineBlindIndices(dealerIndex, players.length);
         const { minBet } = this.state;
@@ -229,7 +232,7 @@ export class GameLayout extends React.Component<GameLayoutProps, GameStateInit> 
             playerAnimationSwitchboard,
         } = this.state;
 
-        const { submitHandler } = this.props;
+        const { sounds, submitHandler } = this.props;
         return (
             <>
                 {(loading) ? <LoadingOverlay /> :
@@ -258,6 +261,7 @@ export class GameLayout extends React.Component<GameLayoutProps, GameStateInit> 
                                 handleBetInputSubmit={this.handleBetInputSubmit}
                                 playerAnimationSwitchboard={playerAnimationSwitchboard}
                                 submitHandler={submitHandler}
+                                sounds={sounds}
                             />
                             ) : null
                 }

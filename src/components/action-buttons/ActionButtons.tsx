@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Player } from "../../types";
+import { Player, Sound, SoundName } from "../../types";
 import { determineMinBet } from "../../utils/bet";
 import { getSound, renderActionButtonText } from "../../utils/ui";
 
@@ -11,6 +11,7 @@ interface ActionButtonsProps {
     activePlayerIndex: number;
     highBet: number;
     betInputValue: number;
+    sounds: Sound[];
     handleFold: () => void;
     handleBetInputSubmit: (bet: string, min: string, max: string) => void;
 }
@@ -23,6 +24,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = (props) => {
         handleBetInputSubmit,
         betInputValue,
         handleFold,
+        sounds,
     } = props;
 
     const min = determineMinBet(highBet, players[activePlayerIndex].chips, players[activePlayerIndex].bet).toString();
@@ -30,7 +32,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = (props) => {
 
     const button = () => {
         const buttonText = renderActionButtonText(highBet, betInputValue, players[activePlayerIndex]);
-        const sound = getSound(buttonText as string);
+        const sound = getSound(buttonText as string, sounds);
 
         if (buttonText && players[activePlayerIndex].chips >= highBet) {
             return (
@@ -51,7 +53,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = (props) => {
             <Button
                 className="action-button"
                 onClick={() => handleFold()}
-                sound="assets/sounds/fold.mp3"
+                sound={sounds.find((sound) => sound.name === SoundName.fold)?.audio}
             >
                 Fold
             </Button>

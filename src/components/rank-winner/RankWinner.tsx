@@ -1,5 +1,5 @@
 import * as React from "react";
-import { HierarchyPlayer, Player } from "../../types";
+import { HierarchyPlayer, Player, Sound } from "../../types";
 import { Card } from "../cards/Card";
 import { ShowdownPlayer } from "../players/ShowdownPlayer";
 
@@ -8,9 +8,10 @@ import "./RankWinner.css";
 interface RankWinnerProps {
     player: HierarchyPlayer;
     players: Player[];
+    sounds: Sound[];
 }
 
-export const RankWinner: React.FC<RankWinnerProps> = ({ player, players }) => {
+export const RankWinner: React.FC<RankWinnerProps> = ({ player, players, sounds }) => {
     const { name, bestHand, handRank } = player;
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -26,6 +27,7 @@ export const RankWinner: React.FC<RankWinnerProps> = ({ player, players }) => {
                 name={name}
                 avatarURL={playerStateData.avatarURL}
                 cards={playerStateData.cards}
+                sounds={sounds}
             />
             <div className="rank-winner-besthand">
                 <h5>
@@ -35,7 +37,15 @@ export const RankWinner: React.FC<RankWinnerProps> = ({ player, players }) => {
                     {
                     bestHand.map((card) => {
                         const cardData = { ...card, animationDelay: 0 };
-                        return <Card key={`${card.cardRank}${card.suit}`} cardData={cardData} isRobot={false} addClass="showdown-card" />;
+                        return (
+                            <Card
+                                key={`${card.cardRank}${card.suit}`}
+                                cardData={cardData}
+                                isRobot={false}
+                                addClass="showdown-card"
+                                sounds={sounds}
+                            />
+                        );
                     })
                     }
                 </div>

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { CardType, Suits } from "../../types";
+import React, { useEffect } from "react";
+import { CardType, Sound, SoundName, Suits } from "../../types";
 
 import "./Card.css";
 
@@ -8,6 +8,7 @@ interface CardProps {
     applyFoldedClassname?: boolean;
     isRobot: boolean;
     addClass?: string;
+    sounds: Sound[];
 }
 
 export const Card: React.FC<CardProps> = (props) => {
@@ -20,13 +21,19 @@ export const Card: React.FC<CardProps> = (props) => {
         applyFoldedClassname,
         isRobot,
         addClass,
+        sounds,
     } = props;
 
-    const [audio] = useState(new Audio("assets/sounds/card.mp3"));
-    document.body.appendChild(audio);
+    const cardSound = sounds.find((sound) => sound.name === SoundName.card)?.audio;
+
+    if (cardSound) {
+        document.body.appendChild(cardSound);
+    }
 
     useEffect(() => {
-        // audio.play().catch((e) => { throw new Error(`${e}`); });
+        setTimeout(() => {
+            cardSound?.play().catch((e) => { throw new Error(`${e}`); });
+        }, applyFoldedClassname ? 0 : animationDelay);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

@@ -1,5 +1,23 @@
 export type Gender = "male" | "female";
 
+export interface Sound {
+    name: SoundName;
+    src: string;
+    audio: HTMLAudioElement;
+}
+
+export enum SoundName {
+    main = "main",
+    card = "card",
+    check = "check",
+    positive = "positive",
+    negative = "negative",
+    rise = "rise",
+    fold = "fold",
+    allin = "allin",
+    finish = "finish",
+}
+
 export type PlayerBet = "Check" | "Call" | "Bet" | "All-In!" | "Raise";
 
 export enum PokerHand {

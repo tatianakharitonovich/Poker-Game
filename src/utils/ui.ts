@@ -1,4 +1,4 @@
-import { Player, PlayerBet } from "../types";
+import { Player, PlayerBet, Sound, SoundName } from "../types";
 
 export const renderActionButtonText: (highBet: number, betInputValue: number, activePlayer: Player) => PlayerBet | undefined =
     (highBet, betInputValue, activePlayer) => {
@@ -19,17 +19,17 @@ export const renderActionButtonText: (highBet: number, betInputValue: number, ac
         }
     };
 
-export function getSound(content: string | null): string | undefined {
+export function getSound(content: string | null, sounds: Sound[]): HTMLAudioElement | undefined {
     if (content?.includes("Check")) {
-        return "assets/sounds/check.mp3";
+        return sounds.find((sound) => sound.name === SoundName.check)?.audio;
     }
     if (content?.includes("Call") || content?.includes("Bet") || content?.includes("Raise")) {
-        return "assets/sounds/rise.mp3";
+        return sounds.find((sound) => sound.name === SoundName.rise)?.audio;
     }
     if (content?.includes("FOLD")) {
-        return "assets/sounds/fold.mp3";
+        return sounds.find((sound) => sound.name === SoundName.fold)?.audio;
     }
     if (content?.includes("All-In!")) {
-        return "assets/sounds/allin.mp3";
+        return sounds.find((sound) => sound.name === SoundName.allin)?.audio;
     }
 }

@@ -23,6 +23,7 @@ img {
 	position: relative;
 	width: 100%;
     min-height: 100%;
+    height: 100%;
 	background: linear-gradient(149deg, rgb(3 1 26) 0%, #091c62 60%, rgb(209 208 211) 42%, #091c62 60%, rgb(3 1 26) 100%);
 	animation: gradient 6s infinite linear;
     background-size: 400%;

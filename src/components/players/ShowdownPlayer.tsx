@@ -1,5 +1,5 @@
 import React from "react";
-import { CardType } from "../../types";
+import { CardType, Sound } from "../../types";
 import { Card } from "../cards/Card";
 import { PlayerAvatar } from "./PlayerAvatar";
 
@@ -7,10 +7,11 @@ interface ShowdownPlayerProps {
     name: string;
     avatarURL: string;
     cards: CardType[];
+    sounds: Sound[];
 }
 
 export const ShowdownPlayer: React.FC<ShowdownPlayerProps> = (props) => {
-    const { name, avatarURL, cards } = props;
+    const { name, avatarURL, cards, sounds } = props;
 
     return (
         <div className="player-wrap">
@@ -27,7 +28,14 @@ export const ShowdownPlayer: React.FC<ShowdownPlayerProps> = (props) => {
                 <div className="player-wrap-cards-content">
                     {cards.map((card) => {
                         const cardData = { ...card, animationDelay: 0 };
-                        return <Card key={`${card.cardRank}${card.suit}`} cardData={cardData} isRobot={false} />;
+                        return (
+                            <Card
+                                key={`${card.cardRank}${card.suit}`}
+                                cardData={cardData}
+                                isRobot={false}
+                                sounds={sounds}
+                            />
+                        );
                     },
                     )}
                 </div>
