@@ -1,5 +1,5 @@
 import React from "react";
-import { Gender } from "../../types";
+import { Gender, Sound, SoundName } from "../../types";
 
 import "./RegistrationForm.css";
 import { Button } from "../button/Button";
@@ -7,17 +7,41 @@ import { Button } from "../button/Button";
 interface RegistrationFormProps {
     userName: string;
     gender: Gender | undefined;
+    sounds: Sound[];
+    playersNumber: string;
     userNameHandler: React.Dispatch<React.SetStateAction<string>>;
     genderHandler: React.Dispatch<React.SetStateAction<Gender | undefined>>;
+    playersNumberHandler: React.Dispatch<React.SetStateAction<string>>;
     submitHandler: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const RegistrationForm: React.FC<RegistrationFormProps> = (props) => {
-    const { userName, gender, submitHandler, userNameHandler, genderHandler } = props;
+    const {
+        userName,
+        gender,
+        sounds,
+        playersNumber,
+        submitHandler,
+        userNameHandler,
+        genderHandler,
+        playersNumberHandler,
+    } = props;
+
+    const buttomSound = sounds.find((sound) => sound.name === SoundName.positive)?.audio;
+
+    const playersNumberIsValid: () => boolean = () => {
+        if (playersNumber === "2" ||
+        playersNumber === "3" ||
+        playersNumber === "4" ||
+        playersNumber === "5") {
+            return true;
+        }
+        return false;
+    };
 
     return (
         <div className="registration-form" data-testid="registration-form">
-            <h1>
+            <h1 className="registration-form-title">
                 Welcome to our online casino!
             </h1>
             <div className="registration-form-item">
@@ -28,6 +52,19 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = (props) => {
                     data-test="name-input"
                     value={userName}
                     onChange={(e) => userNameHandler(e.target.value)}
+                />
+            </div>
+            <div className="registration-form-item">
+                <label className="registration-form-label">Enter the number of players from 2 to 5</label>
+                <input
+                    className="registration-form-name-input"
+                    type="number"
+                    min={2}
+                    max={5}
+                    placeholder="2"
+                    data-test="playersNumber-input"
+                    value={playersNumber}
+                    onChange={(e) => playersNumberHandler(e.target.value)}
                 />
             </div>
             <div className="registration-form-item">
@@ -60,13 +97,13 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = (props) => {
             <Button
                 className="action-button"
                 data-testid="form-save-button"
-                disabled={userName === "" || !gender}
+                disabled={userName === "" || !gender || !playersNumberIsValid()}
                 onClick={() => submitHandler(true)}
-                sound="assets/sounds/positive-tone.wav"
+                sound={buttomSound}
             >
                 Submit
             </Button>
-            <img className="registration-form-background" src="assets/cards.svg" alt="cards" />
+            <img className="registration-form-background" src="assets/images/cards.svg" alt="cards" />
         </div>
     );
 };

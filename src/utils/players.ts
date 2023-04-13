@@ -6,12 +6,16 @@ import { handlePhaseShift, reconcilePot, anteUpBlinds, determineBlindIndices } f
 import { dealMissingCommunityCards, showDown, generateCardsDeck, shuffle, dealPrivateCards } from "./cards";
 import { roundToNearest } from "./ai";
 
-export const createPlayers: (userName: string, gender: Gender | undefined) => Promise<Player[]> =
-async (userName, gender) => {
+export const createPlayers: (
+    userName: string,
+    gender: Gender | undefined,
+    playersNumber: string
+) => Promise<Player[]> =
+async (userName, gender, playersNumber) => {
     const users = [{
         id: uuidv4(),
         name: userName,
-        avatarURL: gender === "male" ? "/assets/boy.svg" : "/assets/girl.svg",
+        avatarURL: gender === "male" ? "/assets/images/boy.svg" : "/assets/images/girl.svg",
         cards: [],
         showDownHand: {
             hand: [],
@@ -31,7 +35,7 @@ async (userName, gender) => {
     }] as Player[];
 
     try {
-        const response = await axios.get<PlayerDataRes>(`https://randomuser.me/api/?results=4`);
+        const response = await axios.get<PlayerDataRes>(`https://randomuser.me/api/?results=${+playersNumber - 1}`);
         response.data.results
             .map((user) => {
                 const randomizedChips = roundToNearest(Math.random() * (20000 - 18000), 5) + 18000;

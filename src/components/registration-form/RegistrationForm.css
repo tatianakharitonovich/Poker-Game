@@ -9,10 +9,16 @@
     color: white;
 }
 
-.registration-form h1,
-.registration-form-background {
-    font-size: 40px;
+.registration-form-title,
+.registration-form-background {    
     filter: drop-shadow(0 8px 4px rgb(0 0 0 / 85%));
+}
+
+.registration-form-title {
+    font-size: 44px;
+    background-image: linear-gradient(90deg, #06b1ac 0%, #48cdb7 52.09%, #c1afa1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .registration-form-item {
