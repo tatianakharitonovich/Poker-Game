@@ -31,7 +31,7 @@ interface GameProps {
     communityCards: CardType[];
     showDownMessages: ShowDownMessage[];
     popAnimationState: (index: number) => void;
-    playerHierarchy: HierarchyPlayer[];
+    playerHierarchy: HierarchyPlayer[] | HierarchyPlayer[][];
     handleNextRound: () => void;
     betInputValue: number;
     sounds: Sound[];

@@ -214,7 +214,7 @@ export interface GameStateInit {
     minBet: number;
     clearCards: boolean;
     phase: Phase;
-    playerHierarchy: HierarchyPlayer[];
+    playerHierarchy: HierarchyPlayer[] | HierarchyPlayer[][];
     showDownMessages: ShowDownMessage[];
     playerAnimationSwitchboard: PlayerAnimationSwitchboard;
 }
@@ -238,7 +238,7 @@ export interface GameState {
     minBet: number;
     clearCards: false;
     phase: Phase;
-    playerHierarchy: HierarchyPlayer[];
+    playerHierarchy: HierarchyPlayer[] | HierarchyPlayer[][];
     showDownMessages: ShowDownMessage[];
     playerAnimationSwitchboard: PlayerAnimationSwitchboard;
 }

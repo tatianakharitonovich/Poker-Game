@@ -343,10 +343,10 @@ const distributeSidePots: (state: GameStateBase<PlayerWithSidePotStack>) => Game
     return newState;
 };
 
-const buildAbsolutePlayerRankings: (state: GameStateBase<PlayerWithSidePotStack>) => HierarchyPlayer[] =
+const buildAbsolutePlayerRankings: (state: GameStateBase<PlayerWithSidePotStack>) => HierarchyPlayer[] | HierarchyPlayer[][] =
 (state: GameStateBase<PlayerWithSidePotStack>) => {
     const activePlayers = state.players.filter(player => !player.folded);
-    let hierarchy = [] as HierarchyPlayer[];
+    let hierarchy = [] as HierarchyPlayer[][];
 
     const rankMap = new Map<PokerHand, RankMap[]>([
         [PokerHand.RoyalFlush, []],
@@ -508,7 +508,15 @@ const rankPlayerHands: (
     return rankMap;
 };
 
-const battleRoyale = (state: GameStateBase<PlayerWithSidePotStack>, rankMap: Map<PokerHand, RankMap[]>, prize: number) => {
+const battleRoyale: (
+    state: GameStateBase<PlayerWithSidePotStack>,
+    rankMap: Map<PokerHand, RankMap[]>,
+    prize: number
+) => GameStateBase<PlayerWithSidePotStack> = (
+    state: GameStateBase<PlayerWithSidePotStack>,
+    rankMap: Map<PokerHand, RankMap[]>,
+    prize: number,
+) => {
     let winnerFound = false;
     let newState: GameStateBase<PlayerWithSidePotStack> = state;
     rankMap.forEach((participants, rank) => {
@@ -532,11 +540,14 @@ const battleRoyale = (state: GameStateBase<PlayerWithSidePotStack>, rankMap: Map
 
 const payWinners: (
     state: GameStateBase<PlayerWithSidePotStack>,
-    winners: Omit<RankMap, "bestHand">[], prize: number,
+    winners: Omit<RankMap, "bestHand">[],
+    prize: number,
     rank: PokerHand
 ) => GameStateBase<PlayerWithSidePotStack> = (
     state: GameStateBase<PlayerWithSidePotStack>,
-    winners: Omit<RankMap, "bestHand">[], prize: number, rank: PokerHand,
+    winners: Omit<RankMap, "bestHand">[],
+    prize: number,
+    rank: PokerHand,
 ) => {
     if (winners.length === 1) {
         state.showDownMessages = state.showDownMessages.concat([{

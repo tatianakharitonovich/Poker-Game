@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { HierarchyPlayer, Player, ShowDownMessage, Sound, SoundName } from "../../types";
+import { HierarchyPlayer, Player, PokerHand, ShowDownMessage, Sound, SoundName } from "../../types";
 import { ShowdownMessage } from "../show-down-message/ShowdownMessage";
 import { RankWinner } from "../rank-winner/RankWinner";
 
@@ -10,7 +10,7 @@ import { Button } from "../button/Button";
 interface ShowdownProps {
     showDownMessages: ShowDownMessage[];
     renderCommunityCards: (clearAnimation: boolean, addClass: string) => JSX.Element[];
-    playerHierarchy: HierarchyPlayer[];
+    playerHierarchy: HierarchyPlayer[] | HierarchyPlayer[][];
     players: Player[];
     sounds: Sound[];
     handleNextRound: () => void;
@@ -40,6 +40,21 @@ export const Showdown: React.FC<ShowdownProps> = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const messageUnion = () => {
+        const messageRes = showDownMessages.reduce((acc, message) => {
+            acc.prize += message.prize;
+            acc.rank = message.rank;
+            acc.users = message.users;
+            return acc;
+        }, {
+            prize: 0,
+            rank: PokerHand.Flush,
+            users: [],
+        } as ShowDownMessage);
+
+        return messageRes;
+    };
+
     return (
         <div className="showdown">
             <img className="showdown-background" src="assets/images/showdown.svg" alt="LasVegas" />
@@ -50,6 +65,9 @@ export const Showdown: React.FC<ShowdownProps> = (props) => {
                         message={message}
                     />
                 ))}
+                <ShowdownMessage
+                    message={messageUnion()}
+                />
             </div>
             <div>
                 <h5 className="showdown-cards-label">
@@ -64,7 +82,7 @@ export const Showdown: React.FC<ShowdownProps> = (props) => {
                     const tie = Array.isArray(itemHierarchy);
 
                     return tie
-                        ? (itemHierarchy as HierarchyPlayer[])
+                        ? (itemHierarchy)
                             .map(player => <RankWinner key={uuidv4()} sounds={sounds} player={player} players={players} />)
                         : <RankWinner key={uuidv4()} sounds={sounds} player={itemHierarchy} players={players} />;
                 })
