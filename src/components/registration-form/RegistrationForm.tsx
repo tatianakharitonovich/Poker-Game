@@ -1,33 +1,24 @@
 import React from "react";
-import { Gender, Sound, SoundName } from "../../types";
+import { observer } from "mobx-react-lite";
+import { useRootStore } from "../../hooks/useRootStore";
+import { Button } from "../button/Button";
+import { Gender, SoundName } from "../../types";
 
 import "./RegistrationForm.css";
-import { Button } from "../button/Button";
 
-interface RegistrationFormProps {
-    userName: string;
-    gender: Gender | undefined;
-    sounds: Sound[];
-    playersNumber: string;
-    userNameHandler: React.Dispatch<React.SetStateAction<string>>;
-    genderHandler: React.Dispatch<React.SetStateAction<Gender | undefined>>;
-    playersNumberHandler: React.Dispatch<React.SetStateAction<string>>;
-    submitHandler: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-export const RegistrationForm: React.FC<RegistrationFormProps> = (props) => {
+export const RegistrationForm: React.FC = observer(() => {
     const {
+        loadedSounds,
         userName,
         gender,
-        sounds,
         playersNumber,
-        submitHandler,
-        userNameHandler,
-        genderHandler,
-        playersNumberHandler,
-    } = props;
+        setIsSubmit,
+        setUserName,
+        setGender,
+        setPlayersNumber,
+    } = useRootStore();
 
-    const buttomSound = sounds.find((sound) => sound.name === SoundName.positive)?.audio;
+    const buttomSound = loadedSounds.find((sound) => sound.name === SoundName.positive)?.audio;
 
     const playersNumberIsValid: () => boolean = () => {
         if (playersNumber === "2" ||
@@ -51,7 +42,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = (props) => {
                     type="text"
                     data-test="name-input"
                     value={userName}
-                    onChange={(e) => userNameHandler(e.target.value)}
+                    onChange={(e) => setUserName(e.target.value)}
                 />
             </div>
             <div className="registration-form-item">
@@ -64,7 +55,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = (props) => {
                     placeholder="2"
                     data-test="playersNumber-input"
                     value={playersNumber}
-                    onChange={(e) => playersNumberHandler(e.target.value)}
+                    onChange={(e) => setPlayersNumber(e.target.value)}
                 />
             </div>
             <div className="registration-form-item">
@@ -76,7 +67,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = (props) => {
                             value="male"
                             data-testid="male-input"
                             checked={gender === "male"}
-                            onChange={(e) => genderHandler(e.target.value as Gender)}
+                            onChange={(e) => setGender(e.target.value as Gender)}
                         />
                         Male
                     </label>
@@ -88,7 +79,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = (props) => {
                             value="female"
                             data-test="female-input"
                             checked={gender === "female"}
-                            onChange={(e) => genderHandler(e.target.value as Gender)}
+                            onChange={(e) => setGender(e.target.value as Gender)}
                         />
                         Female
                     </label>
@@ -98,7 +89,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = (props) => {
                 className="action-button"
                 data-testid="form-save-button"
                 disabled={userName === "" || !gender || !playersNumberIsValid()}
-                onClick={() => submitHandler(true)}
+                onClick={() => setIsSubmit(true)}
                 sound={buttomSound}
             >
                 Submit
@@ -106,4 +97,4 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = (props) => {
             <img className="registration-form-background" src="assets/images/cards.svg" alt="cards" />
         </div>
     );
-};
+});

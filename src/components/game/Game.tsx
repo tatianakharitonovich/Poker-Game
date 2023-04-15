@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { observer } from "mobx-react-lite";
+import { useRootStore } from "../../hooks/useRootStore";
 import {
     CardType,
     HierarchyPlayer,
@@ -6,7 +8,6 @@ import {
     Player,
     PlayerAnimationSwitchboard,
     ShowDownMessage,
-    Sound,
     SoundName,
 } from "../../types";
 import { ActionButtons } from "../action-buttons/ActionButtons";
@@ -34,14 +35,13 @@ interface GameProps {
     playerHierarchy: HierarchyPlayer[] | HierarchyPlayer[][];
     handleNextRound: () => void;
     betInputValue: number;
-    sounds: Sound[];
     handleBetInputSubmit: (bet: string, min: string, max: string) => void;
     handleFold: () => void;
     handleBetInputChange: (val: readonly number[], max: number) => void;
-    submitHandler: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const Game: React.FC<GameProps> = (props) => {
+export const Game: React.FC<GameProps> = observer((props) => {
+    const { loadedSounds, setIsSubmit } = useRootStore();
     const {
         highBet,
         players,
@@ -56,19 +56,17 @@ export const Game: React.FC<GameProps> = (props) => {
         popAnimationState,
         showDownMessages,
         playerHierarchy,
-        sounds,
         handleNextRound,
         handleBetInputSubmit,
         betInputValue,
         handleFold,
         handleBetInputChange,
-        submitHandler,
     } = props;
 
     const [isSounds, setIsSounds] = useState(true);
     const [isMusic, setIsMusic] = useState(true);
 
-    const mainSound = sounds.find((sound) => sound.name === SoundName.main)?.audio;
+    const mainSound = loadedSounds.find((sound) => sound.name === SoundName.main)?.audio;
 
     useEffect(() => {
         if (mainSound) {
@@ -97,7 +95,7 @@ export const Game: React.FC<GameProps> = (props) => {
     };
 
     const exitHandler = () => {
-        submitHandler(false);
+        setIsSubmit(false);
 
         if (isMusic) {
             toggleMusic();
@@ -117,7 +115,6 @@ export const Game: React.FC<GameProps> = (props) => {
                     cardData={cardData}
                     isRobot={false}
                     addClass={addClass}
-                    sounds={sounds}
                 />
             );
         });
@@ -130,7 +127,7 @@ export const Game: React.FC<GameProps> = (props) => {
             <Button
                 className="game-return-button secondary action-button"
                 onClick={() => exitHandler()}
-                sound={sounds.find((sound) => sound.name === SoundName.negative)?.audio}
+                sound={loadedSounds.find((sound) => sound.name === SoundName.negative)?.audio}
             >
                 <img src="assets/images/exit.svg" alt="Exit" />
             </Button>
@@ -138,14 +135,14 @@ export const Game: React.FC<GameProps> = (props) => {
                 <Button
                     className={`action-button secondary ${!isMusic && "crossed"}`}
                     onClick={() => toggleMusic()}
-                    sound={sounds.find((sound) => sound.name === SoundName.positive)?.audio}
+                    sound={loadedSounds.find((sound) => sound.name === SoundName.positive)?.audio}
                 >
                     <img src="assets/images/music.svg" alt="Sound" />
                 </Button>
                 <Button
                     className={`action-button secondary ${!isSounds && "crossed"}`}
                     onClick={() => toggleSounds()}
-                    sound={sounds.find((sound) => sound.name === SoundName.positive)?.audio}
+                    sound={loadedSounds.find((sound) => sound.name === SoundName.positive)?.audio}
                 >
                     <img src="assets/images/sound.svg" alt="Sound" />
                 </Button>
@@ -161,7 +158,6 @@ export const Game: React.FC<GameProps> = (props) => {
                     communityCards={communityCards}
                     popAnimationState={popAnimationState}
                     playerAnimationSwitchboard={playerAnimationSwitchboard}
-                    sounds={sounds}
                 />
                 <div className="game-community">
                     {renderCommunityCards(false, "isHover")}
@@ -184,7 +180,6 @@ export const Game: React.FC<GameProps> = (props) => {
                         playerHierarchy={playerHierarchy}
                         players={players}
                         handleNextRound={handleNextRound}
-                        sounds={sounds}
                     />
                 )}
             <div className="game-action">
@@ -197,7 +192,6 @@ export const Game: React.FC<GameProps> = (props) => {
                             betInputValue={betInputValue}
                             handleFold={handleFold}
                             handleBetInputSubmit={handleBetInputSubmit}
-                            sounds={sounds}
                         />
                     )}
                 </div>
@@ -215,4 +209,4 @@ export const Game: React.FC<GameProps> = (props) => {
             </div>
         </div>
     );
-};
+});

@@ -1,21 +1,22 @@
 import React, { useEffect } from "react";
 import { CSSTransition } from "react-transition-group";
+import { observer } from "mobx-react-lite";
+import { useRootStore } from "../../hooks/useRootStore";
+import { getSound } from "../../utils/ui";
 
 import "./PlayerStatus.css";
-import { getSound } from "../../utils/ui";
-import { Sound } from "../../types";
 
 interface PlayerStatusProps {
     index: number;
     isActive: boolean;
     content: string | null;
-    sounds: Sound[];
     endTransition: (index: number) => void;
 }
 
-export const PlayerStatus: React.FC<PlayerStatusProps> = (props) => {
-    const { index, isActive, content, sounds, endTransition } = props;
-    const statusSound = getSound(content, sounds);
+export const PlayerStatus: React.FC<PlayerStatusProps> = observer((props) => {
+    const { loadedSounds } = useRootStore();
+    const { index, isActive, content, endTransition } = props;
+    const statusSound = getSound(content, loadedSounds);
 
     if (statusSound) {
         document.body.appendChild(statusSound);
@@ -46,4 +47,4 @@ export const PlayerStatus: React.FC<PlayerStatusProps> = (props) => {
             </div>
         </CSSTransition>
     );
-};
+});

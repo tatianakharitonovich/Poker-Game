@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { HierarchyPlayer, Player, PokerHand, ShowDownMessage, Sound, SoundName } from "../../types";
+import { observer } from "mobx-react-lite";
+import { useRootStore } from "../../hooks/useRootStore";
+import { HierarchyPlayer, Player, PokerHand, ShowDownMessage, SoundName } from "../../types";
 import { ShowdownMessage } from "../show-down-message/ShowdownMessage";
 import { RankWinner } from "../rank-winner/RankWinner";
 
@@ -12,21 +14,20 @@ interface ShowdownProps {
     renderCommunityCards: (clearAnimation: boolean, addClass: string) => JSX.Element[];
     playerHierarchy: HierarchyPlayer[] | HierarchyPlayer[][];
     players: Player[];
-    sounds: Sound[];
     handleNextRound: () => void;
 }
 
-export const Showdown: React.FC<ShowdownProps> = (props) => {
+export const Showdown: React.FC<ShowdownProps> = observer((props) => {
+    const { loadedSounds } = useRootStore();
     const {
         showDownMessages,
         renderCommunityCards,
         playerHierarchy,
         players,
-        sounds,
         handleNextRound,
     } = props;
 
-    const finishSound = sounds.find((sound) => sound.name === SoundName.finish)?.audio;
+    const finishSound = loadedSounds.find((sound) => sound.name === SoundName.finish)?.audio;
 
     if (finishSound) {
         finishSound.volume = 0.01;
@@ -83,18 +84,18 @@ export const Showdown: React.FC<ShowdownProps> = (props) => {
 
                     return tie
                         ? (itemHierarchy)
-                            .map(player => <RankWinner key={uuidv4()} sounds={sounds} player={player} players={players} />)
-                        : <RankWinner key={uuidv4()} sounds={sounds} player={itemHierarchy} players={players} />;
+                            .map(player => <RankWinner key={uuidv4()} player={player} players={players} />)
+                        : <RankWinner key={uuidv4()} player={itemHierarchy} players={players} />;
                 })
             }
             <Button
                 className="action-button"
                 data-testid="form-save-button"
                 onClick={() => handleNextRound()}
-                sound={sounds.find((sound) => sound.name === SoundName.positive)?.audio}
+                sound={loadedSounds.find((sound) => sound.name === SoundName.positive)?.audio}
             >
                 Next Round
             </Button>
         </div>
     );
-};
+});

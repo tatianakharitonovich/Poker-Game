@@ -1,5 +1,5 @@
 import React from "react";
-import { CardType, Phase, Player, PlayerAnimationSwitchboard, Sound } from "../types";
+import { CardType, Phase, Player, PlayerAnimationSwitchboard } from "../types";
 import { PlayerView } from "./players/PlayerView";
 
 interface BoardProps {
@@ -10,7 +10,6 @@ interface BoardProps {
     clearCards: boolean;
     communityCards: CardType[];
     playerAnimationSwitchboard: PlayerAnimationSwitchboard;
-    sounds: Sound[];
     popAnimationState: (index: number) => void;
 }
 
@@ -24,7 +23,6 @@ export const Board: React.FC<BoardProps> = (props) => {
         communityCards,
         playerAnimationSwitchboard,
         popAnimationState,
-        sounds,
     } = props;
 
     const reversedPlayers = players.reduce((result, player, index) => {
@@ -42,7 +40,6 @@ export const Board: React.FC<BoardProps> = (props) => {
                 phase={phase}
                 playerAnimationSwitchboard={playerAnimationSwitchboard}
                 endTransition={popAnimationState}
-                sounds={sounds}
             />,
         );
         return result;

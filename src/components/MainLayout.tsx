@@ -1,49 +1,30 @@
-import React, { useEffect, useState } from "react";
-import { Gender, Sound } from "../types";
+import React, { useEffect } from "react";
+import { observer } from "mobx-react-lite";
 import { RegistrationForm } from "./registration-form/RegistrationForm";
 import { GameLayout } from "./GameLayout";
+import { useRootStore } from "../hooks/useRootStore";
 
-interface MainLayoutProps {
-    sounds: Sound[];
-}
-
-export const MainLayout: React.FC<MainLayoutProps> = ({ sounds }) => {
-    const [userName, setUserName] = useState("");
-    const [playersNumber, setPlayersNumber] = useState<string>("");
-    const [gender, setGender] = useState<Gender>();
-    const [isSubmit, setIsSubmit] = useState(false);
+export const MainLayout: React.FC = observer(() => {
+    const {
+        isSubmit,
+        setUserName,
+        setGender,
+        setPlayersNumber,
+    } = useRootStore();
 
     useEffect(() => {
         setUserName("");
         setGender(undefined);
         setPlayersNumber("");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isSubmit]);
 
     return (
         <div className="App-wrap" style={{ height: isSubmit ? "100%" : "auto" }}>
             {!isSubmit ?
-                (
-                    <RegistrationForm
-                        userName={userName}
-                        gender={gender}
-                        playersNumber={playersNumber}
-                        userNameHandler={setUserName}
-                        genderHandler={setGender}
-                        playersNumberHandler={setPlayersNumber}
-                        submitHandler={setIsSubmit}
-                        sounds={sounds}
-                    />
-                )
-                : (
-                    <GameLayout
-                        userName={userName}
-                        gender={gender}
-                        submitHandler={setIsSubmit}
-                        sounds={sounds}
-                        playersNumber={playersNumber}
-                    />
-                )
+                <RegistrationForm />
+                : <GameLayout />
             }
         </div>
     );
-};
+});

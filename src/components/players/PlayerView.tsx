@@ -1,5 +1,5 @@
 import React from "react";
-import { CardType, Phase, Player, PlayerAnimationSwitchboard, Sound } from "../../types";
+import { CardType, Phase, Player, PlayerAnimationSwitchboard } from "../../types";
 import { Card } from "../cards/Card";
 import { PlayerAvatar } from "./PlayerAvatar";
 import { PlayerStatus } from "./PlayerStatus";
@@ -19,7 +19,6 @@ interface PlayerViewProps {
     phase: Phase;
     playerAnimationSwitchboard: PlayerAnimationSwitchboard;
     communityCards: CardType[];
-    sounds: Sound[];
     endTransition: (index: number) => void;
 }
 
@@ -33,7 +32,6 @@ export const PlayerView: React.FC<PlayerViewProps> = (props) => {
         phase,
         clearCards,
         communityCards,
-        sounds,
         player: {
             isFake,
             folded,
@@ -62,7 +60,6 @@ export const PlayerView: React.FC<PlayerViewProps> = (props) => {
                             cardData={card}
                             applyFoldedClassname={applyFoldedClassname}
                             isRobot={true}
-                            sounds={sounds}
                         />
                     );
                 }
@@ -73,7 +70,6 @@ export const PlayerView: React.FC<PlayerViewProps> = (props) => {
                         cardData={cardData}
                         applyFoldedClassname={applyFoldedClassname}
                         isRobot={false}
-                        sounds={sounds}
                     />
                 );
             });
@@ -85,7 +81,6 @@ export const PlayerView: React.FC<PlayerViewProps> = (props) => {
                     cardData={card}
                     applyFoldedClassname={applyFoldedClassname}
                     isRobot={false}
-                    sounds={sounds}
                 />
             );
         });
@@ -108,7 +103,6 @@ export const PlayerView: React.FC<PlayerViewProps> = (props) => {
                 isActive={isAnimating(arrayIndex)}
                 content={playerAnimationSwitchboard[arrayIndex].content}
                 endTransition={endTransition}
-                sounds={sounds}
             />
             <div className="player-cards">
                 {!isFake && phase !== "showdown" && !folded && <div className="player-cards-hand">{determineBestHand(allCards)}</div>}
