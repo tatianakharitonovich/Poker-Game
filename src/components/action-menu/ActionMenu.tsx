@@ -1,38 +1,44 @@
 import * as React from "react";
+import { observer } from "mobx-react-lite";
 import { Handles, Rail, Slider, Tracks } from "react-compound-slider";
-import { Phase, Player } from "../../types";
+import { Player } from "../../types";
 import { determineMinBet } from "../../utils/bet";
 import { Handle } from "../slider/Handle";
 import { railStyle, sliderStyle } from "../slider/styles";
 import { Track } from "../slider/Track";
 
 import "./ActionMenu.css";
+import { useRootStore } from "../../hooks/useRootStore";
 
 interface ActionMenuProps {
-    players: Player[];
-    activePlayerIndex: number;
-    highBet: number;
-    phase: Phase;
     handleBetInputChange: (val: readonly number[], max: number) => void;
 }
 
-export const ActionMenu: React.FC<ActionMenuProps> = (props) => {
+export const ActionMenu: React.FC<ActionMenuProps> = observer((props) => {
     const {
-        players,
-        activePlayerIndex,
-        highBet,
-        phase,
+        state: {
+            players,
+            activePlayerIndex,
+            highBet,
+            phase,
+        },
+    } = useRootStore();
+    const {
         handleBetInputChange,
     } = props;
 
     const isShow: () => boolean = () => {
         return (phase === "betting1" || phase === "betting2" || phase === "betting3" || phase === "betting4") &&
-        (!players[activePlayerIndex].isFake) &&
-        players[activePlayerIndex].chips >= highBet;
+        (!(players as Player[])[activePlayerIndex as number].isFake) &&
+        (players as Player[])[activePlayerIndex as number].chips >= (highBet as number);
     };
 
-    const min = determineMinBet(highBet, players[activePlayerIndex].chips, players[activePlayerIndex].bet);
-    const max = players[activePlayerIndex].chips + players[activePlayerIndex].bet;
+    const min = determineMinBet(
+        highBet as number,
+        (players as Player[])[activePlayerIndex as number].chips,
+        (players as Player[])[activePlayerIndex as number].bet,
+    );
+    const max = (players as Player[])[activePlayerIndex as number].chips + (players as Player[])[activePlayerIndex as number].bet;
 
     return (
         <Slider
@@ -89,4 +95,4 @@ export const ActionMenu: React.FC<ActionMenuProps> = (props) => {
             </Tracks>
         </Slider>
     );
-};
+});

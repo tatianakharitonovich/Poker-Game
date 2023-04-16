@@ -1,31 +1,27 @@
 import React from "react";
-import { CardType, Phase, Player, PlayerAnimationSwitchboard } from "../types";
+import { observer } from "mobx-react-lite";
+import { Player } from "../types";
 import { PlayerView } from "./players/PlayerView";
+import { useRootStore } from "../hooks/useRootStore";
 
 interface BoardProps {
-    players: Player[];
-    activePlayerIndex: number;
-    phase: Phase;
-    dealerIndex: number;
-    clearCards: boolean;
-    communityCards: CardType[];
-    playerAnimationSwitchboard: PlayerAnimationSwitchboard;
     popAnimationState: (index: number) => void;
 }
 
-export const Board: React.FC<BoardProps> = (props) => {
+export const Board: React.FC<BoardProps> = observer((props) => {
+    const {
+        popAnimationState,
+    } = props;
+
+    const { state } = useRootStore();
+
     const {
         players,
         activePlayerIndex,
         dealerIndex,
-        clearCards,
-        phase,
-        communityCards,
-        playerAnimationSwitchboard,
-        popAnimationState,
-    } = props;
+    } = state;
 
-    const reversedPlayers = players.reduce((result, player, index) => {
+    const reversedPlayers = (players as Player[]).reduce((result, player, index) => {
         const isActive = (index === activePlayerIndex);
         const hasDealerChip = (index === dealerIndex);
         result.unshift(
@@ -35,10 +31,6 @@ export const Board: React.FC<BoardProps> = (props) => {
                 isActive={isActive}
                 hasDealerChip={hasDealerChip}
                 player={player}
-                communityCards={communityCards}
-                clearCards={clearCards}
-                phase={phase}
-                playerAnimationSwitchboard={playerAnimationSwitchboard}
                 endTransition={popAnimationState}
             />,
         );
@@ -50,4 +42,4 @@ export const Board: React.FC<BoardProps> = (props) => {
             {reversedPlayers.map(component => component)}
         </>
     );
-};
+});

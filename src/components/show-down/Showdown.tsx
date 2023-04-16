@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { observer } from "mobx-react-lite";
 import { useRootStore } from "../../hooks/useRootStore";
-import { HierarchyPlayer, Player, PokerHand, ShowDownMessage, SoundName } from "../../types";
+import { PokerHand, ShowDownMessage, SoundName } from "../../types";
 import { ShowdownMessage } from "../show-down-message/ShowdownMessage";
 import { RankWinner } from "../rank-winner/RankWinner";
 
@@ -10,20 +10,22 @@ import "./Showdown.css";
 import { Button } from "../button/Button";
 
 interface ShowdownProps {
-    showDownMessages: ShowDownMessage[];
     renderCommunityCards: (clearAnimation: boolean, addClass: string) => JSX.Element[];
-    playerHierarchy: HierarchyPlayer[] | HierarchyPlayer[][];
-    players: Player[];
     handleNextRound: () => void;
 }
 
 export const Showdown: React.FC<ShowdownProps> = observer((props) => {
-    const { loadedSounds } = useRootStore();
+    const {
+        loadedSounds,
+        state,
+    } = useRootStore();
+
     const {
         showDownMessages,
-        renderCommunityCards,
         playerHierarchy,
-        players,
+    } = state;
+    const {
+        renderCommunityCards,
         handleNextRound,
     } = props;
 
@@ -84,8 +86,8 @@ export const Showdown: React.FC<ShowdownProps> = observer((props) => {
 
                     return tie
                         ? (itemHierarchy)
-                            .map(player => <RankWinner key={uuidv4()} player={player} players={players} />)
-                        : <RankWinner key={uuidv4()} player={itemHierarchy} players={players} />;
+                            .map(player => <RankWinner key={uuidv4()} player={player} />)
+                        : <RankWinner key={uuidv4()} player={itemHierarchy} />;
                 })
             }
             <Button

@@ -1,20 +1,26 @@
 import * as React from "react";
+import { observer } from "mobx-react-lite";
 import { HierarchyPlayer, Player } from "../../types";
 import { Card } from "../cards/Card";
 import { ShowdownPlayer } from "../players/ShowdownPlayer";
 
 import "./RankWinner.css";
+import { useRootStore } from "../../hooks/useRootStore";
 
 interface RankWinnerProps {
     player: HierarchyPlayer;
-    players: Player[];
 }
 
-export const RankWinner: React.FC<RankWinnerProps> = ({ player, players }) => {
+export const RankWinner: React.FC<RankWinnerProps> = observer(({ player }) => {
+    const {
+        state:
+        { players },
+    } = useRootStore();
+
     const { name, bestHand, handRank } = player;
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const playerStateData = players.find(statePlayer => statePlayer.name === name)!;
+    const playerStateData = (players as Player[]).find(statePlayer => statePlayer.name === name)!;
 
     const netChipEarnings = (playerStateData.roundEndChips - playerStateData.roundStartChips);
     const win = (netChipEarnings > 0);
@@ -57,4 +63,4 @@ export const RankWinner: React.FC<RankWinnerProps> = ({ player, players }) => {
             </div>
         </div>
     );
-};
+});

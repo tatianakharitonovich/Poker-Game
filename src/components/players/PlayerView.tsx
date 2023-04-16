@@ -1,11 +1,13 @@
 import React from "react";
-import { CardType, Phase, Player, PlayerAnimationSwitchboard } from "../../types";
+import { observer } from "mobx-react-lite";
+import { Player } from "../../types";
 import { Card } from "../cards/Card";
 import { PlayerAvatar } from "./PlayerAvatar";
 import { PlayerStatus } from "./PlayerStatus";
 
 import "./PlayerView.css";
 import { determineBestHand } from "../../utils/bestHand";
+import { useRootStore } from "../../hooks/useRootStore";
 
 const dealerChipImageURL = "/assets/images/chip.svg";
 const playerBetImageURL = "./assets/images/bet.svg";
@@ -15,23 +17,15 @@ interface PlayerViewProps {
     isActive: boolean;
     hasDealerChip: boolean;
     player: Player;
-    clearCards: boolean;
-    phase: Phase;
-    playerAnimationSwitchboard: PlayerAnimationSwitchboard;
-    communityCards: CardType[];
     endTransition: (index: number) => void;
 }
 
-export const PlayerView: React.FC<PlayerViewProps> = (props) => {
+export const PlayerView: React.FC<PlayerViewProps> = observer((props) => {
     const {
         arrayIndex,
-        playerAnimationSwitchboard,
         endTransition,
         hasDealerChip,
         isActive,
-        phase,
-        clearCards,
-        communityCards,
         player: {
             isFake,
             folded,
@@ -42,6 +36,15 @@ export const PlayerView: React.FC<PlayerViewProps> = (props) => {
             bet,
         },
     } = props;
+
+    const { state } = useRootStore();
+
+    const {
+        playerAnimationSwitchboard,
+        phase,
+        clearCards,
+        communityCards,
+    } = state;
 
     const allCards = [...cards, ...communityCards];
 
@@ -132,4 +135,4 @@ export const PlayerView: React.FC<PlayerViewProps> = (props) => {
             </div>
         </div>
     );
-};
+});

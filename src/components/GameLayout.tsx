@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unused-state */
 import React from "react";
+import { observer } from "mobx-react";
 import { cloneDeep } from "lodash";
-import { flushSync } from "react-dom";
 import { LoadingOverlay } from "./loading-overlay/LoadingOverlay";
 import { Game } from "./game/Game";
 import { WinScreen } from "./WinScreen";
@@ -35,63 +35,37 @@ import {
 import {
     GameState,
     GameStateBase,
-    GameStateInit,
     Player,
     PlayerWithSidePotStack,
-    playerAnimationSwitchboardInit,
 } from "../types";
 import { rootStore } from "../stores/rootStore";
 
+@observer
 export class GameLayout extends React.Component {
-    public state: GameStateInit = {
-        loading: true,
-        winnerFound: null,
-        players: null,
-        numberPlayersActive: null,
-        numberPlayersFolded: null,
-        numberPlayersAllIn: null,
-        activePlayerIndex: null,
-        dealerIndex: null,
-        blindIndex: null,
-        deck: null,
-        communityCards: [],
-        pot: null,
-        highBet: null,
-        betInputValue: null,
-        sidePots: [],
-        minBet: 20,
-        clearCards: false,
-        phase: "loading",
-        playerHierarchy: [],
-        showDownMessages: [],
-        playerAnimationSwitchboard: playerAnimationSwitchboardInit,
-    };
-
     public async componentDidMount() {
         const players = await createPlayers(rootStore.userName, rootStore.gender, rootStore.playersNumber);
         const dealerIndex = Math.floor(Math.random() * Math.floor(players.length));
         const blindIndicies = determineBlindIndices(dealerIndex, players.length);
-        const { minBet } = this.state;
+        const { minBet } = rootStore.state;
         const playersBoughtIn = anteUpBlinds(players, blindIndicies, minBet);
-        flushSync(() => {
-            this.setState((prevState: GameStateInit) => ({
-                players: playersBoughtIn,
-                loading: false,
-                numberPlayersActive: players.length,
-                numberPlayersFolded: 0,
-                numberPlayersAllIn: 0,
-                activePlayerIndex: dealerIndex,
-                dealerIndex,
-                blindIndex: {
-                    big: blindIndicies.bigBlindIndex,
-                    small: blindIndicies.smallBlindIndex,
-                },
-                deck: shuffle(generateCardsDeck()),
-                pot: 0,
-                highBet: prevState.minBet,
-                betInputValue: prevState.minBet,
-                phase: "initialDeal",
-            }));
+        rootStore.setState({
+            ...rootStore.state,
+            players: playersBoughtIn,
+            loading: false,
+            numberPlayersActive: players.length,
+            numberPlayersFolded: 0,
+            numberPlayersAllIn: 0,
+            activePlayerIndex: dealerIndex,
+            dealerIndex,
+            blindIndex: {
+                big: blindIndicies.bigBlindIndex,
+                small: blindIndicies.smallBlindIndex,
+            },
+            deck: shuffle(generateCardsDeck()),
+            pot: 0,
+            highBet: rootStore.state.minBet,
+            betInputValue: rootStore.state.minBet,
+            phase: "initialDeal",
         });
         this.runGameLoop();
     }
@@ -100,28 +74,29 @@ export class GameLayout extends React.Component {
         (val: readonly number[], max: number) => {
             let value = val[0];
             if (val[0] > max) { value = max; }
-            this.setState({
+            rootStore.setState({
+                ...rootStore.state,
                 betInputValue: parseInt(value.toString(), 10),
             });
         };
 
     public pushAnimationState: (index: number, content: string) => void =
         (index: number, content: string) => {
-            const { playerAnimationSwitchboard } = this.state;
+            const { playerAnimationSwitchboard } = rootStore.state;
             const newAnimationSwitchboard = { ...playerAnimationSwitchboard, ...{ [index]: { isAnimating: true, content } } };
-            this.setState({ playerAnimationSwitchboard: newAnimationSwitchboard });
+            rootStore.setState({ ...rootStore.state, playerAnimationSwitchboard: newAnimationSwitchboard });
         };
 
     public popAnimationState: (index: number) => void = (index: number) => {
-        const { playerAnimationSwitchboard } = this.state;
+        const { playerAnimationSwitchboard } = rootStore.state;
         const persistContent = playerAnimationSwitchboard[index].content;
         const newAnimationSwitchboard = { ...playerAnimationSwitchboard, ...{ [index]: { isAnimating: false, content: persistContent } } };
-        this.setState({ playerAnimationSwitchboard: newAnimationSwitchboard });
+        rootStore.setState({ ...rootStore.state, playerAnimationSwitchboard: newAnimationSwitchboard });
     };
 
     public handleBetInputSubmit: (bet: string, min: string, max: string) => void =
         (bet: string, min: string, max: string) => {
-            const { playerAnimationSwitchboard, ...appState } = this.state;
+            const { playerAnimationSwitchboard, ...appState } = rootStore.state;
             const { activePlayerIndex, highBet, betInputValue, players } = appState as GameStateBase<Player>;
             this.pushAnimationState(
                 activePlayerIndex,
@@ -136,69 +111,65 @@ export class GameLayout extends React.Component {
                 parseInt(min, 10),
                 parseInt(max, 10),
             ) as GameStateBase<Player> | GameStateBase<PlayerWithSidePotStack>;
-            this.setState(newState, () => {
-                if ((newState.players[newState.activePlayerIndex].isFake) && (newState.phase !== "showdown")) {
-                    setTimeout(() => {
-                        this.handleAI();
-                    }, 2000);
-                }
-            });
-        };
-
-    public handleFold: () => void = () => {
-        const { playerAnimationSwitchboard, ...appState } = this.state;
-        const newState = handleFoldUtils(cloneDeep(appState as GameStateBase<Player>));
-        this.setState(newState, () => {
+            rootStore.setState({ ...rootStore.state, ...newState });
             if ((newState.players[newState.activePlayerIndex].isFake) && (newState.phase !== "showdown")) {
                 setTimeout(() => {
                     this.handleAI();
                 }, 2000);
             }
-        });
+        };
+
+    public handleFold: () => void = () => {
+        const { playerAnimationSwitchboard, ...appState } = rootStore.state;
+        const newState = handleFoldUtils(cloneDeep(appState as GameStateBase<Player>));
+        rootStore.setState({ ...rootStore.state, ...newState });
+        if ((newState.players[newState.activePlayerIndex].isFake) && (newState.phase !== "showdown")) {
+            setTimeout(() => {
+                this.handleAI();
+            }, 2000);
+        }
     };
 
     public handleAI: () => void = () => {
-        const { playerAnimationSwitchboard, ...appState } = this.state;
+        const { playerAnimationSwitchboard, ...appState } = rootStore.state;
         const newState =
             handleAIUtil(
                 cloneDeep(appState as GameStateBase<Player>),
                 this.pushAnimationState,
             ) as GameStateBase<Player> | GameStateBase<PlayerWithSidePotStack>;
-        this.setState({
+        rootStore.setState({
+            ...rootStore.state,
             ...newState,
             betInputValue: newState.minBet,
-        }, () => {
-            if ((newState.players[newState.activePlayerIndex].isFake) && (newState.phase !== "showdown")) {
-                setTimeout(() => {
-                    this.handleAI();
-                }, 2000);
-            }
         });
+        if ((newState.players[newState.activePlayerIndex].isFake) && (newState.phase !== "showdown")) {
+            setTimeout(() => {
+                this.handleAI();
+            }, 2000);
+        }
     };
 
     public runGameLoop: () => void = () => {
-        const newState = dealPrivateCards(cloneDeep(this.state as GameState)) as GameState;
-        this.setState(newState, () => {
-            if ((newState.players[newState.activePlayerIndex].isFake) && (newState.phase !== "showdown")) {
-                setTimeout(() => {
-                    this.handleAI();
-                }, 2000);
-            }
-        });
+        const newState = dealPrivateCards(cloneDeep(rootStore.state as GameState)) as GameState;
+        rootStore.setState({ ...rootStore.state, ...newState });
+        if ((newState.players[newState.activePlayerIndex].isFake) && (newState.phase !== "showdown")) {
+            setTimeout(() => {
+                this.handleAI();
+            }, 2000);
+        }
     };
 
     public handleNextRound: () => void = () => {
-        this.setState({ clearCards: true });
-        const newState = beginNextRound(cloneDeep(this.state as GameState)) as GameState;
+        rootStore.setState({ ...rootStore.state, clearCards: true });
+        const newState = beginNextRound(cloneDeep(rootStore.state as GameState)) as GameState;
         if (checkWin(newState.players)) {
-            this.setState({ winnerFound: true });
+            rootStore.setState({ ...rootStore.state, winnerFound: true });
             return;
         }
-        this.setState(newState, () => {
-            if ((newState.players[newState.activePlayerIndex].isFake) && (newState.phase !== "showdown")) {
-                setTimeout(() => this.handleAI(), 2000);
-            }
-        });
+        rootStore.setState({ ...rootStore.state, ...newState });
+        if ((newState.players[newState.activePlayerIndex].isFake) && (newState.phase !== "showdown")) {
+            setTimeout(() => this.handleAI(), 2000);
+        }
     };
 
     public render() {
@@ -207,45 +178,25 @@ export class GameLayout extends React.Component {
             winnerFound,
             players,
             activePlayerIndex,
-            highBet,
             pot,
             dealerIndex,
             betInputValue,
-            phase,
-            playerHierarchy,
-            clearCards,
-            showDownMessages,
-            communityCards,
-            playerAnimationSwitchboard,
-        } = this.state;
+        } = rootStore.state;
 
         return (
             <>
                 {(loading) ? <LoadingOverlay /> :
                     (winnerFound) ?
                         <WinScreen winners={players?.filter((player: { chips: number; }) => player.chips > 0)} /> :
-                        (players !== null && activePlayerIndex !== null && highBet !== null &&
+                        (players !== null && activePlayerIndex !== null && rootStore.state.highBet !== null &&
                         pot !== null && dealerIndex !== null && betInputValue !== null) ? (
                             <Game
                                 data-test="game"
-                                highBet={highBet}
-                                players={players}
-                                activePlayerIndex={activePlayerIndex}
-                                phase={phase}
-                                pot={pot}
-                                loading={loading}
-                                dealerIndex={dealerIndex}
-                                playerHierarchy={playerHierarchy}
-                                clearCards={clearCards}
                                 handleNextRound={this.handleNextRound}
                                 popAnimationState={this.popAnimationState}
                                 handleBetInputChange={this.handleBetInputChange}
-                                betInputValue={betInputValue}
-                                showDownMessages={showDownMessages}
-                                communityCards={communityCards}
                                 handleFold={this.handleFold}
                                 handleBetInputSubmit={this.handleBetInputSubmit}
-                                playerAnimationSwitchboard={playerAnimationSwitchboard}
                             />
                             ) : null
                 }

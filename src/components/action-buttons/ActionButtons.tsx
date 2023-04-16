@@ -9,37 +9,45 @@ import "./ActionButtons.css";
 import { Button } from "../button/Button";
 
 interface ActionButtonsProps {
-    players: Player[];
-    activePlayerIndex: number;
-    highBet: number;
-    betInputValue: number;
     handleFold: () => void;
     handleBetInputSubmit: (bet: string, min: string, max: string) => void;
 }
 
 export const ActionButtons: React.FC<ActionButtonsProps> = observer((props) => {
-    const { loadedSounds } = useRootStore();
+    const { loadedSounds, state } = useRootStore();
+    const {
+        handleBetInputSubmit,
+        handleFold,
+    } = props;
+
     const {
         players,
         activePlayerIndex,
         highBet,
-        handleBetInputSubmit,
         betInputValue,
-        handleFold,
-    } = props;
+    } = state;
 
-    const min = determineMinBet(highBet, players[activePlayerIndex].chips, players[activePlayerIndex].bet).toString();
-    const max = players[activePlayerIndex].chips + players[activePlayerIndex].bet.toString();
+    const min = determineMinBet(
+        highBet as number,
+        (players as Player[])[activePlayerIndex as number].chips,
+        (players as Player[])[activePlayerIndex as number].bet,
+    ).toString();
+    const max = (players as Player[])[activePlayerIndex as number].chips +
+        (players as Player[])[activePlayerIndex as number].bet.toString();
 
     const button = () => {
-        const buttonText = renderActionButtonText(highBet, betInputValue, players[activePlayerIndex]);
+        const buttonText = renderActionButtonText(
+            highBet as number,
+            betInputValue as number,
+            (players as Player[])[activePlayerIndex as number],
+        );
         const sound = getSound(buttonText as string, loadedSounds);
 
-        if (buttonText && players[activePlayerIndex].chips >= highBet) {
+        if (buttonText && (players as Player[])[activePlayerIndex as number].chips >= (highBet as number)) {
             return (
                 <Button
                     className="action-button"
-                    onClick={() => handleBetInputSubmit(betInputValue.toString(), min, max)}
+                    onClick={() => handleBetInputSubmit((betInputValue as number).toString(), min, max)}
                     sound={sound}
                 >
                     {buttonText}
