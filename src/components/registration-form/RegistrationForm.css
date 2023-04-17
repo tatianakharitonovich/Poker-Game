@@ -2,20 +2,20 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 116px 16px 20px;
+    padding: 7.25rem 1rem 1.25rem;
     max-width: 480px;
-    gap: 24px;
+    gap: 1.5rem;
     margin: auto;
     color: white;
 }
 
 .registration-form-title,
 .registration-form-background {    
-    filter: drop-shadow(0 8px 4px rgb(0 0 0 / 85%));
+    filter: drop-shadow(0 0.5rem 0.25rem rgb(0 0 0 / 85%));
 }
 
 .registration-form-title {
-    font-size: 44px;
+    font-size: 2.75rem;
     background-image: linear-gradient(90deg, #06b1ac 0%, #48cdb7 52.09%, #c1afa1 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -25,10 +25,10 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
+    gap: 0.5rem;
     width: 100%;
-    font-size: 24px;
-    filter: drop-shadow(0 8px 4px rgb(0 0 0 / 85%));
+    font-size: 1.5rem;
+    filter: drop-shadow(0 0.5rem 0.25rem rgb(0 0 0 / 85%));
 }
 
 .registration-form-label {
@@ -38,7 +38,7 @@
 .registration-form-name-input {
     box-sizing: border-box;
     width: 100%;
-    padding: 8px;
-    border-radius: 8px;
-    font-size: 22px;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    font-size: 1.375rem;
 }

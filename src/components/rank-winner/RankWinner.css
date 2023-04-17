@@ -4,11 +4,11 @@
 }
 
 .rank-winner .player-wrap-avatar {
-	margin-right: 12px;
+	margin-right: 0.75rem;
 }
 
 .rank-winner-besthand {
-	margin-left: 24px;
+	margin-left: 1.5rem;
 }
 
 .rank-winner-besthand-cards {
@@ -20,19 +20,19 @@
 }
 
 .rank-winner-handrank {
-	width: 115px;
+	width: 7.25rem;
 	text-align: center;
 	color: #00ffd0;
-	font-size: 24px;
+	font-size: 1.5rem;
     font-weight: 600;
-	filter: drop-shadow(0 8px 4px rgb(0 0 0 / 85%));
+	filter: drop-shadow(0 0.5rem 0.25rem rgb(0 0 0 / 85%));
 }
 
 .rank-winner-earnings {
 	text-align: center;
     font-weight: 600;
-	font-size: 24px;
-	filter: drop-shadow(0 8px 4px rgb(0 0 0 / 85%));
+	font-size: 1.5rem;
+	filter: drop-shadow(0 0.5rem 0.25rem rgb(0 0 0 / 85%));
 }
 
 .rank-winner-earnings.positive {

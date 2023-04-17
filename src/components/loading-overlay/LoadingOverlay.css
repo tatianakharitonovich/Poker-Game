@@ -9,9 +9,9 @@
 .loading-wrap {
 	display: flex;
 	align-items: center;
-	gap: 24px;
-	height: 120px;
-	width: 408px;	
+	gap: 1.5rem;
+	height: 7.5rem;
+	width: 25.5rem;	
 }
 
 .loading-wrap-img {

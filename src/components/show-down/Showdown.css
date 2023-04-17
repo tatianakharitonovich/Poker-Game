@@ -2,7 +2,7 @@
 	display: flex;
    	flex-direction: column;
 	align-items: center;
-	gap: 24px;
+	gap: 1.5rem;
 	position: absolute;
 	overflow: auto;
 	left: 0;
@@ -12,7 +12,7 @@
 	color: white;
 	height: auto;
 	min-height: 100%;
-    padding: 36px 16px;
+    padding: 2.25rem 1rem;
 	z-index: 100;
 	opacity: 0;
 	animation: appearance 1s 1 ease-in 2s both;
@@ -33,21 +33,21 @@
 
 .showdown-messages {
 	text-align: left;
-	font-size: 24px;
-	filter: drop-shadow(0 8px 4px rgb(0 0 0 / 85%));
+	font-size: 1.5rem;
+	filter: drop-shadow(0 0.5rem 0.25rem rgb(0 0 0 / 85%));
 }
 
 .showdown-cards-label {
 	text-transform: uppercase;
-	font-size: 16px;
+	font-size: 1rem;
 }
 
 .showdown-cards {
 	display: flex;
-	height: 140px;
+	height: 8.75rem;
 	margin-bottom: 1rem;
 }
 
 .showdown-card {
-	filter: drop-shadow(0 8px 4px rgb(0 0 0 / 85%));
+	filter: drop-shadow(0 0.5rem 0.25rem rgb(0 0 0 / 85%));
 }

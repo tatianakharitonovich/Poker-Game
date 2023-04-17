@@ -1,13 +1,13 @@
 .player-status {
 	background: rgba(0,0,0,0.65); 
 	color: white;
-	padding: 4px;
+	padding: 0.25rem;
 	text-transform: uppercase;
 	font-weight: 700;
-	border-radius: 12px;
+	border-radius: 0.75rem;
 	
 	position: absolute;
-	top: -10px;
+	top: -0.625rem;
 	left: 50%;
 	transform: translateX(-50%);
 	z-index: 100;

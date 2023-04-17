@@ -5,16 +5,16 @@
 	align-items: center;
 
 	box-sizing: border-box;
-    padding: 8px;
+    padding: 0.5rem;
     font-size: 4em;
     line-height: 0.7em;
 	background-color: white;
 
-	height: 116px;
-	width: 80px;
+	height: 7.25rem;
+	width: 5rem;
 	margin: 0 1px;
 	border: 1px solid #2c0303;
-	border-radius: 8px;
+	border-radius: 0.5rem;
 
 	opacity: 0;
 	animation: fade-in-up 0.5s;
@@ -22,7 +22,7 @@
 }
 
 .isHover {
-	filter: drop-shadow(0 3px 2px rgb(0 0 0 / 85%));
+	filter: drop-shadow(0 0.1875rem 0.125rem rgb(0 0 0 / 85%));
 	transition: background-color 0.2s ease-out;
 }
 
@@ -31,10 +31,10 @@
 }
 
 .isFakecard {
-	height: 56px;
-    border: 2px solid #2354ff;
-    width: 36px;
-    background-image: repeating-linear-gradient(60deg, #7782b7 0px, #23499f 15px, #3e3d4e 15px, #4a4c6e 25px, #33487a 25px, #3e605e 35px, #8f7fad 35px, #4c4d78 45px, #186074 45px, #19a2c3 55px), repeating-linear-gradient(-60deg, #36d3f4 0px, #07bdff 15px, #789995 15px, #748aa5 25px, #cea6d1 25px, #ffffff 35px, #a8ecf1 35px, #ffffff 45px, #42859f 45px, #00e5a6 55px);
+	height: 3.5rem;
+    border: 0.125rem solid #2354ff;
+	width: 2.25rem;
+    background-image: repeating-linear-gradient(60deg, #7782b7 0, #23499f 1rem, #3e3d4e 1rem, #4a4c6e 1.625rem, #33487a 1.625rem, #3e605e 2.25rem, #8f7fad 2.25rem, #4c4d78 2.875rem, #186074 2.875rem, #19a2c3 3.5rem), repeating-linear-gradient(-60deg, #36d3f4 0, #07bdff 1rem, #789995 1rem, #748aa5 1.625rem, #cea6d1 1.625rem, #ffffff 2.25rem, #a8ecf1 2.25rem, #ffffff 2.875rem, #42859f 2.875rem, #00e5a6 3.5rem);
 	background-blend-mode: multiply;
 	background-size: 150%;
 	animation: fake-in-up 0.5s;

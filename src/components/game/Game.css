@@ -26,15 +26,15 @@
 
 .game-return-button {
     position: absolute;
-    top: 32px;
-    left: 24px;
+    top: 2rem;
+    left: 1.5rem;
     z-index: 1;
 }
 
 .game-soundwrap {
     position: absolute;
-    right: 24px;
-    top: 32px;
+    right: 1.5rem;
+    top: 2rem;
     z-index: 1;
 }
 
@@ -46,18 +46,18 @@
 .game-container-image {
     width: 98%;
     height: 100%;
-    filter: drop-shadow(0 22px 10px rgb(0 0 0 / 85%));
-    transform: perspective(900px) rotateX(30deg);
+    filter: drop-shadow(0 1.375rem 0.625rem rgb(0 0 0 / 85%));
+    transform: perspective(56.25rem) rotateX(30deg);
 }
 
 .game-community {
     position: absolute;
     display: flex;
     justify-content: center;
-    top: calc(51.5% - 60px);
-    left: calc(50% - 216px);
+    top: calc(51.5% - 3.75rem);
+    left: calc(50% - 13.5rem);
     display: flex;
-    transform: perspective(900px) rotateX(30deg);
+    transform: perspective(56.25rem) rotateX(30deg);
 }
 
 .game-pot {
@@ -65,10 +65,10 @@
     align-items: center;
 	position: absolute;
 	top: 30%;
-	left: calc(50% - 22.5px);
+	left: calc(50% - 1.375rem);
 	color: white;
-    font-size: 24px;
-    filter: drop-shadow(0 16px 8px rgb(0 0 0 / 85%));
+    font-size: 1.5rem;
+    filter: drop-shadow(0 1rem 0.5rem rgb(0 0 0 / 85%));
 }
 
 .game-pot-img {
@@ -76,9 +76,9 @@
 }
 
 .game-pot-text {
-    padding: 2px 16px;
-    margin-left: -8px;
-    border-radius: 24px;
+    padding: 0.125rem 1rem;
+    margin-left: -0.5rem;
+    border-radius: 1.5rem;
     border-bottom: 1px solid white;
     border-top: 1px solid white;
     background: rgb(0 0 0 / 50%);
@@ -86,7 +86,7 @@
     transition: transform 0.4s ease-out;
 }
 .game-pot-text:hover {
-	transform: translateY(-10px) scale(1.2);
+	transform: translateY(-0.625rem) scale(1.2);
 }
 
 @keyframes shake {
@@ -109,8 +109,8 @@
  	justify-content: space-around;
  	left: 0;
  	right: 0;
- 	bottom: 16px;
- 	height: 124px;
+ 	bottom: 1rem;
+ 	height: 7.75rem;
  	color: white;
 }
 
@@ -135,7 +135,7 @@
         left: 50%;
         top: 40%;
         transform: translate(-50%, -50%);
-        height: 590px;
+        height: 36.875rem;
         max-width: 1294px;
     }	
 }
@@ -148,7 +148,7 @@
     }
 
     .game-community {
-        top: calc(36.5% - 40px);
+        top: calc(36.5% - 2.5rem);
     }
 }
 

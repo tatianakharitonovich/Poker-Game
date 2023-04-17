@@ -5,14 +5,14 @@
 .action-rail::before,
 .action-rail::after {
     position: absolute;
-    right: -10px;
-    top: -3px;
+    right: -0.625rem;
+    top: -0.1875rem;
     content: "";
-    width: 14px;
-    height: 14px;
+    width: 0.875rem;
+    height: 0.875re;
     border-radius: 50%;
     background: linear-gradient(white, black);
-    box-shadow: 0 0px 8px 0px #141212c9;
+    box-shadow: 0 0 0.5rem 0 #141212c9;
 }
 
 .action-rail::after {

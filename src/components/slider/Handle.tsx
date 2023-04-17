@@ -26,7 +26,7 @@ export const Handle: React.FC<HandleProps> = (props) => {
                 cursor: "pointer",
                 borderRadius: "50%",
                 backgroundImage: "radial-gradient(rgb(239, 239, 239), rgb(80, 71, 71))",
-                boxShadow: "0 0px 8px 0px #141212c9",
+                boxShadow: "0 0 8px 0 #141212c9",
                 color: "#aaa",
             }}
             {...getHandleProps(id)}
@@ -41,7 +41,7 @@ export const Handle: React.FC<HandleProps> = (props) => {
                     fontSize: 24,
                     marginTop: 21,
                     width: "min-content",
-                    boxShadow: "0 0px 8px 0px #141212c9",
+                    boxShadow: "0 0 8px 0 #141212c9",
                 }}
             >
                 {value}

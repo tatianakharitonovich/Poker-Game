@@ -15,7 +15,7 @@ export const Track: React.FC<TrackProps> = ({ source, target, getTrackProps }) =
                 height: 7,
                 zIndex: 1,
                 marginTop: 35,
-                boxShadow: "0 0px 8px 0px #141212c9",
+                boxShadow: "0 0 8px 0 #141212c9",
                 backgroundImage: "linear-gradient(white, black)",
                 borderRadius: 5,
                 cursor: "pointer",
