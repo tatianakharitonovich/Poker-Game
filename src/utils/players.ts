@@ -208,7 +208,12 @@ export const beginNextRound: (state: GameState) => GameState | undefined = (stat
     return passDealerChip(state);
 };
 
-export const checkWin: (players: Player[]) => boolean =
-(players: Player[]) => {
-    return (players.filter(player => player.chips > 0).length === 1);
+export const checkWin: (players: Player[], setWinner: (player: Player) => void) => boolean =
+(players: Player[], setWinner: (player: Player) => void) => {
+    const winPlayers = players.filter(player => player.chips > 0);
+    if (winPlayers.length === 1) {
+        setWinner(winPlayers[0]);
+        return true;
+    }
+    return false;
 };

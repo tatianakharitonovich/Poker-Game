@@ -21,6 +21,7 @@ export class RootStore {
     public playersNumber = "";
     public gender: Gender | undefined;
     public isSubmit = false;
+    public winner: Player | undefined;
     public state: GameStateInit = {
         loading: true,
         winnerFound: null,
@@ -98,6 +99,10 @@ export class RootStore {
                 this.handleAI();
             }, 2000);
         }
+    };
+
+    public setWinner: (player: Player) => void = (player: Player) => {
+        this.winner = player;
     };
 }
 

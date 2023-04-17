@@ -3,7 +3,7 @@ import { observer } from "mobx-react";
 import { cloneDeep } from "lodash";
 import { LoadingOverlay } from "./loading-overlay/LoadingOverlay";
 import { Game } from "./game/Game";
-import { WinScreen } from "./WinScreen";
+import { WinScreen } from "./win-screen/WinScreen";
 
 import {
     generateCardsDeck,
@@ -64,7 +64,6 @@ export class GameLayout extends React.Component {
     public render() {
         const {
             loading,
-            winnerFound,
             players,
             activePlayerIndex,
             pot,
@@ -75,8 +74,8 @@ export class GameLayout extends React.Component {
         return (
             <>
                 {(loading) ? <LoadingOverlay /> :
-                    (winnerFound) ?
-                        <WinScreen winners={players?.filter((player: { chips: number; }) => player.chips > 0)} /> :
+                    (rootStore.winner) ?
+                        <WinScreen winner={rootStore.winner} /> :
                         (players !== null && activePlayerIndex !== null && rootStore.state.highBet !== null &&
                         pot !== null && dealerIndex !== null && betInputValue !== null) ? (
                             <Game />

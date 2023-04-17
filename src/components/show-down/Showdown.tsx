@@ -21,6 +21,7 @@ export const Showdown: React.FC<ShowdownProps> = observer(({ renderCommunityCard
         state,
         setState,
         handleAI,
+        setWinner,
     } = useRootStore();
 
     const {
@@ -45,7 +46,7 @@ export const Showdown: React.FC<ShowdownProps> = observer(({ renderCommunityCard
     const handleNextRound: () => void = () => {
         setState({ ...state, clearCards: true });
         const newState = beginNextRound(cloneDeep(state as GameState)) as GameState;
-        if (checkWin(newState.players)) {
+        if (checkWin(newState.players, setWinner)) {
             setState({ ...state, winnerFound: true });
             return;
         }

@@ -51,7 +51,7 @@ export const Card: React.FC<CardProps> = observer((props) => {
     return (
         <div
             key={`${suit} ${cardRank}`}
-            className={`playing-card${isRobot ? " isFakecard" : ""}${applyFoldedClassname ? " folded" : ""} ${addClass}`}
+            className={`playing-card${isRobot ? " isFakecard" : ""}${applyFoldedClassname ? " folded" : ""} ${addClass || ""}`}
             style={{ animationDelay: `${(applyFoldedClassname) ? 0 : animationDelay}ms` }}
         >
             {!isRobot && (
