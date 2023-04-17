@@ -9,6 +9,7 @@ import "./App.css";
 
 const sounds: Sound[] = [
     { name: SoundName.main, src: "assets/sounds/main.mp3", audio: new Audio("assets/sounds/main.mp3") },
+    { name: SoundName.menu, src: "assets/sounds/menu.mp3", audio: new Audio("assets/sounds/menu.mp3") },
     { name: SoundName.card, src: "assets/sounds/card.mp3", audio: new Audio("assets/sounds/card.mp3") },
     { name: SoundName.check, src: "assets/sounds/check.mp3", audio: new Audio("assets/sounds/check.mp3") },
     { name: SoundName.positive, src: "assets/sounds/positive-tone.wav", audio: new Audio("assets/sounds/positive-tone.wav") },

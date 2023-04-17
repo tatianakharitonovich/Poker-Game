@@ -8,6 +8,7 @@ export interface Sound {
 
 export enum SoundName {
     main = "main",
+    menu = "menu",
     card = "card",
     check = "check",
     positive = "positive",

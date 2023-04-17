@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import { useRootStore } from "../../hooks/useRootStore";
 import { Button } from "../button/Button";
@@ -19,6 +19,23 @@ export const RegistrationForm: React.FC = observer(() => {
     } = useRootStore();
 
     const buttomSound = loadedSounds.find((sound) => sound.name === SoundName.positive)?.audio;
+
+    const menuSound = loadedSounds.find((sound) => sound.name === SoundName.menu)?.audio;
+
+    if (menuSound) {
+        menuSound.volume = 0.01;
+    }
+
+    useEffect(() => {
+        return () => {
+            menuSound?.pause();
+        };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const playMusic: () => void = () => {
+        menuSound?.play().catch((e) => { throw new Error(`${e}`); });
+    };
 
     const playersNumberIsValid: () => boolean = () => {
         if (playersNumber === "2" ||
@@ -42,7 +59,7 @@ export const RegistrationForm: React.FC = observer(() => {
                     type="text"
                     data-test="name-input"
                     value={userName}
-                    onChange={(e) => setUserName(e.target.value)}
+                    onChange={(e) => { setUserName(e.target.value); playMusic(); }}
                 />
             </div>
             <div className="registration-form-item">
@@ -55,7 +72,7 @@ export const RegistrationForm: React.FC = observer(() => {
                     placeholder="2"
                     data-test="playersNumber-input"
                     value={playersNumber}
-                    onChange={(e) => setPlayersNumber(e.target.value)}
+                    onChange={(e) => { setPlayersNumber(e.target.value); playMusic(); }}
                 />
             </div>
             <div className="registration-form-item">
@@ -67,7 +84,7 @@ export const RegistrationForm: React.FC = observer(() => {
                             value="male"
                             data-testid="male-input"
                             checked={gender === "male"}
-                            onChange={(e) => setGender(e.target.value as Gender)}
+                            onChange={(e) => { setGender(e.target.value as Gender); playMusic(); }}
                         />
                         Male
                     </label>
@@ -79,7 +96,7 @@ export const RegistrationForm: React.FC = observer(() => {
                             value="female"
                             data-test="female-input"
                             checked={gender === "female"}
-                            onChange={(e) => setGender(e.target.value as Gender)}
+                            onChange={(e) => { setGender(e.target.value as Gender); playMusic(); }}
                         />
                         Female
                     </label>
