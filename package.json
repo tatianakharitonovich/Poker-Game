@@ -3,10 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^14.4.3",
-    "@types/jest": "^29.4.0",
     "@types/node": "^18.13.0",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
@@ -28,7 +24,6 @@
     "prepare": "cd .. && husky install React_Typescript_4-5/.husky",
     "start": "react-scripts start",
     "build": "CI=false react-scripts build",
-    "test": "react-scripts test --transformIgnorePatterns \"node_modules/(?!axios)/\"",
     "eject": "react-scripts eject",
     "eslint": "eslint --fix $(git diff --name-only HEAD | grep -E '(tsx|ts)$')"
   },

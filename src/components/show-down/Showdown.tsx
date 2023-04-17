@@ -74,12 +74,6 @@ export const Showdown: React.FC<ShowdownProps> = observer(({ renderCommunityCard
         <div className="showdown">
             <img className="showdown-background" src="assets/images/showdown.svg" alt="LasVegas" />
             <div className="showdown-messages">
-                {showDownMessages.map((message) => (
-                    <ShowdownMessage
-                        key={uuidv4()}
-                        message={message}
-                    />
-                ))}
                 <ShowdownMessage
                     message={messageUnion()}
                 />
@@ -104,7 +98,6 @@ export const Showdown: React.FC<ShowdownProps> = observer(({ renderCommunityCard
             }
             <Button
                 className="action-button"
-                data-testid="form-save-button"
                 onClick={() => handleNextRound()}
                 sound={loadedSounds.find((sound) => sound.name === SoundName.positive)?.audio}
             >

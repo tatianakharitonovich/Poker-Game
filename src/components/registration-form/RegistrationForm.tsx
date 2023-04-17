@@ -87,7 +87,6 @@ export const RegistrationForm: React.FC = observer(() => {
             </div>
             <Button
                 className="action-button"
-                data-testid="form-save-button"
                 disabled={userName === "" || !gender || !playersNumberIsValid()}
                 onClick={() => setIsSubmit(true)}
                 sound={buttomSound}

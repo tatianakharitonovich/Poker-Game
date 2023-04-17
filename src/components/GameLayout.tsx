@@ -79,7 +79,7 @@ export class GameLayout extends React.Component {
                         <WinScreen winners={players?.filter((player: { chips: number; }) => player.chips > 0)} /> :
                         (players !== null && activePlayerIndex !== null && rootStore.state.highBet !== null &&
                         pot !== null && dealerIndex !== null && betInputValue !== null) ? (
-                            <Game data-test="game" />
+                            <Game />
                             ) : null
                 }
             </>

@@ -96,7 +96,6 @@ export const PlayerView: React.FC<PlayerViewProps> = observer((props) => {
 
     return (
         <div
-            data-test="player"
             className={`player player${arrayIndex}${(folded || clearCards) ? " skipping" : ""}`}
         >
             <PlayerStatus

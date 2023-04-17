@@ -19,7 +19,6 @@ export const PlayerAvatar: React.FC<PlayerAvatarProps> = (props) => {
             <h5
                 className="player-avatar-name"
                 style={{ fontSize: (name.length < 14) ? 16 : 14 }}
-                data-testid="player-name"
             >
                 {`${name}`}
             </h5>
