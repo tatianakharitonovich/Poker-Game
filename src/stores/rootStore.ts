@@ -1,6 +1,19 @@
 import React from "react";
 import { makeAutoObservable } from "mobx";
-import { GameStateInit, Gender, Sound, playerAnimationSwitchboardInit } from "../types";
+import { cloneDeep } from "lodash";
+import {
+    GameStateBase,
+    GameStateInit,
+    Gender,
+    Player,
+    PlayerWithSidePotStack,
+    Sound,
+    playerAnimationSwitchboardInit,
+} from "../types";
+
+import {
+    handleAI as handleAIUtil,
+} from "../utils/ai";
 
 export class RootStore {
     public loadedSounds: Sound[] = [];
@@ -59,6 +72,32 @@ export class RootStore {
 
     public setState: (newState: GameStateInit) => void = (newState: GameStateInit) => {
         this.state = { ...this.state, ...newState };
+    };
+
+    public pushAnimationState: (index: number, content: string) => void =
+        (index: number, content: string) => {
+            const { playerAnimationSwitchboard } = this.state;
+            const newAnimationSwitchboard = { ...playerAnimationSwitchboard, ...{ [index]: { isAnimating: true, content } } };
+            this.setState({ ...this.state, playerAnimationSwitchboard: newAnimationSwitchboard });
+        };
+
+    public handleAI: () => void = () => {
+        const { playerAnimationSwitchboard, ...appState } = this.state;
+        const newState =
+            handleAIUtil(
+                cloneDeep(appState as GameStateBase<Player>),
+                this.pushAnimationState,
+            ) as GameStateBase<Player> | GameStateBase<PlayerWithSidePotStack>;
+        this.setState({
+            ...this.state,
+            ...newState,
+            betInputValue: newState.minBet,
+        });
+        if ((newState.players[newState.activePlayerIndex].isFake) && (newState.phase !== "showdown")) {
+            setTimeout(() => {
+                this.handleAI();
+            }, 2000);
+        }
     };
 }
 

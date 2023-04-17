@@ -10,12 +10,10 @@ import { Track } from "../slider/Track";
 import "./ActionMenu.css";
 import { useRootStore } from "../../hooks/useRootStore";
 
-interface ActionMenuProps {
-    handleBetInputChange: (val: readonly number[], max: number) => void;
-}
-
-export const ActionMenu: React.FC<ActionMenuProps> = observer((props) => {
+export const ActionMenu: React.FC = observer(() => {
     const {
+        setState,
+        state,
         state: {
             players,
             activePlayerIndex,
@@ -23,9 +21,6 @@ export const ActionMenu: React.FC<ActionMenuProps> = observer((props) => {
             phase,
         },
     } = useRootStore();
-    const {
-        handleBetInputChange,
-    } = props;
 
     const isShow: () => boolean = () => {
         return (phase === "betting1" || phase === "betting2" || phase === "betting3" || phase === "betting4") &&
@@ -39,6 +34,16 @@ export const ActionMenu: React.FC<ActionMenuProps> = observer((props) => {
         (players as Player[])[activePlayerIndex as number].bet,
     );
     const max = (players as Player[])[activePlayerIndex as number].chips + (players as Player[])[activePlayerIndex as number].bet;
+
+    const handleBetInputChange: (val: readonly number[], maxBet: number) => void =
+    (val: readonly number[], maxBet: number) => {
+        let value = val[0];
+        if (val[0] > maxBet) { value = maxBet; }
+        setState({
+            ...state,
+            betInputValue: parseInt(value.toString(), 10),
+        });
+    };
 
     return (
         <Slider

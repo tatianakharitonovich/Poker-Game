@@ -11,30 +11,14 @@ import { Button } from "../button/Button";
 
 import "./Game.css";
 
-interface GameProps {
-    popAnimationState: (index: number) => void;
-    handleNextRound: () => void;
-    handleBetInputSubmit: (bet: string, min: string, max: string) => void;
-    handleFold: () => void;
-    handleBetInputChange: (val: readonly number[], max: number) => void;
-}
-
-export const Game: React.FC<GameProps> = observer((props) => {
+export const Game: React.FC = observer(() => {
     const { loadedSounds, state, setIsSubmit } = useRootStore();
-    const {
-        popAnimationState,
-        handleNextRound,
-        handleBetInputSubmit,
-        handleFold,
-        handleBetInputChange,
-    } = props;
 
     const {
         players,
         activePlayerIndex,
         phase,
         pot,
-        loading,
         communityCards,
     } = state;
 
@@ -124,9 +108,7 @@ export const Game: React.FC<GameProps> = observer((props) => {
             </div>
             <div className="game-container">
                 <img className="game-container-image" src="assets/images/table.svg" alt="Poker Table" />
-                <Board
-                    popAnimationState={popAnimationState}
-                />
+                <Board />
                 <div className="game-community">
                     {renderCommunityCards(false, "isHover")}
                 </div>
@@ -144,24 +126,16 @@ export const Game: React.FC<GameProps> = observer((props) => {
                 && (
                     <Showdown
                         renderCommunityCards={renderCommunityCards}
-                        handleNextRound={handleNextRound}
                     />
                 )}
             <div className="game-action">
                 <div className="game-action-buttons">
                     {((!(players as Player[])[activePlayerIndex as number].isFake) && (phase !== "showdown")) && (
-                        <ActionButtons
-                            handleFold={handleFold}
-                            handleBetInputSubmit={handleBetInputSubmit}
-                        />
+                        <ActionButtons />
                     )}
                 </div>
                 <div className="game-action-slider">
-                    {(!loading) && (
-                        <ActionMenu
-                            handleBetInputChange={handleBetInputChange}
-                        />
-                    )}
+                    <ActionMenu />
                 </div>
             </div>
         </div>

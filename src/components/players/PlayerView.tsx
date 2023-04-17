@@ -17,13 +17,11 @@ interface PlayerViewProps {
     isActive: boolean;
     hasDealerChip: boolean;
     player: Player;
-    endTransition: (index: number) => void;
 }
 
 export const PlayerView: React.FC<PlayerViewProps> = observer((props) => {
     const {
         arrayIndex,
-        endTransition,
         hasDealerChip,
         isActive,
         player: {
@@ -105,7 +103,6 @@ export const PlayerView: React.FC<PlayerViewProps> = observer((props) => {
                 index={arrayIndex}
                 isActive={isAnimating(arrayIndex)}
                 content={playerAnimationSwitchboard[arrayIndex].content}
-                endTransition={endTransition}
             />
             <div className="player-cards">
                 {!isFake && phase !== "showdown" && !folded && <div className="player-cards-hand">{determineBestHand(allCards)}</div>}

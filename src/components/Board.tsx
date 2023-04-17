@@ -4,15 +4,7 @@ import { Player } from "../types";
 import { PlayerView } from "./players/PlayerView";
 import { useRootStore } from "../hooks/useRootStore";
 
-interface BoardProps {
-    popAnimationState: (index: number) => void;
-}
-
-export const Board: React.FC<BoardProps> = observer((props) => {
-    const {
-        popAnimationState,
-    } = props;
-
+export const Board: React.FC = observer(() => {
     const { state } = useRootStore();
 
     const {
@@ -31,7 +23,6 @@ export const Board: React.FC<BoardProps> = observer((props) => {
                 isActive={isActive}
                 hasDealerChip={hasDealerChip}
                 player={player}
-                endTransition={popAnimationState}
             />,
         );
         return result;
