@@ -1,0 +1,22 @@
+.full-wave {
+    position: absolute;
+    top: 15%;
+    left: 0;
+    right: 0;
+    animation: full-wave 1500ms 1000ms ease both;
+}
+
+.full-wave svg {
+    width: 100%;
+}
+
+@keyframes full-wave {
+	0% {
+		transform: translate3d(0, 0, 0);
+		clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
+	}
+	100% {
+		opacity: 1;
+		clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+	}
+}

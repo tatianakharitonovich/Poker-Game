@@ -1,0 +1,21 @@
+.partly-wave {
+    position: absolute;
+    width: 55%;
+    bottom: 15%;
+    animation: partly-wave 1500ms 1000ms ease both;
+}
+
+.partly-wave svg {
+    width: 100%;
+}
+
+@keyframes partly-wave {
+	0% {
+		transform: translate3d(0, 0, 0);
+		clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+	}
+	100% {
+		opacity: 1;
+		clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+	}
+}

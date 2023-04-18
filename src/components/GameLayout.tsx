@@ -1,7 +1,6 @@
 import React from "react";
 import { observer } from "mobx-react";
 import { cloneDeep } from "lodash";
-import { LoadingOverlay } from "./loading-overlay/LoadingOverlay";
 import { Game } from "./game/Game";
 import { WinScreen } from "./win-screen/WinScreen";
 
@@ -20,6 +19,7 @@ import {
 
 import { GameState } from "../types";
 import { rootStore } from "../stores/rootStore";
+import { SplashScreen } from "./splashscreen/SplashScreen";
 
 @observer
 export class GameLayout extends React.Component {
@@ -29,26 +29,28 @@ export class GameLayout extends React.Component {
         const blindIndicies = determineBlindIndices(dealerIndex, players.length);
         const { minBet } = rootStore.state;
         const playersBoughtIn = anteUpBlinds(players, blindIndicies, minBet);
-        rootStore.setState({
-            ...rootStore.state,
-            players: playersBoughtIn,
-            loading: false,
-            numberPlayersActive: players.length,
-            numberPlayersFolded: 0,
-            numberPlayersAllIn: 0,
-            activePlayerIndex: dealerIndex,
-            dealerIndex,
-            blindIndex: {
-                big: blindIndicies.bigBlindIndex,
-                small: blindIndicies.smallBlindIndex,
-            },
-            deck: shuffle(generateCardsDeck()),
-            pot: 0,
-            highBet: rootStore.state.minBet,
-            betInputValue: rootStore.state.minBet,
-            phase: "initialDeal",
-        });
-        this.runGameLoop();
+        setTimeout(() => {
+            rootStore.setState({
+                ...rootStore.state,
+                players: playersBoughtIn,
+                loading: false,
+                numberPlayersActive: players.length,
+                numberPlayersFolded: 0,
+                numberPlayersAllIn: 0,
+                activePlayerIndex: dealerIndex,
+                dealerIndex,
+                blindIndex: {
+                    big: blindIndicies.bigBlindIndex,
+                    small: blindIndicies.smallBlindIndex,
+                },
+                deck: shuffle(generateCardsDeck()),
+                pot: 0,
+                highBet: rootStore.state.minBet,
+                betInputValue: rootStore.state.minBet,
+                phase: "initialDeal",
+            });
+            setTimeout(() => { this.runGameLoop(); }, 0);
+        }, 3000);
     }
 
     public runGameLoop: () => void = () => {
@@ -73,7 +75,7 @@ export class GameLayout extends React.Component {
 
         return (
             <>
-                {(loading) ? <LoadingOverlay /> :
+                {(loading) ? <SplashScreen /> :
                     (rootStore.winner) ?
                         <WinScreen winner={rootStore.winner} /> :
                         (players !== null && activePlayerIndex !== null && rootStore.state.highBet !== null &&
