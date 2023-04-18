@@ -49,7 +49,9 @@ export class GameLayout extends React.Component {
                 betInputValue: rootStore.state.minBet,
                 phase: "initialDeal",
             });
-            setTimeout(() => { this.runGameLoop(); }, 0);
+            setTimeout(() => {
+                this.runGameLoop();
+            }, 3000);
         }, 3000);
     }
 

@@ -1,9 +1,8 @@
 .full-wave {
     position: absolute;
     top: 15%;
-    left: 0;
     right: 0;
-    animation: full-wave 1500ms 1000ms ease both;
+    animation: full-wave 1500ms 500ms ease both;
 }
 
 .full-wave svg {

@@ -89,7 +89,7 @@
     color: white;
     filter: drop-shadow(0 0.5rem 0.25rem rgb(0 0 0 / 85%));
 	opacity: 0;
-	animation: appearanceHand 0.4s 1 ease-in 1.2s both;
+	animation: appearanceHand 0.4s 1 ease-in 3s both;
 }
 
 @keyframes appearanceHand {

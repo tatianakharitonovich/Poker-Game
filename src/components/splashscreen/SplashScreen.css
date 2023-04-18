@@ -1,12 +1,14 @@
 .splash-screen {
     height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .splash-screen-title {
     position: relative;
     font-size: 6rem;
     color: white;
-    padding-top: 30%;
     z-index: 1;
 }
     

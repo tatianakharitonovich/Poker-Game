@@ -12,6 +12,8 @@ import { Button } from "../button/Button";
 import "./Game.css";
 import { ExitButton } from "../ExitButton";
 
+const imageUrl = "assets/images/table.svg";
+
 export const Game: React.FC = observer(() => {
     const { loadedSounds, state } = useRootStore();
 
@@ -25,6 +27,7 @@ export const Game: React.FC = observer(() => {
 
     const [isSounds, setIsSounds] = useState(true);
     const [isMusic, setIsMusic] = useState(true);
+    const [loaded, setLoaded] = useState(false);
 
     const mainSound = loadedSounds.find((sound) => sound.name === SoundName.main)?.audio;
 
@@ -40,6 +43,14 @@ export const Game: React.FC = observer(() => {
             mainSound?.pause();
         };
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+        const image = new Image();
+        image.src = imageUrl;
+        image.onload = () => {
+            setLoaded(true);
+        };
     }, []);
 
     const toggleMusic = () => {
@@ -76,59 +87,62 @@ export const Game: React.FC = observer(() => {
         });
     };
 
-    return (
-        <div className="game">
-            <img className="game-logo" src="assets/images/lasvegas.svg" alt="LasVegas" />
-            <img className="game-background" src="assets/images/city.svg" alt="LasVegas" />
-            <ExitButton />
-            <div className="game-soundwrap">
-                <Button
-                    className={`action-button secondary ${!isMusic && "crossed"}`}
-                    onClick={() => toggleMusic()}
-                    sound={loadedSounds.find((sound) => sound.name === SoundName.positive)?.audio}
-                >
-                    <img src="assets/images/music.svg" alt="Sound" />
-                </Button>
-                <Button
-                    className={`action-button secondary ${!isSounds && "crossed"}`}
-                    onClick={() => toggleSounds()}
-                    sound={loadedSounds.find((sound) => sound.name === SoundName.positive)?.audio}
-                >
-                    <img src="assets/images/sound.svg" alt="Sound" />
-                </Button>
-            </div>
-            <div className="game-container">
-                <img className="game-container-image" src="assets/images/table.svg" alt="Poker Table" />
-                <Board />
-                <div className="game-community">
-                    {renderCommunityCards(false, "isHover")}
+    if (loaded) {
+        return (
+            <div className="game">
+                <img className="game-logo" src="assets/images/lasvegas.svg" alt="LasVegas" />
+                <img className="game-background" src="assets/images/city.svg" alt="LasVegas" />
+                <ExitButton />
+                <div className="game-soundwrap">
+                    <Button
+                        className={`action-button secondary ${!isMusic && "crossed"}`}
+                        onClick={() => toggleMusic()}
+                        sound={loadedSounds.find((sound) => sound.name === SoundName.positive)?.audio}
+                    >
+                        <img src="assets/images/music.svg" alt="Sound" />
+                    </Button>
+                    <Button
+                        className={`action-button secondary ${!isSounds && "crossed"}`}
+                        onClick={() => toggleSounds()}
+                        sound={loadedSounds.find((sound) => sound.name === SoundName.positive)?.audio}
+                    >
+                        <img src="assets/images/sound.svg" alt="Sound" />
+                    </Button>
                 </div>
-                <div className="game-pot">
-                    <img
-                        className="game-pot-img"
-                        style={{ height: 54, width: 76 }}
-                        src="./assets/images/pot.svg"
-                        alt="Pot Value"
-                    />
-                    <h4 className="game-pot-text"> ${pot} </h4>
+                <div className="game-container">
+                    <img className="game-container-image" src={imageUrl} alt="Poker Table" />
+                    <Board />
+                    <div className="game-community">
+                        {renderCommunityCards(false, "isHover")}
+                    </div>
+                    <div className="game-pot">
+                        <img
+                            className="game-pot-img"
+                            style={{ height: 54, width: 76 }}
+                            src="./assets/images/pot.svg"
+                            alt="Pot Value"
+                        />
+                        <h4 className="game-pot-text"> ${pot} </h4>
+                    </div>
                 </div>
-            </div>
-            {(phase === "showdown")
-                && (
-                    <Showdown
-                        renderCommunityCards={renderCommunityCards}
-                    />
-                )}
-            <div className="game-action">
-                <div className="game-action-buttons">
-                    {((!(players as Player[])[activePlayerIndex as number].isFake) && (phase !== "showdown")) && (
-                        <ActionButtons />
+                {(phase === "showdown")
+                    && (
+                        <Showdown
+                            renderCommunityCards={renderCommunityCards}
+                        />
                     )}
-                </div>
-                <div className="game-action-slider">
-                    <ActionMenu />
+                <div className="game-action">
+                    <div className="game-action-buttons">
+                        {((!(players as Player[])[activePlayerIndex as number].isFake) && (phase !== "showdown")) && (
+                            <ActionButtons />
+                        )}
+                    </div>
+                    <div className="game-action-slider">
+                        <ActionMenu />
+                    </div>
                 </div>
             </div>
-        </div>
-    );
+        );
+    }
+    return null;
 });

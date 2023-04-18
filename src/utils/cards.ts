@@ -106,7 +106,7 @@ const popCards: (deck: CardType[], numToPop: number) => PopCards =
 export const dealPrivateCards: (state: GameState) => GameState | undefined =
 (state: GameState) => {
     state.clearCards = false;
-    let animationDelay = 0;
+    let animationDelay = 500;
     while (state.players[state.activePlayerIndex].cards.length < 2) {
         const { mutableDeckCopy, chosenCards } = popCards(state.deck, 1);
         chosenCards[0].animationDelay = animationDelay;

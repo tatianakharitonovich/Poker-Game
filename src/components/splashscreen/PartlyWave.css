@@ -1,8 +1,9 @@
 .partly-wave {
     position: absolute;
     width: 55%;
+	left: -2rem;
     bottom: 15%;
-    animation: partly-wave 1500ms 1000ms ease both;
+    animation: partly-wave 1500ms 500ms ease both;
 }
 
 .partly-wave svg {
