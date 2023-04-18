@@ -47,10 +47,10 @@ export const Showdown: React.FC<ShowdownProps> = observer(({ renderCommunityCard
         setState({ ...state, clearCards: true });
         const newState = beginNextRound(cloneDeep(state as GameState)) as GameState;
         if (checkWin(newState.players, setWinner)) {
-            setState({ ...state, winnerFound: true });
+            setState({ ...newState, winnerFound: true });
             return;
         }
-        setState({ ...state, ...newState });
+        setState({ ...newState });
         if ((newState.players[newState.activePlayerIndex].isFake) && (newState.phase !== "showdown")) {
             setTimeout(() => handleAI(), 2000);
         }

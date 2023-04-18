@@ -24,3 +24,10 @@
     border-radius: 0.25rem;
     transform: rotate(-45deg);
 }
+
+.exit-button {
+    position: absolute;
+    top: 2rem;
+    left: 1.5rem;
+    z-index: 1;
+}

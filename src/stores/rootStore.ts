@@ -8,7 +8,7 @@ import {
     Player,
     PlayerWithSidePotStack,
     Sound,
-    playerAnimationSwitchboardInit,
+    initialState,
 } from "../types";
 
 import {
@@ -22,29 +22,7 @@ export class RootStore {
     public gender: Gender | undefined;
     public isSubmit = false;
     public winner: Player | undefined;
-    public state: GameStateInit = {
-        loading: true,
-        winnerFound: null,
-        players: null,
-        numberPlayersActive: null,
-        numberPlayersFolded: null,
-        numberPlayersAllIn: null,
-        activePlayerIndex: null,
-        dealerIndex: null,
-        blindIndex: null,
-        deck: null,
-        communityCards: [],
-        pot: null,
-        highBet: null,
-        betInputValue: null,
-        sidePots: [],
-        minBet: 20,
-        clearCards: false,
-        phase: "loading",
-        playerHierarchy: [],
-        showDownMessages: [],
-        playerAnimationSwitchboard: playerAnimationSwitchboardInit,
-    };
+    public state: GameStateInit = initialState;
 
     public constructor() {
         // make class instance and needed fields observable
@@ -101,7 +79,7 @@ export class RootStore {
         }
     };
 
-    public setWinner: (player: Player) => void = (player: Player) => {
+    public setWinner: (player: Player | undefined) => void = (player: Player | undefined) => {
         this.winner = player;
     };
 }

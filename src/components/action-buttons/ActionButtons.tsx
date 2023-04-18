@@ -34,7 +34,6 @@ export const ActionButtons: React.FC = observer(() => {
     const handleBetInputSubmit: (bet: string, minBet: string, maxBet: string) => void =
         (bet: string, minBet: string, maxBet: string) => {
             const { playerAnimationSwitchboard, ...appState } = state;
-            // const { activePlayerIndex, highBet, betInputValue, players } = appState as GameStateBase<Player>;
             pushAnimationState(
                 activePlayerIndex as number,
                 `${renderActionButtonText(

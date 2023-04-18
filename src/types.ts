@@ -95,6 +95,30 @@ export const playerAnimationSwitchboardInit = {
     5: { isAnimating: false, content: null },
 };
 
+export const initialState: GameStateInit = {
+    loading: true,
+    winnerFound: null,
+    players: null,
+    numberPlayersActive: null,
+    numberPlayersFolded: null,
+    numberPlayersAllIn: null,
+    activePlayerIndex: null,
+    dealerIndex: null,
+    blindIndex: null,
+    deck: null,
+    communityCards: [],
+    pot: null,
+    highBet: null,
+    betInputValue: null,
+    sidePots: [],
+    minBet: 20,
+    clearCards: false,
+    phase: "loading",
+    playerHierarchy: [],
+    showDownMessages: [],
+    playerAnimationSwitchboard: playerAnimationSwitchboardInit,
+};
+
 export type PlayerRank = {
     name: PokerHand;
     match: boolean | undefined;

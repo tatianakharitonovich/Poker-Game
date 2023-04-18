@@ -10,9 +10,10 @@ import { Showdown } from "../show-down/Showdown";
 import { Button } from "../button/Button";
 
 import "./Game.css";
+import { ExitButton } from "../ExitButton";
 
 export const Game: React.FC = observer(() => {
-    const { loadedSounds, state, setIsSubmit } = useRootStore();
+    const { loadedSounds, state } = useRootStore();
 
     const {
         players,
@@ -34,6 +35,10 @@ export const Game: React.FC = observer(() => {
             mainSound.muted = false;
         }
         mainSound?.play().catch((e) => { throw new Error(`${e}`); });
+
+        return () => {
+            mainSound?.pause();
+        };
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -50,14 +55,6 @@ export const Game: React.FC = observer(() => {
         // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < audios.length; i++) {
             audios[i].muted = !audios[i].muted;
-        }
-    };
-
-    const exitHandler = () => {
-        setIsSubmit(false);
-
-        if (isMusic) {
-            toggleMusic();
         }
     };
 
@@ -83,13 +80,7 @@ export const Game: React.FC = observer(() => {
         <div className="game">
             <img className="game-logo" src="assets/images/lasvegas.svg" alt="LasVegas" />
             <img className="game-background" src="assets/images/city.svg" alt="LasVegas" />
-            <Button
-                className="game-return-button secondary action-button"
-                onClick={() => exitHandler()}
-                sound={loadedSounds.find((sound) => sound.name === SoundName.negative)?.audio}
-            >
-                <img src="assets/images/exit.svg" alt="Exit" />
-            </Button>
+            <ExitButton />
             <div className="game-soundwrap">
                 <Button
                     className={`action-button secondary ${!isMusic && "crossed"}`}

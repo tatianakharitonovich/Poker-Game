@@ -24,13 +24,6 @@
     bottom: 0;
 }
 
-.game-return-button {
-    position: absolute;
-    top: 2rem;
-    left: 1.5rem;
-    z-index: 1;
-}
-
 .game-soundwrap {
     position: absolute;
     right: 1.5rem;
