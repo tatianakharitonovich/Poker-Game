@@ -13,7 +13,7 @@ interface PlayerStatusProps {
 }
 
 export const PlayerStatus: React.FC<PlayerStatusProps> = observer((props) => {
-    const { loadedSounds, state, setState } = useRootStore();
+    const { loadedSounds, gameLoopProcessor: { endTransition } } = useRootStore();
     const { index, isActive, content } = props;
     const statusSound = getSound(content, loadedSounds);
 
@@ -25,16 +25,6 @@ export const PlayerStatus: React.FC<PlayerStatusProps> = observer((props) => {
         statusSound?.play().catch((e) => { throw new Error(`${e}`); });
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [content]);
-
-    const endTransition: (indexPlayer: number) => void = (indexPlayer: number) => {
-        const { playerAnimationSwitchboard } = state;
-        const persistContent = playerAnimationSwitchboard[indexPlayer].content;
-        const newAnimationSwitchboard = {
-            ...playerAnimationSwitchboard,
-            ...{ [indexPlayer]: { isAnimating: false, content: persistContent } },
-        };
-        setState({ ...state, playerAnimationSwitchboard: newAnimationSwitchboard });
-    };
 
     return (
         <CSSTransition

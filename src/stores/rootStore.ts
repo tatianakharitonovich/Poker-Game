@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import React from "react";
 import { makeAutoObservable } from "mobx";
 import { cloneDeep } from "lodash";
@@ -14,6 +15,8 @@ import {
 import {
     handleAI as handleAIUtil,
 } from "../utils/ai";
+import { BetProcessor } from "./betProcessor";
+import { GameLoopProcessor } from "./gameLoopProcessor";
 
 export class RootStore {
     public loadedSounds: Sound[] = [];
@@ -23,10 +26,14 @@ export class RootStore {
     public isSubmit = false;
     public winner: Player | undefined;
     public state: GameStateInit = initialState;
+    public betProcessor: BetProcessor;
+    public gameLoopProcessor: GameLoopProcessor;
 
     public constructor() {
         // make class instance and needed fields observable
         makeAutoObservable(this, {}, { autoBind: true });
+        this.betProcessor = new BetProcessor(this);
+        this.gameLoopProcessor = new GameLoopProcessor(this);
     }
 
     public setLoadedSounds: (sounds: Sound[]) => void = (sounds: Sound[]) => {

@@ -1,13 +1,11 @@
 import React from "react";
 import { observer } from "mobx-react";
-import { cloneDeep } from "lodash";
 import { Game } from "./game/Game";
 import { WinScreen } from "./win-screen/WinScreen";
 
 import {
     generateCardsDeck,
     shuffle,
-    dealPrivateCards,
 } from "../utils/cards";
 
 import { createPlayers } from "../utils/players";
@@ -17,7 +15,6 @@ import {
     anteUpBlinds,
 } from "../utils/bet";
 
-import { GameState } from "../types";
 import { rootStore } from "../stores/rootStore";
 import { SplashScreen } from "./splashscreen/SplashScreen";
 
@@ -50,20 +47,10 @@ export class GameLayout extends React.Component {
                 phase: "initialDeal",
             });
             setTimeout(() => {
-                this.runGameLoop();
+                rootStore.gameLoopProcessor.runGameLoop();
             }, 3000);
         }, 3000);
     }
-
-    public runGameLoop: () => void = () => {
-        const newState = dealPrivateCards(cloneDeep(rootStore.state as GameState)) as GameState;
-        rootStore.setState({ ...rootStore.state, ...newState });
-        if ((newState.players[newState.activePlayerIndex].isFake) && (newState.phase !== "showdown")) {
-            setTimeout(() => {
-                rootStore.handleAI();
-            }, 2000);
-        }
-    };
 
     public render() {
         const {

@@ -1,27 +1,24 @@
 import * as React from "react";
 import { observer } from "mobx-react-lite";
-import { cloneDeep } from "lodash";
 import { useRootStore } from "../../hooks/useRootStore";
 import { Button } from "../button/Button";
-import { GameStateBase, Player, PlayerWithSidePotStack, SoundName } from "../../types";
-import {
-    determineMinBet,
-    handleBet,
-    handleFold as handleFoldUtils,
-} from "../../utils/bet";
+import { Player, SoundName } from "../../types";
+import { determineMinBet } from "../../utils/bet";
 
 import { getSound, renderActionButtonText } from "../../utils/ui";
 
 import "./ActionButtons.css";
 
 export const ActionButtons: React.FC = observer(() => {
-    const { loadedSounds, state, pushAnimationState, setState, handleAI } = useRootStore();
+    const { loadedSounds, state, betProcessor } = useRootStore();
     const {
         players,
         activePlayerIndex,
         highBet,
         betInputValue,
     } = state;
+
+    const { handleBetInputSubmit, handleFold } = betProcessor;
 
     const min = determineMinBet(
         highBet as number,
@@ -30,41 +27,6 @@ export const ActionButtons: React.FC = observer(() => {
     ).toString();
     const max = (players as Player[])[activePlayerIndex as number].chips +
         (players as Player[])[activePlayerIndex as number].bet.toString();
-
-    const handleBetInputSubmit: (bet: string, minBet: string, maxBet: string) => void =
-        (bet: string, minBet: string, maxBet: string) => {
-            const { playerAnimationSwitchboard, ...appState } = state;
-            pushAnimationState(
-                activePlayerIndex as number,
-                `${renderActionButtonText(
-                    highBet as number,
-                    betInputValue as number,
-                    (players as Player[])[activePlayerIndex as number],
-                )} ${(+bet > (players as Player[])[activePlayerIndex as number].bet) ? (bet) : ""}`);
-            const newState = handleBet(
-                cloneDeep(appState as GameStateBase<Player>),
-                parseInt(bet, 10),
-                parseInt(minBet, 10),
-                parseInt(maxBet, 10),
-            ) as GameStateBase<Player> | GameStateBase<PlayerWithSidePotStack>;
-            setState({ ...state, ...newState });
-            if ((newState.players[newState.activePlayerIndex].isFake) && (newState.phase !== "showdown")) {
-                setTimeout(() => {
-                    handleAI();
-                }, 2000);
-            }
-        };
-
-    const handleFold: () => void = () => {
-        const { playerAnimationSwitchboard, ...appState } = state;
-        const newState = handleFoldUtils(cloneDeep(appState as GameStateBase<Player>));
-        setState({ ...state, ...newState });
-        if ((newState.players[newState.activePlayerIndex].isFake) && (newState.phase !== "showdown")) {
-            setTimeout(() => {
-                handleAI();
-            }, 2000);
-        }
-    };
 
     const button = () => {
         const buttonText = renderActionButtonText(

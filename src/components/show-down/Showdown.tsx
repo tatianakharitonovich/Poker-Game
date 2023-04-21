@@ -1,13 +1,11 @@
 import React, { useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { cloneDeep } from "lodash";
 import { observer } from "mobx-react-lite";
 import { useRootStore } from "../../hooks/useRootStore";
-import { GameState, PokerHand, ShowDownMessage, SoundName } from "../../types";
+import { PokerHand, ShowDownMessage, SoundName } from "../../types";
 import { ShowdownMessage } from "../show-down-message/ShowdownMessage";
 import { RankWinner } from "../rank-winner/RankWinner";
 import { Button } from "../button/Button";
-import { beginNextRound, checkWin } from "../../utils/players";
 
 import "./Showdown.css";
 
@@ -19,9 +17,9 @@ export const Showdown: React.FC<ShowdownProps> = observer(({ renderCommunityCard
     const {
         loadedSounds,
         state,
-        setState,
-        handleAI,
-        setWinner,
+        gameLoopProcessor: {
+            handleNextRound,
+        },
     } = useRootStore();
 
     const {
@@ -42,19 +40,6 @@ export const Showdown: React.FC<ShowdownProps> = observer(({ renderCommunityCard
         }, 2000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    const handleNextRound: () => void = () => {
-        setState({ ...state, clearCards: true });
-        const newState = beginNextRound(cloneDeep(state as GameState)) as GameState;
-        if (checkWin(newState.players, setWinner)) {
-            setState({ ...newState, winnerFound: true });
-            return;
-        }
-        setState({ ...newState });
-        if ((newState.players[newState.activePlayerIndex].isFake) && (newState.phase !== "showdown")) {
-            setTimeout(() => handleAI(), 2000);
-        }
-    };
 
     const messageUnion = () => {
         const messageRes = showDownMessages.reduce((acc, message) => {

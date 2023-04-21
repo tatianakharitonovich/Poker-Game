@@ -12,8 +12,9 @@ import { useRootStore } from "../../hooks/useRootStore";
 
 export const ActionMenu: React.FC = observer(() => {
     const {
-        setState,
-        state,
+        betProcessor: {
+            handleBetInputChange,
+        },
         state: {
             players,
             activePlayerIndex,
@@ -34,16 +35,6 @@ export const ActionMenu: React.FC = observer(() => {
         (players as Player[])[activePlayerIndex as number].bet,
     );
     const max = (players as Player[])[activePlayerIndex as number].chips + (players as Player[])[activePlayerIndex as number].bet;
-
-    const handleBetInputChange: (val: readonly number[], maxBet: number) => void =
-    (val: readonly number[], maxBet: number) => {
-        let value = val[0];
-        if (val[0] > maxBet) { value = maxBet; }
-        setState({
-            ...state,
-            betInputValue: parseInt(value.toString(), 10),
-        });
-    };
 
     return (
         <Slider
