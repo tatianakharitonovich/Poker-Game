@@ -5,6 +5,7 @@ import { useRootStore } from "../../hooks/useRootStore";
 import { getSound } from "../../utils/ui";
 
 import "./PlayerStatus.css";
+import { useSound } from "../../hooks/useSound";
 
 interface PlayerStatusProps {
     index: number;
@@ -17,12 +18,10 @@ export const PlayerStatus: React.FC<PlayerStatusProps> = observer((props) => {
     const { index, isActive, content } = props;
     const statusSound = getSound(content, loadedSounds);
 
-    if (statusSound) {
-        document.body.appendChild(statusSound);
-    }
+    const { playSound } = useSound(statusSound, true);
 
     useEffect(() => {
-        statusSound?.play().catch((e) => { throw new Error(`${e}`); });
+        playSound();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [content]);
 

@@ -5,6 +5,7 @@ import { Button } from "../button/Button";
 import { Gender, SoundName } from "../../types";
 
 import "./RegistrationForm.css";
+import { useSound } from "../../hooks/useSound";
 
 export const RegistrationForm: React.FC = observer(() => {
     const {
@@ -22,6 +23,8 @@ export const RegistrationForm: React.FC = observer(() => {
 
     const menuSound = loadedSounds.find((sound) => sound.name === SoundName.menu)?.audio;
 
+    const { playSound } = useSound(menuSound, false);
+
     if (menuSound) {
         menuSound.volume = 0.01;
     }
@@ -34,7 +37,7 @@ export const RegistrationForm: React.FC = observer(() => {
     }, []);
 
     const playMusic: () => void = () => {
-        menuSound?.play().catch((e) => { throw new Error(`${e}`); });
+        playSound();
     };
 
     const playersNumberIsValid: () => boolean = () => {

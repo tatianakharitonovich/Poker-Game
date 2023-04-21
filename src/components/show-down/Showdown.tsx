@@ -8,6 +8,7 @@ import { RankWinner } from "../rank-winner/RankWinner";
 import { Button } from "../button/Button";
 
 import "./Showdown.css";
+import { useSound } from "../../hooks/useSound";
 
 interface ShowdownProps {
     renderCommunityCards: (clearAnimation: boolean, addClass: string) => JSX.Element[];
@@ -29,14 +30,15 @@ export const Showdown: React.FC<ShowdownProps> = observer(({ renderCommunityCard
 
     const finishSound = loadedSounds.find((sound) => sound.name === SoundName.finish)?.audio;
 
+    const { playSound } = useSound(finishSound, true);
+
     if (finishSound) {
         finishSound.volume = 0.01;
-        document.body.appendChild(finishSound);
     }
 
     useEffect(() => {
         setTimeout(() => {
-            finishSound?.play().catch((e) => { throw new Error(`${e}`); });
+            playSound();
         }, 2000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);

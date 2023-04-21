@@ -4,6 +4,7 @@ import { useRootStore } from "../../hooks/useRootStore";
 import { CardType, SoundName, Suits } from "../../types";
 
 import "./Card.css";
+import { useSound } from "../../hooks/useSound";
 
 interface CardProps {
     cardData: CardType;
@@ -27,13 +28,11 @@ export const Card: React.FC<CardProps> = observer((props) => {
 
     const cardSound = loadedSounds.find((sound) => sound.name === SoundName.card)?.audio;
 
-    if (cardSound) {
-        document.body.appendChild(cardSound);
-    }
+    const { playSound } = useSound(cardSound, true);
 
     useEffect(() => {
         setTimeout(() => {
-            cardSound?.play().catch((e) => { throw new Error(`${e}`); });
+            playSound();
         }, applyFoldedClassname ? 0 : animationDelay);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);

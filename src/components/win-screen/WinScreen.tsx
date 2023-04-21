@@ -5,6 +5,7 @@ import { Player, SoundName } from "../../types";
 
 import "./WinScreen.css";
 import { ExitButton } from "../ExitButton";
+import { useSound } from "../../hooks/useSound";
 
 interface WinScreenProps {
     winner: Player | undefined;
@@ -15,13 +16,14 @@ export const WinScreen: React.FC<WinScreenProps> = observer(({ winner }) => {
 
     const finishSound = loadedSounds.find((sound) => sound.name === SoundName.finish)?.audio;
 
+    const { playSound } = useSound(finishSound, true);
+
     if (finishSound) {
         finishSound.volume = 0.01;
-        document.body.appendChild(finishSound);
     }
 
     useEffect(() => {
-        finishSound?.play().catch((e) => { throw new Error(`${e}`); });
+        playSound();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

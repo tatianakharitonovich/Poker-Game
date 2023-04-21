@@ -1,6 +1,7 @@
 import React from "react";
 
 import "./Button.css";
+import { useSound } from "../../hooks/useSound";
 
 interface ButtonProps {
     children: React.ReactNode;
@@ -12,14 +13,11 @@ interface ButtonProps {
 
 export const Button: React.FC<ButtonProps> = (props) => {
     const { children, className, onClick, sound, disabled } = props;
-
-    if (sound) {
-        document.body.appendChild(sound);
-    }
+    const { playSound } = useSound(sound, true);
 
     function onClickHandler() {
         onClick();
-        sound?.play().catch((e) => { throw new Error(`${e}`); });
+        playSound();
     }
 
     return (

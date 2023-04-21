@@ -11,6 +11,7 @@ import { Button } from "../button/Button";
 
 import "./Game.css";
 import { ExitButton } from "../ExitButton";
+import { useSound } from "../../hooks/useSound";
 
 const imageUrl = "assets/images/table.svg";
 
@@ -31,13 +32,15 @@ export const Game: React.FC = observer(() => {
 
     const mainSound = loadedSounds.find((sound) => sound.name === SoundName.main)?.audio;
 
+    const { playSound } = useSound(mainSound, false);
+
     useEffect(() => {
         if (mainSound) {
             mainSound.loop = true;
             mainSound.volume = 0.007;
             mainSound.muted = false;
         }
-        mainSound?.play().catch((e) => { throw new Error(`${e}`); });
+        playSound();
 
         return () => {
             mainSound?.pause();
@@ -92,23 +95,27 @@ export const Game: React.FC = observer(() => {
             <div className="game">
                 <img className="game-logo" src="assets/images/lasvegas.svg" alt="LasVegas" />
                 <img className="game-background" src="assets/images/city.svg" alt="LasVegas" />
-                <ExitButton />
-                <div className="game-soundwrap">
-                    <Button
-                        className={`action-button secondary ${!isMusic && "crossed"}`}
-                        onClick={() => toggleMusic()}
-                        sound={loadedSounds.find((sound) => sound.name === SoundName.positive)?.audio}
-                    >
-                        <img src="assets/images/music.svg" alt="Sound" />
-                    </Button>
-                    <Button
-                        className={`action-button secondary ${!isSounds && "crossed"}`}
-                        onClick={() => toggleSounds()}
-                        sound={loadedSounds.find((sound) => sound.name === SoundName.positive)?.audio}
-                    >
-                        <img src="assets/images/sound.svg" alt="Sound" />
-                    </Button>
-                </div>
+                {(phase !== "showdown") && <ExitButton />}
+                {(phase !== "showdown") &&
+                    (
+                        <div className="game-soundwrap">
+                            <Button
+                                className={`action-button secondary ${!isMusic && "crossed"}`}
+                                onClick={() => toggleMusic()}
+                                sound={loadedSounds.find((sound) => sound.name === SoundName.positive)?.audio}
+                            >
+                                <img src="assets/images/music.svg" alt="Sound" />
+                            </Button>
+                            <Button
+                                className={`action-button secondary ${!isSounds && "crossed"}`}
+                                onClick={() => toggleSounds()}
+                                sound={loadedSounds.find((sound) => sound.name === SoundName.positive)?.audio}
+                            >
+                                <img src="assets/images/sound.svg" alt="Sound" />
+                            </Button>
+                        </div>
+                    )
+                }
                 <div className="game-container">
                     <img className="game-container-image" src={imageUrl} alt="Poker Table" />
                     <Board />
