@@ -1,8 +1,6 @@
 import * as React from "react";
 import { observer } from "mobx-react-lite";
 import { Handles, Rail, Slider, Tracks } from "react-compound-slider";
-import { Player } from "../../types";
-import { determineMinBet } from "../../utils/bet";
 import { Handle } from "../slider/Handle";
 import { railStyle, sliderStyle } from "../slider/styles";
 import { Track } from "../slider/Track";
@@ -12,37 +10,21 @@ import { useRootStore } from "../../hooks/useRootStore";
 
 export const ActionMenu: React.FC = observer(() => {
     const {
+        minBet,
+        maxBet,
+        isShow,
         betProcessor: {
             handleBetInputChange,
         },
-        state: {
-            players,
-            activePlayerIndex,
-            highBet,
-            phase,
-        },
     } = useRootStore();
-
-    const isShow: () => boolean = () => {
-        return (phase === "betting1" || phase === "betting2" || phase === "betting3" || phase === "betting4") &&
-        (!(players as Player[])[activePlayerIndex as number].isFake) &&
-        (players as Player[])[activePlayerIndex as number].chips >= (highBet as number);
-    };
-
-    const min = determineMinBet(
-        highBet as number,
-        (players as Player[])[activePlayerIndex as number].chips,
-        (players as Player[])[activePlayerIndex as number].bet,
-    );
-    const max = (players as Player[])[activePlayerIndex as number].chips + (players as Player[])[activePlayerIndex as number].bet;
 
     return (
         <Slider
-            rootStyle={sliderStyle(isShow())}
-            domain={[min, max === min ? min + 5 : max]}
-            values={[min]}
+            rootStyle={sliderStyle(isShow)}
+            domain={[minBet, maxBet === minBet ? minBet + 5 : maxBet]}
+            values={[minBet]}
             step={5}
-            onChange={(val) => handleBetInputChange(val, max)}
+            onChange={(val) => handleBetInputChange(val, maxBet)}
             mode={2}
         >
             <Rail>

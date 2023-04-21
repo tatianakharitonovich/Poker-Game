@@ -7,6 +7,7 @@ import {
     GameStateInit,
     Gender,
     Player,
+    PlayerBet,
     PlayerWithSidePotStack,
     Sound,
     initialState,
@@ -17,6 +18,8 @@ import {
 } from "../utils/ai";
 import { BetProcessor } from "./betProcessor";
 import { GameLoopProcessor } from "./gameLoopProcessor";
+import { determineMinBet } from "../utils/bet";
+import { renderActionButtonText } from "../utils/ui";
 
 export class RootStore {
     public loadedSounds: Sound[] = [];
@@ -59,6 +62,36 @@ export class RootStore {
     public setState: (newState: GameStateInit) => void = (newState: GameStateInit) => {
         this.state = { ...this.state, ...newState };
     };
+
+    public get minBet(): number {
+        return determineMinBet(
+            this.state.highBet as number,
+            (this.state.players as Player[])[this.state.activePlayerIndex as number].chips,
+            (this.state.players as Player[])[this.state.activePlayerIndex as number].bet,
+        );
+    }
+
+    public get maxBet(): number {
+        return (this.state.players as Player[])[this.state.activePlayerIndex as number].chips +
+            (this.state.players as Player[])[this.state.activePlayerIndex as number].bet;
+    }
+
+    public get buttonText(): PlayerBet | undefined {
+        return renderActionButtonText(
+            this.state.highBet as number,
+            this.state.betInputValue as number,
+            (this.state.players as Player[])[this.state.activePlayerIndex as number],
+        );
+    }
+
+    public get isShow(): boolean {
+        return (this.state.phase === "betting1" ||
+            this.state.phase === "betting2" ||
+            this.state.phase === "betting3" ||
+            this.state.phase === "betting4") &&
+        (!(this.state.players as Player[])[this.state.activePlayerIndex as number].isFake) &&
+        (this.state.players as Player[])[this.state.activePlayerIndex as number].chips >= (this.state.highBet as number);
+    }
 
     public pushAnimationState: (index: number, content: string) => void =
         (index: number, content: string) => {

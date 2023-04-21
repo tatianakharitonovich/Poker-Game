@@ -2,7 +2,7 @@
 import { makeAutoObservable } from "mobx";
 import { cloneDeep } from "lodash";
 import { RootStore } from "./rootStore";
-import { GameState } from "../types";
+import { GameState, initialState } from "../types";
 import { dealPrivateCards } from "../utils/cards";
 import { beginNextRound, checkWin } from "../utils/players";
 
@@ -44,5 +44,11 @@ export class GameLoopProcessor {
             ...{ [indexPlayer]: { isAnimating: false, content: persistContent } },
         };
         this.rootStore.setState({ ...this.rootStore.state, playerAnimationSwitchboard: newAnimationSwitchboard });
+    };
+
+    public exitHandler: () => void = () => {
+        this.rootStore.setIsSubmit(false);
+        this.rootStore.setWinner(undefined);
+        this.rootStore.setState(initialState);
     };
 }

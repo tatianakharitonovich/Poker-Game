@@ -1,17 +1,11 @@
 import React from "react";
 import { observer } from "mobx-react-lite";
 import { useRootStore } from "../hooks/useRootStore";
-import { SoundName, initialState } from "../types";
+import { SoundName } from "../types";
 import { Button } from "./button/Button";
 
 export const ExitButton: React.FC = observer(() => {
-    const { loadedSounds, setIsSubmit, setWinner, setState } = useRootStore();
-
-    const exitHandler = () => {
-        setIsSubmit(false);
-        setWinner(undefined);
-        setState(initialState);
-    };
+    const { loadedSounds, gameLoopProcessor: { exitHandler } } = useRootStore();
 
     return (
         <Button
