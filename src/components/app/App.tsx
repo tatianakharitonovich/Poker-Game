@@ -1,9 +1,7 @@
 import React, { useEffect } from "react";
-import { observer } from "mobx-react-lite";
-import { useRootStore } from "./hooks/useRootStore";
-import { Sound, SoundName } from "./types";
-import { LoadingOverlay } from "./components/loading-overlay/LoadingOverlay";
-import { MainLayout } from "./components/MainLayout";
+import { Sound, SoundName } from "../../types";
+import { LoadingOverlay } from "../loading-overlay/LoadingOverlay";
+import { MainLayoutContainer } from "../main-layout/MainLayoutContainer";
 
 import "./App.css";
 
@@ -20,8 +18,13 @@ const sounds: Sound[] = [
     { name: SoundName.finish, src: "assets/sounds/finish.mp3", audio: new Audio("assets/sounds/finish.mp3") },
 ];
 
-export const App: React.FC = observer(function App() {
-    const { loadedSounds, setLoadedSounds } = useRootStore();
+interface AppProps {
+    loadedSounds: Sound[];
+    setLoadedSounds: (sounds: Sound[]) => void;
+}
+
+export const App: React.FC<AppProps> = (props) => {
+    const { loadedSounds, setLoadedSounds } = props;
 
     useEffect(() => {
         const loaded: Sound[] = [];
@@ -39,7 +42,7 @@ export const App: React.FC = observer(function App() {
     return (
         <div className="App">
             {loadedSounds.length === sounds.length ?
-                <MainLayout />
+                <MainLayoutContainer />
                 : (
                     <div className="App-wrap">
                         <LoadingOverlay />
@@ -48,4 +51,4 @@ export const App: React.FC = observer(function App() {
             }
         </div>
     );
-});
+};

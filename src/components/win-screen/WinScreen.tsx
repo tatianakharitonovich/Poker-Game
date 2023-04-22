@@ -1,18 +1,17 @@
 import React, { useEffect } from "react";
-import { observer } from "mobx-react-lite";
-import { useRootStore } from "../../hooks/useRootStore";
-import { Player, SoundName } from "../../types";
+import { Player, Sound, SoundName } from "../../types";
+import { useSound } from "../../hooks/useSound";
+import { ExitButtonContainer } from "../exit-button/ExitButtonContainer";
 
 import "./WinScreen.css";
-import { ExitButton } from "../ExitButton";
-import { useSound } from "../../hooks/useSound";
 
 interface WinScreenProps {
     winner: Player | undefined;
+    loadedSounds: Sound[];
 }
 
-export const WinScreen: React.FC<WinScreenProps> = observer(({ winner }) => {
-    const { loadedSounds } = useRootStore();
+export const WinScreen: React.FC<WinScreenProps> = (props) => {
+    const { winner, loadedSounds } = props;
 
     const finishSound = loadedSounds.find((sound) => sound.name === SoundName.finish)?.audio;
 
@@ -30,10 +29,10 @@ export const WinScreen: React.FC<WinScreenProps> = observer(({ winner }) => {
     if (winner) {
         return (
             <>
-                <ExitButton />
+                <ExitButtonContainer />
                 <h1 className="winscreen"> {winner.name} WIN! </h1>
             </>
         );
     }
     return null;
-});
+};

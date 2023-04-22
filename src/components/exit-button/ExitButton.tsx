@@ -1,11 +1,14 @@
 import React from "react";
-import { observer } from "mobx-react-lite";
-import { useRootStore } from "../hooks/useRootStore";
-import { SoundName } from "../types";
-import { Button } from "./button/Button";
+import { Sound, SoundName } from "../../types";
+import { Button } from "../button/Button";
 
-export const ExitButton: React.FC = observer(() => {
-    const { loadedSounds, gameLoopProcessor: { exitHandler } } = useRootStore();
+interface ExitButtonProps {
+    loadedSounds: Sound[];
+    exitHandler: () => void;
+}
+
+export const ExitButton: React.FC<ExitButtonProps> = (props) => {
+    const { loadedSounds, exitHandler } = props;
 
     return (
         <Button
@@ -16,4 +19,4 @@ export const ExitButton: React.FC = observer(() => {
             <img src="assets/images/exit.svg" alt="Exit" />
         </Button>
     );
-});
+};

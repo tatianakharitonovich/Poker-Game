@@ -1,23 +1,25 @@
 import React from "react";
-import { observer } from "mobx-react-lite";
-import { Player } from "../types";
-import { PlayerView } from "./players/PlayerView";
-import { useRootStore } from "../hooks/useRootStore";
+import { Player } from "../../types";
+import { PlayerViewContainer } from "../players/PlayerViewContainer";
 
-export const Board: React.FC = observer(() => {
-    const { state } = useRootStore();
+interface BoardProps {
+    players: Player[] | null;
+    activePlayerIndex: number | null;
+    dealerIndex: number | null;
+}
 
+export const Board: React.FC<BoardProps> = (props) => {
     const {
         players,
         activePlayerIndex,
         dealerIndex,
-    } = state;
+    } = props;
 
     const reversedPlayers = (players as Player[]).reduce((result, player, index) => {
         const isActive = (index === activePlayerIndex);
         const hasDealerChip = (index === dealerIndex);
         result.unshift(
-            <PlayerView
+            <PlayerViewContainer
                 key={player.id}
                 arrayIndex={index}
                 isActive={isActive}
@@ -33,4 +35,4 @@ export const Board: React.FC = observer(() => {
             {reversedPlayers.map(component => component)}
         </>
     );
-});
+};

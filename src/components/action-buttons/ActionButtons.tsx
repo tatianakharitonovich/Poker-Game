@@ -1,23 +1,38 @@
 import * as React from "react";
-import { observer } from "mobx-react-lite";
-import { useRootStore } from "../../hooks/useRootStore";
 import { Button } from "../button/Button";
-import { Player, SoundName } from "../../types";
+import { Player, PlayerBet, Sound, SoundName } from "../../types";
 
 import { getSound } from "../../utils/ui";
 
 import "./ActionButtons.css";
 
-export const ActionButtons: React.FC = observer(() => {
-    const { loadedSounds, state, minBet, maxBet, betProcessor, buttonText } = useRootStore();
+interface ActionButtonsProps {
+    loadedSounds: Sound[];
+    minBet: number;
+    maxBet: number;
+    buttonText: PlayerBet | undefined;
+    players: Player[] | null;
+    activePlayerIndex: number | null;
+    highBet: number | null;
+    betInputValue: number | null;
+    handleBetInputSubmit: (bet: string, minBet: string, maxBet: string) => void;
+    handleFold: () => void;
+
+}
+
+export const ActionButtons: React.FC<ActionButtonsProps> = (props) => {
     const {
+        loadedSounds,
+        minBet,
+        maxBet,
+        buttonText,
         players,
         activePlayerIndex,
         highBet,
         betInputValue,
-    } = state;
-
-    const { handleBetInputSubmit, handleFold } = betProcessor;
+        handleBetInputSubmit,
+        handleFold,
+    } = props;
 
     const button = () => {
         const sound = getSound(buttonText as string, loadedSounds);
@@ -47,4 +62,4 @@ export const ActionButtons: React.FC = observer(() => {
             </Button>
         </>
     );
-});
+};

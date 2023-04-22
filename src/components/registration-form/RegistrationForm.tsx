@@ -1,13 +1,22 @@
 import React, { useEffect } from "react";
-import { observer } from "mobx-react-lite";
-import { useRootStore } from "../../hooks/useRootStore";
 import { Button } from "../button/Button";
-import { Gender, SoundName } from "../../types";
+import { Gender, Sound, SoundName } from "../../types";
 
 import "./RegistrationForm.css";
 import { useSound } from "../../hooks/useSound";
 
-export const RegistrationForm: React.FC = observer(() => {
+interface RegistrationFormProps {
+    loadedSounds: Sound[];
+    userName: string;
+    gender: Gender | undefined;
+    playersNumber: string;
+    setIsSubmit: (value: boolean) => void;
+    setUserName: (name: string) => void;
+    setGender: (gender: Gender | undefined) => void;
+    setPlayersNumber: (number: string) => void;
+}
+
+export const RegistrationForm: React.FC<RegistrationFormProps> = (props) => {
     const {
         loadedSounds,
         userName,
@@ -17,7 +26,7 @@ export const RegistrationForm: React.FC = observer(() => {
         setUserName,
         setGender,
         setPlayersNumber,
-    } = useRootStore();
+    } = props;
 
     const buttomSound = loadedSounds.find((sound) => sound.name === SoundName.positive)?.audio;
 
@@ -116,4 +125,4 @@ export const RegistrationForm: React.FC = observer(() => {
             <img className="registration-form-background" src="assets/images/cards.svg" alt="cards" />
         </div>
     );
-});
+};

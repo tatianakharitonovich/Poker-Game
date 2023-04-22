@@ -1,32 +1,29 @@
 import React, { useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { observer } from "mobx-react-lite";
-import { useRootStore } from "../../hooks/useRootStore";
-import { PokerHand, ShowDownMessage, SoundName } from "../../types";
+import { HierarchyPlayer, PokerHand, ShowDownMessage, Sound, SoundName } from "../../types";
 import { ShowdownMessage } from "../show-down-message/ShowdownMessage";
-import { RankWinner } from "../rank-winner/RankWinner";
 import { Button } from "../button/Button";
+import { useSound } from "../../hooks/useSound";
+import { RankWinnerContainer } from "../rank-winner/RankWinnerContainer";
 
 import "./Showdown.css";
-import { useSound } from "../../hooks/useSound";
 
 interface ShowdownProps {
     renderCommunityCards: (clearAnimation: boolean, addClass: string) => JSX.Element[];
+    handleNextRound: () => void;
+    loadedSounds: Sound[];
+    showDownMessages: ShowDownMessage[];
+    playerHierarchy: HierarchyPlayer[] | HierarchyPlayer[][];
 }
 
-export const Showdown: React.FC<ShowdownProps> = observer(({ renderCommunityCards }) => {
+export const Showdown: React.FC<ShowdownProps> = (props) => {
     const {
+        renderCommunityCards,
         loadedSounds,
-        state,
-        gameLoopProcessor: {
-            handleNextRound,
-        },
-    } = useRootStore();
-
-    const {
+        handleNextRound,
         showDownMessages,
         playerHierarchy,
-    } = state;
+    } = props;
 
     const finishSound = loadedSounds.find((sound) => sound.name === SoundName.finish)?.audio;
 
@@ -80,8 +77,8 @@ export const Showdown: React.FC<ShowdownProps> = observer(({ renderCommunityCard
 
                     return tie
                         ? (itemHierarchy)
-                            .map(player => <RankWinner key={uuidv4()} player={player} />)
-                        : <RankWinner key={uuidv4()} player={itemHierarchy} />;
+                            .map(player => <RankWinnerContainer key={uuidv4()} player={player} />)
+                        : <RankWinnerContainer key={uuidv4()} player={itemHierarchy} />;
                 })
             }
             <Button
@@ -93,4 +90,4 @@ export const Showdown: React.FC<ShowdownProps> = observer(({ renderCommunityCard
             </Button>
         </div>
     );
-});
+};

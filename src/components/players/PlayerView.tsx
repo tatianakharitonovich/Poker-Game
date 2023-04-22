@@ -1,13 +1,11 @@
 import React from "react";
-import { observer } from "mobx-react-lite";
-import { Player } from "../../types";
-import { Card } from "../cards/Card";
+import { CardType, Phase, Player, PlayerAnimationSwitchboard } from "../../types";
 import { PlayerAvatar } from "./PlayerAvatar";
-import { PlayerStatus } from "./PlayerStatus";
+import { determineBestHand } from "../../utils/bestHand";
+import { CardContainer } from "../cards/CardContainer";
+import { PlayerStatusContainer } from "./PlayerStatusContainer";
 
 import "./PlayerView.css";
-import { determineBestHand } from "../../utils/bestHand";
-import { useRootStore } from "../../hooks/useRootStore";
 
 const dealerChipImageURL = "/assets/images/chip.svg";
 const playerBetImageURL = "./assets/images/bet.svg";
@@ -17,13 +15,21 @@ interface PlayerViewProps {
     isActive: boolean;
     hasDealerChip: boolean;
     player: Player;
+    playerAnimationSwitchboard: PlayerAnimationSwitchboard;
+    phase: Phase;
+    clearCards: boolean;
+    communityCards: CardType[];
 }
 
-export const PlayerView: React.FC<PlayerViewProps> = observer((props) => {
+export const PlayerView: React.FC<PlayerViewProps> = (props) => {
     const {
         arrayIndex,
         hasDealerChip,
         isActive,
+        playerAnimationSwitchboard,
+        phase,
+        clearCards,
+        communityCards,
         player: {
             isFake,
             folded,
@@ -34,15 +40,6 @@ export const PlayerView: React.FC<PlayerViewProps> = observer((props) => {
             bet,
         },
     } = props;
-
-    const { state } = useRootStore();
-
-    const {
-        playerAnimationSwitchboard,
-        phase,
-        clearCards,
-        communityCards,
-    } = state;
 
     const allCards = [...cards, ...communityCards];
 
@@ -56,7 +53,7 @@ export const PlayerView: React.FC<PlayerViewProps> = observer((props) => {
             return cards.map((card) => {
                 if (phase !== "showdown") {
                     return (
-                        <Card
+                        <CardContainer
                             key={`${card.cardRank}${card.suit}`}
                             cardData={card}
                             applyFoldedClassname={applyFoldedClassname}
@@ -66,7 +63,7 @@ export const PlayerView: React.FC<PlayerViewProps> = observer((props) => {
                 }
                 const cardData = { ...card, animationDelay: 0 };
                 return (
-                    <Card
+                    <CardContainer
                         key={`${card.cardRank}${card.suit}`}
                         cardData={cardData}
                         applyFoldedClassname={applyFoldedClassname}
@@ -77,7 +74,7 @@ export const PlayerView: React.FC<PlayerViewProps> = observer((props) => {
         }
         return cards.map((card) => {
             return (
-                <Card
+                <CardContainer
                     key={`${card.cardRank}${card.suit}`}
                     cardData={card}
                     applyFoldedClassname={applyFoldedClassname}
@@ -98,7 +95,7 @@ export const PlayerView: React.FC<PlayerViewProps> = observer((props) => {
         <div
             className={`player player${arrayIndex}${(folded || clearCards) ? " skipping" : ""}`}
         >
-            <PlayerStatus
+            <PlayerStatusContainer
                 index={arrayIndex}
                 isActive={isAnimating(arrayIndex)}
                 content={playerAnimationSwitchboard[arrayIndex].content}
@@ -131,4 +128,4 @@ export const PlayerView: React.FC<PlayerViewProps> = observer((props) => {
             </div>
         </div>
     );
-});
+};

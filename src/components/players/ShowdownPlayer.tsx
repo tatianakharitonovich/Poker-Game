@@ -1,7 +1,7 @@
 import React from "react";
 import { CardType } from "../../types";
-import { Card } from "../cards/Card";
 import { PlayerAvatar } from "./PlayerAvatar";
+import { CardContainer } from "../cards/CardContainer";
 
 interface ShowdownPlayerProps {
     name: string;
@@ -28,7 +28,7 @@ export const ShowdownPlayer: React.FC<ShowdownPlayerProps> = (props) => {
                     {cards.map((card) => {
                         const cardData = { ...card, animationDelay: 0 };
                         return (
-                            <Card
+                            <CardContainer
                                 key={`${card.cardRank}${card.suit}`}
                                 cardData={cardData}
                                 isRobot={false}

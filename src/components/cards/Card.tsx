@@ -1,21 +1,20 @@
 import React, { useEffect } from "react";
-import { observer } from "mobx-react-lite";
-import { useRootStore } from "../../hooks/useRootStore";
-import { CardType, SoundName, Suits } from "../../types";
+import { CardType, Sound, SoundName, Suits } from "../../types";
+import { useSound } from "../../hooks/useSound";
 
 import "./Card.css";
-import { useSound } from "../../hooks/useSound";
 
 interface CardProps {
     cardData: CardType;
     applyFoldedClassname?: boolean;
     isRobot: boolean;
     addClass?: string;
+    loadedSounds: Sound[];
 }
 
-export const Card: React.FC<CardProps> = observer((props) => {
-    const { loadedSounds } = useRootStore();
+export const Card: React.FC<CardProps> = (props) => {
     const {
+        loadedSounds,
         cardData: {
             suit,
             cardRank,
@@ -62,4 +61,4 @@ export const Card: React.FC<CardProps> = observer((props) => {
             )}
         </div>
     );
-});
+};

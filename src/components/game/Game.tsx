@@ -1,30 +1,36 @@
 import React, { useState, useEffect } from "react";
-import { observer } from "mobx-react-lite";
-import { useRootStore } from "../../hooks/useRootStore";
-import { Player, SoundName } from "../../types";
-import { ActionButtons } from "../action-buttons/ActionButtons";
-import { ActionMenu } from "../action-menu/ActionMenu";
-import { Board } from "../Board";
-import { Card } from "../cards/Card";
-import { Showdown } from "../show-down/Showdown";
+import { CardType, Phase, Player, Sound, SoundName } from "../../types";
 import { Button } from "../button/Button";
+import { useSound } from "../../hooks/useSound";
+import { BoardContainer } from "../board/BoardContainer";
+import { ExitButtonContainer } from "../exit-button/ExitButtonContainer";
+import { ActionButtonsContainer } from "../action-buttons/ActionButtonsContainer";
+import { ActionMenuContainer } from "../action-menu/ActionMenuContainer";
+import { CardContainer } from "../cards/CardContainer";
 
 import "./Game.css";
-import { ExitButton } from "../ExitButton";
-import { useSound } from "../../hooks/useSound";
+import { ShowdownContainer } from "../show-down/ShowdownContainer";
 
 const imageUrl = "assets/images/table.svg";
 
-export const Game: React.FC = observer(() => {
-    const { loadedSounds, state } = useRootStore();
+interface GameProps {
+    loadedSounds: Sound[];
+    players: Player[] | null;
+    activePlayerIndex: number | null;
+    phase: Phase;
+    pot: number | null;
+    communityCards: CardType[];
+}
 
+export const Game: React.FC<GameProps> = (props) => {
     const {
+        loadedSounds,
         players,
         activePlayerIndex,
         phase,
         pot,
         communityCards,
-    } = state;
+    } = props;
 
     const [isSounds, setIsSounds] = useState(true);
     const [isMusic, setIsMusic] = useState(true);
@@ -80,7 +86,7 @@ export const Game: React.FC = observer(() => {
                 cardData.animationDelay = 0;
             }
             return (
-                <Card
+                <CardContainer
                     key={`${card.cardRank}${card.suit}`}
                     cardData={cardData}
                     isRobot={false}
@@ -95,7 +101,7 @@ export const Game: React.FC = observer(() => {
             <div className="game">
                 <img className="game-logo" src="assets/images/lasvegas.svg" alt="LasVegas" />
                 <img className="game-background" src="assets/images/city.svg" alt="LasVegas" />
-                {(phase !== "showdown") && <ExitButton />}
+                {(phase !== "showdown") && <ExitButtonContainer />}
                 {(phase !== "showdown") &&
                     (
                         <div className="game-soundwrap">
@@ -118,7 +124,7 @@ export const Game: React.FC = observer(() => {
                 }
                 <div className="game-container">
                     <img className="game-container-image" src={imageUrl} alt="Poker Table" />
-                    <Board />
+                    <BoardContainer />
                     <div className="game-community">
                         {renderCommunityCards(false, "isHover")}
                     </div>
@@ -134,22 +140,22 @@ export const Game: React.FC = observer(() => {
                 </div>
                 {(phase === "showdown")
                     && (
-                        <Showdown
+                        <ShowdownContainer
                             renderCommunityCards={renderCommunityCards}
                         />
                     )}
                 <div className="game-action">
                     <div className="game-action-buttons">
                         {((!(players as Player[])[activePlayerIndex as number].isFake) && (phase !== "showdown")) && (
-                            <ActionButtons />
+                            <ActionButtonsContainer />
                         )}
                     </div>
                     <div className="game-action-slider">
-                        <ActionMenu />
+                        <ActionMenuContainer />
                     </div>
                 </div>
             </div>
         );
     }
     return null;
-});
+};

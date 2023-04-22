@@ -1,34 +1,42 @@
 import React from "react";
-import { observer } from "mobx-react";
-import { Game } from "./game/Game";
-import { WinScreen } from "./win-screen/WinScreen";
-
 import {
     generateCardsDeck,
     shuffle,
-} from "../utils/cards";
+} from "../../utils/cards";
 
-import { createPlayers } from "../utils/players";
+import { createPlayers } from "../../utils/players";
 
 import {
     determineBlindIndices,
     anteUpBlinds,
-} from "../utils/bet";
+} from "../../utils/bet";
 
-import { rootStore } from "../stores/rootStore";
-import { SplashScreen } from "./splashscreen/SplashScreen";
+import { SplashScreen } from "../splashscreen/SplashScreen";
+import { GameContainer } from "../game/GameContainer";
+import { WinScreenContainer } from "../win-screen/WinScreenContainer";
+import { GameStateInit, Gender, Player } from "../../types";
 
-@observer
-export class GameLayout extends React.Component {
+interface GameLayoutProps {
+    state: GameStateInit;
+    userName: string;
+    gender: Gender | undefined;
+    playersNumber: string;
+    setState: (newState: GameStateInit) => void;
+    runGameLoop: () => void;
+    winner: Player | undefined;
+}
+
+export class GameLayout extends React.Component<GameLayoutProps> {
     public async componentDidMount() {
-        const players = await createPlayers(rootStore.userName, rootStore.gender, rootStore.playersNumber);
+        const { userName, gender, playersNumber, state, setState, runGameLoop } = this.props;
+        const players = await createPlayers(userName, gender, playersNumber);
         const dealerIndex = Math.floor(Math.random() * Math.floor(players.length));
         const blindIndicies = determineBlindIndices(dealerIndex, players.length);
-        const { minBet } = rootStore.state;
+        const { minBet } = state;
         const playersBoughtIn = anteUpBlinds(players, blindIndicies, minBet);
         setTimeout(() => {
-            rootStore.setState({
-                ...rootStore.state,
+            setState({
+                ...state,
                 players: playersBoughtIn,
                 loading: false,
                 numberPlayersActive: players.length,
@@ -42,17 +50,18 @@ export class GameLayout extends React.Component {
                 },
                 deck: shuffle(generateCardsDeck()),
                 pot: 0,
-                highBet: rootStore.state.minBet,
-                betInputValue: rootStore.state.minBet,
+                highBet: minBet,
+                betInputValue: minBet,
                 phase: "initialDeal",
             });
             setTimeout(() => {
-                rootStore.gameLoopProcessor.runGameLoop();
+                runGameLoop();
             }, 3000);
         }, 3000);
     }
 
     public render() {
+        const { winner, state } = this.props;
         const {
             loading,
             players,
@@ -60,16 +69,17 @@ export class GameLayout extends React.Component {
             pot,
             dealerIndex,
             betInputValue,
-        } = rootStore.state;
+            highBet,
+        } = state;
 
         return (
             <>
                 {(loading) ? <SplashScreen /> :
-                    (rootStore.winner) ?
-                        <WinScreen winner={rootStore.winner} /> :
-                        (players !== null && activePlayerIndex !== null && rootStore.state.highBet !== null &&
+                    (winner) ?
+                        <WinScreenContainer winner={winner} /> :
+                        (players !== null && activePlayerIndex !== null && highBet !== null &&
                         pot !== null && dealerIndex !== null && betInputValue !== null) ? (
-                            <Game />
+                            <GameContainer />
                             ) : null
                 }
             </>

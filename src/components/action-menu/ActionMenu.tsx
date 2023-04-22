@@ -1,22 +1,25 @@
 import * as React from "react";
-import { observer } from "mobx-react-lite";
 import { Handles, Rail, Slider, Tracks } from "react-compound-slider";
 import { Handle } from "../slider/Handle";
 import { railStyle, sliderStyle } from "../slider/styles";
 import { Track } from "../slider/Track";
 
 import "./ActionMenu.css";
-import { useRootStore } from "../../hooks/useRootStore";
 
-export const ActionMenu: React.FC = observer(() => {
+interface ActionMenuProps {
+    minBet: number;
+    maxBet: number;
+    isShow: boolean;
+    handleBetInputChange: (val: readonly number[], maxBet: number) => void;
+}
+
+export const ActionMenu: React.FC<ActionMenuProps> = (props) => {
     const {
         minBet,
         maxBet,
         isShow,
-        betProcessor: {
-            handleBetInputChange,
-        },
-    } = useRootStore();
+        handleBetInputChange,
+    } = props;
 
     return (
         <Slider
@@ -73,4 +76,4 @@ export const ActionMenu: React.FC = observer(() => {
             </Tracks>
         </Slider>
     );
-});
+};
