@@ -13,7 +13,7 @@ export const RegistrationFormContainer: React.FC = observer(() => {
         setUserName,
         setGender,
         setPlayersNumber,
-    } = useRootStore();
+    } = useRootStore().gameInfoStore;
 
     return (
         <RegistrationForm

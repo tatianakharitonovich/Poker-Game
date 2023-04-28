@@ -81,7 +81,6 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = (props) => {
                     type="number"
                     min={2}
                     max={5}
-                    placeholder="2"
                     data-test="playersNumber-input"
                     value={playersNumber}
                     onChange={(e) => { setPlayersNumber(e.target.value); playMusic(); }}

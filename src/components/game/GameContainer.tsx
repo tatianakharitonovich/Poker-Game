@@ -4,7 +4,7 @@ import { useRootStore } from "../../hooks/useRootStore";
 import { Game } from "./Game";
 
 export const GameContainer: React.FC = observer(() => {
-    const { loadedSounds, state } = useRootStore();
+    const { gameInfoStore, state } = useRootStore();
 
     const {
         players,
@@ -16,7 +16,7 @@ export const GameContainer: React.FC = observer(() => {
 
     return (
         <Game
-            loadedSounds={loadedSounds}
+            loadedSounds={gameInfoStore.loadedSounds}
             players={players}
             activePlayerIndex={activePlayerIndex}
             phase={phase}

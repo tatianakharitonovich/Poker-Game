@@ -4,7 +4,7 @@ import { useRootStore } from "../../hooks/useRootStore";
 import { App } from "./App";
 
 export const AppContainer: React.FC = observer(function AppContainer() {
-    const { loadedSounds, setLoadedSounds } = useRootStore();
+    const { loadedSounds, setLoadedSounds } = useRootStore().gameInfoStore;
 
     return (
         <App loadedSounds={loadedSounds} setLoadedSounds={setLoadedSounds} />

@@ -5,11 +5,8 @@ import { cloneDeep } from "lodash";
 import {
     GameStateBase,
     GameStateInit,
-    Gender,
     Player,
-    PlayerBet,
     PlayerWithSidePotStack,
-    Sound,
     initialState,
 } from "../types";
 
@@ -18,94 +15,35 @@ import {
 } from "../utils/ai";
 import { BetProcessor } from "./betProcessor";
 import { GameLoopProcessor } from "./gameLoopProcessor";
-import { determineMinBet } from "../utils/bet";
-import { renderActionButtonText } from "../utils/ui";
+import { GameInfoStore } from "./gameInfoStore";
+import { UIStore } from "./uiStore";
 
 export class RootStore {
-    public loadedSounds: Sound[] = [];
-    public userName = "";
-    public playersNumber = "";
-    public gender: Gender | undefined;
-    public isSubmit = false;
-    public winner: Player | undefined;
     public state: GameStateInit = initialState;
     public betProcessor: BetProcessor;
     public gameLoopProcessor: GameLoopProcessor;
+    public gameInfoStore: GameInfoStore;
+    public uiStore: UIStore;
 
     public constructor() {
         // make class instance and needed fields observable
         makeAutoObservable(this, {}, { autoBind: true });
         this.betProcessor = new BetProcessor(this);
         this.gameLoopProcessor = new GameLoopProcessor(this);
+        this.gameInfoStore = new GameInfoStore(this);
+        this.uiStore = new UIStore(this);
     }
-
-    public setLoadedSounds: (sounds: Sound[]) => void = (sounds: Sound[]) => {
-        this.loadedSounds = sounds;
-    };
-
-    public setUserName: (name: string) => void = (name: string) => {
-        this.userName = name;
-    };
-
-    public setPlayersNumber: (number: string) => void = (number: string) => {
-        this.playersNumber = number;
-    };
-
-    public setGender: (gender: Gender | undefined) => void = (checkedGender: Gender | undefined) => {
-        this.gender = checkedGender;
-    };
-
-    public setIsSubmit: (value: boolean) => void = (value: boolean) => {
-        this.isSubmit = value;
-    };
 
     public setState: (newState: GameStateInit) => void = (newState: GameStateInit) => {
         this.state = { ...this.state, ...newState };
     };
-
-    public get minBet(): number {
-        return determineMinBet(
-            this.state.highBet as number,
-            (this.state.players as Player[])[this.state.activePlayerIndex as number].chips,
-            (this.state.players as Player[])[this.state.activePlayerIndex as number].bet,
-        );
-    }
-
-    public get maxBet(): number {
-        return (this.state.players as Player[])[this.state.activePlayerIndex as number].chips +
-            (this.state.players as Player[])[this.state.activePlayerIndex as number].bet;
-    }
-
-    public get buttonText(): PlayerBet | undefined {
-        return renderActionButtonText(
-            this.state.highBet as number,
-            this.state.betInputValue as number,
-            (this.state.players as Player[])[this.state.activePlayerIndex as number],
-        );
-    }
-
-    public get isShow(): boolean {
-        return (this.state.phase === "betting1" ||
-            this.state.phase === "betting2" ||
-            this.state.phase === "betting3" ||
-            this.state.phase === "betting4") &&
-        (!(this.state.players as Player[])[this.state.activePlayerIndex as number].isFake) &&
-        (this.state.players as Player[])[this.state.activePlayerIndex as number].chips >= (this.state.highBet as number);
-    }
-
-    public pushAnimationState: (index: number, content: string) => void =
-        (index: number, content: string) => {
-            const { playerAnimationSwitchboard } = this.state;
-            const newAnimationSwitchboard = { ...playerAnimationSwitchboard, ...{ [index]: { isAnimating: true, content } } };
-            this.setState({ ...this.state, playerAnimationSwitchboard: newAnimationSwitchboard });
-        };
 
     public handleAI: () => void = () => {
         const { playerAnimationSwitchboard, ...appState } = this.state;
         const newState =
             handleAIUtil(
                 cloneDeep(appState as GameStateBase<Player>),
-                this.pushAnimationState,
+                this.uiStore.pushAnimationState,
             ) as GameStateBase<Player> | GameStateBase<PlayerWithSidePotStack>;
         this.setState({
             ...this.state,
@@ -117,10 +55,6 @@ export class RootStore {
                 this.handleAI();
             }, 2000);
         }
-    };
-
-    public setWinner: (player: Player | undefined) => void = (player: Player | undefined) => {
-        this.winner = player;
     };
 }
 

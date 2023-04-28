@@ -26,7 +26,7 @@ export class GameLoopProcessor {
     public handleNextRound: () => void = () => {
         this.rootStore.setState({ ...this.rootStore.state, clearCards: true });
         const newState = beginNextRound(cloneDeep(this.rootStore.state as GameState)) as GameState;
-        if (checkWin(newState.players, this.rootStore.setWinner)) {
+        if (checkWin(newState.players, this.rootStore.gameInfoStore.setWinner)) {
             this.rootStore.setState({ ...newState, winnerFound: true });
             return;
         }
@@ -47,8 +47,8 @@ export class GameLoopProcessor {
     };
 
     public exitHandler: () => void = () => {
-        this.rootStore.setIsSubmit(false);
-        this.rootStore.setWinner(undefined);
+        this.rootStore.gameInfoStore.setIsSubmit(false);
+        this.rootStore.gameInfoStore.setWinner(undefined);
         this.rootStore.setState(initialState);
     };
 }

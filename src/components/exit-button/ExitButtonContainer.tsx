@@ -4,7 +4,7 @@ import { useRootStore } from "../../hooks/useRootStore";
 import { ExitButton } from "./ExitButton";
 
 export const ExitButtonContainer: React.FC = observer(() => {
-    const { loadedSounds, gameLoopProcessor: { exitHandler } } = useRootStore();
+    const { gameInfoStore: { loadedSounds }, gameLoopProcessor: { exitHandler } } = useRootStore();
 
     return (
         <ExitButton loadedSounds={loadedSounds} exitHandler={exitHandler} />

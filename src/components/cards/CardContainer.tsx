@@ -12,7 +12,7 @@ interface CardContainerProps {
 }
 
 export const CardContainer: React.FC<CardContainerProps> = observer((props) => {
-    const { loadedSounds } = useRootStore();
+    const { loadedSounds } = useRootStore().gameInfoStore;
     const {
         cardData,
         applyFoldedClassname,

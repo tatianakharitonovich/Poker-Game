@@ -9,7 +9,7 @@ export const MainLayoutContainer: React.FC = observer(() => {
         setUserName,
         setGender,
         setPlayersNumber,
-    } = useRootStore();
+    } = useRootStore().gameInfoStore;
 
     return (
         <MainLayout

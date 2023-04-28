@@ -5,9 +5,13 @@ import { ActionMenu } from "./ActionMenu";
 
 export const ActionMenuContainer: React.FC = observer(() => {
     const {
-        minBet,
-        maxBet,
-        isShow,
+        gameInfoStore: {
+            minBet,
+            maxBet,
+        },
+        uiStore: {
+            isShowActionMenu,
+        },
         betProcessor: {
             handleBetInputChange,
         },
@@ -17,7 +21,7 @@ export const ActionMenuContainer: React.FC = observer(() => {
         <ActionMenu
             minBet={minBet}
             maxBet={maxBet}
-            isShow={isShow}
+            isShow={isShowActionMenu}
             handleBetInputChange={handleBetInputChange}
         />
     );

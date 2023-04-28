@@ -4,7 +4,7 @@ import { useRootStore } from "../../hooks/useRootStore";
 import { ActionButtons } from "./ActionButtons";
 
 export const ActionButtonsContainer: React.FC = observer(() => {
-    const { loadedSounds, state, minBet, maxBet, betProcessor, buttonText } = useRootStore();
+    const { gameInfoStore, state, betProcessor, uiStore } = useRootStore();
     const {
         players,
         activePlayerIndex,
@@ -16,11 +16,11 @@ export const ActionButtonsContainer: React.FC = observer(() => {
 
     return (
         <ActionButtons
-            loadedSounds={loadedSounds}
-            minBet={minBet}
-            maxBet={maxBet}
+            loadedSounds={gameInfoStore.loadedSounds}
+            minBet={gameInfoStore.minBet}
+            maxBet={gameInfoStore.maxBet}
             players={players}
-            buttonText={buttonText}
+            buttonText={uiStore.buttonText}
             activePlayerIndex={activePlayerIndex}
             highBet={highBet}
             betInputValue={betInputValue}

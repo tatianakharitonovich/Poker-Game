@@ -9,7 +9,9 @@ interface ShowdownContainerProps {
 
 export const ShowdownContainer: React.FC<ShowdownContainerProps> = observer(({ renderCommunityCards }) => {
     const {
-        loadedSounds,
+        gameInfoStore: {
+            loadedSounds,
+        },
         state,
         gameLoopProcessor: {
             handleNextRound,

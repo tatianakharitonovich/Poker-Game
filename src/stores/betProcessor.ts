@@ -16,7 +16,7 @@ export class BetProcessor {
     public handleBetInputSubmit: (bet: string, minBet: string, maxBet: string) => void =
         (bet: string, minBet: string, maxBet: string) => {
             const { playerAnimationSwitchboard, ...appState } = this.rootStore.state;
-            this.rootStore.pushAnimationState(
+            this.rootStore.uiStore.pushAnimationState(
                 this.rootStore.state.activePlayerIndex as number,
                 `${renderActionButtonText(
                     this.rootStore.state.highBet as number,

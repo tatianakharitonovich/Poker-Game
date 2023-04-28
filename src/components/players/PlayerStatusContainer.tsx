@@ -10,7 +10,7 @@ interface PlayerStatusContainerProps {
 }
 
 export const PlayerStatusContainer: React.FC<PlayerStatusContainerProps> = observer((props) => {
-    const { loadedSounds, gameLoopProcessor: { endTransition } } = useRootStore();
+    const { gameInfoStore: { loadedSounds }, gameLoopProcessor: { endTransition } } = useRootStore();
     const { index, isActive, content } = props;
 
     return (

@@ -9,7 +9,7 @@ interface WinScreenContainerProps {
 }
 
 export const WinScreenContainer: React.FC<WinScreenContainerProps> = observer(({ winner }) => {
-    const { loadedSounds } = useRootStore();
+    const { loadedSounds } = useRootStore().gameInfoStore;
 
     return (
         <WinScreen winner={winner} loadedSounds={loadedSounds} />

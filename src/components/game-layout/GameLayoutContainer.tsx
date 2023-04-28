@@ -9,12 +9,12 @@ export class GameLayoutContainer extends React.Component {
         return (
             <GameLayout
                 state={rootStore.state}
-                userName={rootStore.userName}
-                gender={rootStore.gender}
-                playersNumber={rootStore.playersNumber}
+                userName={rootStore.gameInfoStore.userName}
+                gender={rootStore.gameInfoStore.gender}
+                playersNumber={rootStore.gameInfoStore.playersNumber}
                 setState={rootStore.setState}
                 runGameLoop={rootStore.gameLoopProcessor.runGameLoop}
-                winner={rootStore.winner}
+                winner={rootStore.gameInfoStore.winner}
             />
         );
     }
