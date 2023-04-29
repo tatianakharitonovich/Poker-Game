@@ -1,4 +1,5 @@
 {
+  "homepage": "https://tatianakharitonovich.github.io/Poker-Game",
   "name": "poker-game",
   "version": "0.1.0",
   "private": true,
@@ -23,6 +24,8 @@
   "scripts": {
     "prepare": "cd .. && husky install React_Typescript_4-5/.husky",
     "start": "react-scripts start",
+    "predeploy": "npm tun build",
+    "deploy": "gh-pages -d build",
     "build": "CI=false react-scripts build",
     "eject": "react-scripts eject",
     "eslint": "eslint --fix $(git diff --name-only HEAD | grep -E '(tsx|ts)$')"
@@ -60,6 +63,7 @@
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "gh-pages": "^5.0.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.1.1"
   },
