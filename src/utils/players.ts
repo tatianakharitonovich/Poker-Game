@@ -15,7 +15,7 @@ async (userName, gender, playersNumber) => {
     const users = [{
         id: uuidv4(),
         name: userName,
-        avatarURL: gender === "male" ? "/assets/images/boy.svg" : "/assets/images/girl.svg",
+        avatarURL: gender === "male" ? "./assets/images/boy.svg" : "./assets/images/girl.svg",
         cards: [],
         showDownHand: {
             hand: [],

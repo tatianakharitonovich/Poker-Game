@@ -7,7 +7,7 @@ import { PlayerStatusContainer } from "./PlayerStatusContainer";
 
 import "./PlayerView.css";
 
-const dealerChipImageURL = "/assets/images/chip.svg";
+const dealerChipImageURL = "./assets/images/chip.svg";
 const playerBetImageURL = "./assets/images/bet.svg";
 
 interface PlayerViewProps {
