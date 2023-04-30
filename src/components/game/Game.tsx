@@ -43,7 +43,7 @@ export const Game: React.FC<GameProps> = (props) => {
     useEffect(() => {
         if (mainSound) {
             mainSound.loop = true;
-            mainSound.volume = 0.007;
+            mainSound.volume = 0.003;
             mainSound.muted = false;
         }
         playSound();

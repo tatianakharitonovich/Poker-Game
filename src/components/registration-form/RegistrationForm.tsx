@@ -35,7 +35,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = (props) => {
     const { playSound } = useSound(menuSound, false);
 
     if (menuSound) {
-        menuSound.volume = 0.01;
+        menuSound.volume = 0.006;
     }
 
     useEffect(() => {

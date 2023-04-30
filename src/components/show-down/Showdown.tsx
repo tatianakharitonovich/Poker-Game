@@ -30,7 +30,7 @@ export const Showdown: React.FC<ShowdownProps> = (props) => {
     const { playSound } = useSound(finishSound, true);
 
     if (finishSound) {
-        finishSound.volume = 0.01;
+        finishSound.volume = 0.007;
     }
 
     useEffect(() => {
