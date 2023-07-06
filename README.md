@@ -1,5 +1,7 @@
 # Poker Game (Texas Hold'em)
 
+https://tatianakharitonovich.github.io/Poker-Game/
+
 My web app is built using the latest technologies such as TypeScript, React TS, CSS, and MobX.
 
 When loading the game, you can see the preloader, it is necessary to load all the sounds and music of the application.
